@@ -9,17 +9,21 @@ import {
   Database,
   Settings,
   ShieldCheck,
-  ExternalLink
+  ExternalLink,
+  CheckCircle,
+  BellRing
 } from 'lucide-react';
 import TrustLedgerLogo from '../components/branding/TrustLedgerLogo';
 
 const navItems = [
   { name: 'Dashboard', path: '/dashboard', icon: LayoutDashboard },
-  { name: 'Applications', path: '/applications', icon: FileSpreadsheet, badge: '5 New' },
+  { name: 'Applications', path: '/applications', icon: FileSpreadsheet, badge: '4 In Queue' },
   { name: 'Fraud Network', path: '/fraud-network', icon: Network, badge: 'Alert' },
   { name: 'Documents', path: '/documents', icon: FileCheck },
   { name: 'KYC Analysis', path: '/kyc-analysis', icon: UserCheck },
   { name: 'Evidence Ledger', path: '/evidence-ledger', icon: Database },
+  { name: 'Approved Loans', path: '/approved-loans', icon: CheckCircle },
+  { name: 'Alerts', path: '/alerts', icon: BellRing, badge: '8 Alert' },
   { name: 'Settings', path: '/settings', icon: Settings },
 ];
 

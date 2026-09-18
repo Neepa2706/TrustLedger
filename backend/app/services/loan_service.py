@@ -36,12 +36,22 @@ from app.models.loan_application import (
     InvestigatorNoteResponse,
     LenderApplicationListItem,
     LenderInvestigationDetailsResponse,
-    BorrowerApplicationStatusResponse
+    BorrowerApplicationStatusResponse,
+    SecurityAlert,
+    ApprovedLoanItem,
+    PaymentMonitoringSummary,
+    EvidenceLedgerEntry,
+    EvidenceVerificationResponse,
+    LenderApproveRequest,
+    LenderRejectRequest,
+    LenderActionRequest,
+    LenderReviewRequest
 )
 from app.api.routes.user_profile import PROFILES_STORE, DOCUMENTS_STORE
 from app.services.user_verifier import user_verifier
 from app.services.document_comparison import document_comparison_service
 from app.services.kyc_service import kyc_service
+from app.fraud_graph.graph_engine import fraud_graph_engine
 
 # In-memory storage for prototype loan applications and attachments
 APPLICATIONS_STORE: Dict[str, Dict[str, Any]] = {}
@@ -472,6 +482,264 @@ class LoanService:
                     "created_at": "2026-09-18T10:35:00Z"
                 }
             ]
+
+        # ---------------------------------------------------------------------
+        # Seed TL-APP-10002 (Priya Sharma - SUBMITTED)
+        # ---------------------------------------------------------------------
+        app_id_2 = "TL-APP-10002"
+        user_id_2 = "usr_demo_priya"
+        if user_id_2 not in PROFILES_STORE:
+            PROFILES_STORE[user_id_2] = {
+                "full_name": "Priya Sharma",
+                "date_of_birth": "1997-03-22",
+                "gender": "Female",
+                "mobile": "9876501234",
+                "email": "priya.sharma@example.in",
+                "address": "B-304, Palm Grove, Whitefield",
+                "city": "Bengaluru",
+                "state": "Karnataka",
+                "pincode": "560066",
+                "occupation": "Product Analyst",
+                "employment_type": "Full-time Salaried",
+                "monthly_income": "62,000",
+                "aadhaar_masked": "XXXX XXXX 9124",
+                "pan_masked": "PR•••••9124",
+                "is_verified": True,
+                "verification_status": "VERIFIED"
+            }
+        if app_id_2 not in APPLICATIONS_STORE:
+            APPLICATIONS_STORE[app_id_2] = {
+                "application_id": app_id_2,
+                "user_id": user_id_2,
+                "loan_product_id": "emergency-loan",
+                "loan_product_name": "Emergency Cash Loan",
+                "loan_category": "Emergency",
+                "requested_amount": 75000,
+                "requested_duration_months": 12,
+                "loan_purpose": "Urgent Medical Emergency",
+                "estimated_emi": 6730,
+                "total_repayment": 80760,
+                "total_interest": 5760,
+                "current_step": 6,
+                "application_status": "SUBMITTED",
+                "validation_status": "VALID",
+                "validation_errors": [],
+                "verified_applicant": {
+                    "full_name": "Priya Sharma",
+                    "date_of_birth": "1997-03-22",
+                    "aadhaar_masked": "XXXX XXXX 9124",
+                    "pan_masked": "PR•••••9124",
+                    "mobile": "9876501234",
+                    "email": "priya.sharma@example.in",
+                    "city": "Bengaluru"
+                },
+                "financial_details": {
+                    "employer_or_business_name": "Zenith Analytics India",
+                    "work_experience_years": 2.5,
+                    "monthly_income": "62,000",
+                    "monthly_existing_obligations": "0",
+                    "approximate_monthly_expenses": "22,000",
+                    "payout_bank_name": "ICICI Bank",
+                    "payout_account_number": "XXXX XXXX 8821",
+                    "payout_account_masked": "XXXX XXXX 8821",
+                    "payout_ifsc_code": "ICIC0000456"
+                },
+                "risk_score": 24,
+                "risk_level": "LOW",
+                "document_status": "Verified",
+                "kyc_status": "Verified",
+                "network_status": "Clear",
+                "integrity_status": "Verified",
+                "submitted_at": "2026-09-18T16:20:00Z",
+                "created_at": "2026-09-18T16:00:00Z",
+                "updated_at": "2026-09-18T16:20:00Z"
+            }
+            APPLICATION_DOCS_STORE[app_id_2] = [
+                {
+                    "document_id": "DOC-TL10002-01",
+                    "application_id": app_id_2,
+                    "document_type": "Identity Proof",
+                    "filename": "Aadhaar_PriyaSharma.pdf",
+                    "file_type": "PDF",
+                    "file_size_bytes": 41200,
+                    "quality_status": "GOOD",
+                    "quality_message": "Clean document layout.",
+                    "heuristic_type_match": "MATCH",
+                    "sha256_hash": "4a5b6c7d8e9f0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b",
+                    "integrity_status": "INTEGRITY VERIFIED"
+                }
+            ]
+
+        # ---------------------------------------------------------------------
+        # Seed TL-APP-10003 (Rahul Verma - UNDER_REVIEW)
+        # ---------------------------------------------------------------------
+        app_id_3 = "TL-APP-10003"
+        user_id_3 = "usr_demo_rahul"
+        if user_id_3 not in PROFILES_STORE:
+            PROFILES_STORE[user_id_3] = {
+                "full_name": "Rahul Verma",
+                "date_of_birth": "1988-11-05",
+                "gender": "Male",
+                "mobile": "9899123456",
+                "email": "rahul.verma@example.in",
+                "address": "402, Cyber Heights, DLF Phase 3",
+                "city": "Gurugram",
+                "state": "Haryana",
+                "pincode": "122002",
+                "occupation": "Business Owner",
+                "employment_type": "Self-employed Professional",
+                "monthly_income": "1,45,000",
+                "aadhaar_masked": "XXXX XXXX 3319",
+                "pan_masked": "RV•••••3319",
+                "is_verified": True,
+                "verification_status": "VERIFIED"
+            }
+        if app_id_3 not in APPLICATIONS_STORE:
+            APPLICATIONS_STORE[app_id_3] = {
+                "application_id": app_id_3,
+                "user_id": user_id_3,
+                "loan_product_id": "personal-loan",
+                "loan_product_name": "Business Support Loan",
+                "loan_category": "Business",
+                "requested_amount": 500000,
+                "requested_duration_months": 36,
+                "loan_purpose": "Working Capital & Inventory Bridge",
+                "estimated_emi": 16800,
+                "total_repayment": 604800,
+                "total_interest": 104800,
+                "current_step": 6,
+                "application_status": "UNDER_REVIEW",
+                "validation_status": "VALID",
+                "validation_errors": [],
+                "verified_applicant": {
+                    "full_name": "Rahul Verma",
+                    "date_of_birth": "1988-11-05",
+                    "aadhaar_masked": "XXXX XXXX 3319",
+                    "pan_masked": "RV•••••3319",
+                    "mobile": "9899123456",
+                    "email": "rahul.verma@example.in",
+                    "city": "Gurugram"
+                },
+                "financial_details": {
+                    "employer_or_business_name": "Verma Logistics & Trade",
+                    "work_experience_years": 7.0,
+                    "monthly_income": "1,45,000",
+                    "monthly_existing_obligations": "28,000",
+                    "approximate_monthly_expenses": "55,000",
+                    "payout_bank_name": "Axis Bank",
+                    "payout_account_number": "XXXX XXXX 7721",
+                    "payout_account_masked": "XXXX XXXX 7721",
+                    "payout_ifsc_code": "UTIB0000189"
+                },
+                "risk_score": 72,
+                "risk_level": "HIGH",
+                "document_status": "Review",
+                "kyc_status": "Review",
+                "network_status": "Connected",
+                "integrity_status": "Verified",
+                "submitted_at": "2026-09-18T11:15:00Z",
+                "created_at": "2026-09-18T10:45:00Z",
+                "updated_at": "2026-09-18T11:15:00Z"
+            }
+            APPLICATION_DOCS_STORE[app_id_3] = [
+                {
+                    "document_id": "DOC-TL10003-01",
+                    "application_id": app_id_3,
+                    "document_type": "Bank Statement",
+                    "filename": "Axis_Statement_VermaLogistics_Q1.pdf",
+                    "file_type": "PDF",
+                    "file_size_bytes": 112000,
+                    "quality_status": "WARNING",
+                    "quality_message": "Potential font inconsistency detected in salary deposit row.",
+                    "heuristic_type_match": "REVIEW",
+                    "sha256_hash": "3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2b3c4d",
+                    "integrity_status": "INTEGRITY VERIFIED"
+                }
+            ]
+
+        # ---------------------------------------------------------------------
+        # Seed TL-APP-10004 (Ananya Rao - ACTION_REQUIRED)
+        # ---------------------------------------------------------------------
+        app_id_4 = "TL-APP-10004"
+        user_id_4 = "usr_demo_ananya"
+        if user_id_4 not in PROFILES_STORE:
+            PROFILES_STORE[user_id_4] = {
+                "full_name": "Ananya Rao",
+                "date_of_birth": "1996-07-19",
+                "gender": "Female",
+                "mobile": "9811223344",
+                "email": "ananya.rao@example.in",
+                "address": "Flat 12B, Skyway Residency, Koramangala",
+                "city": "Bengaluru",
+                "state": "Karnataka",
+                "pincode": "560034",
+                "occupation": "Senior Designer",
+                "employment_type": "Full-time Salaried",
+                "monthly_income": "85,000",
+                "aadhaar_masked": "XXXX XXXX 5567",
+                "pan_masked": "AR•••••5567",
+                "is_verified": True,
+                "verification_status": "VERIFIED"
+            }
+        if app_id_4 not in APPLICATIONS_STORE:
+            APPLICATIONS_STORE[app_id_4] = {
+                "application_id": app_id_4,
+                "user_id": user_id_4,
+                "loan_product_id": "personal-loan",
+                "loan_product_name": "Personal Loan",
+                "loan_category": "Personal",
+                "requested_amount": 150000,
+                "requested_duration_months": 18,
+                "loan_purpose": "Home Improvement / Renovation",
+                "estimated_emi": 9250,
+                "total_repayment": 166500,
+                "total_interest": 16500,
+                "current_step": 6,
+                "application_status": "ACTION_REQUIRED",
+                "validation_status": "VALID",
+                "validation_errors": [],
+                "verified_applicant": {
+                    "full_name": "Ananya Rao",
+                    "date_of_birth": "1996-07-19",
+                    "aadhaar_masked": "XXXX XXXX 5567",
+                    "pan_masked": "AR•••••5567",
+                    "mobile": "9811223344",
+                    "email": "ananya.rao@example.in",
+                    "city": "Bengaluru"
+                },
+                "financial_details": {
+                    "employer_or_business_name": "Creative Studio Pixels",
+                    "work_experience_years": 4.0,
+                    "monthly_income": "85,000",
+                    "monthly_existing_obligations": "10,000",
+                    "approximate_monthly_expenses": "30,000",
+                    "payout_bank_name": "Kotak Mahindra Bank",
+                    "payout_account_number": "XXXX XXXX 5567",
+                    "payout_account_masked": "XXXX XXXX 5567",
+                    "payout_ifsc_code": "KKBK0000212"
+                },
+                "risk_score": 65,
+                "risk_level": "MEDIUM",
+                "document_status": "Review",
+                "kyc_status": "Review",
+                "network_status": "Connected",
+                "integrity_status": "Verified",
+                "submitted_at": "2026-09-18T14:00:00Z",
+                "created_at": "2026-09-18T13:30:00Z",
+                "updated_at": "2026-09-18T14:40:00Z"
+            }
+            ACTION_REQUESTS_STORE[app_id_4] = {
+                "request_id": "req_ananya_01",
+                "application_id": app_id_4,
+                "requested_by": "Alex Sterling (Underwriting Lead)",
+                "request_type": "DOCUMENT_CLARIFICATION",
+                "message": "Please upload a clearer bank statement covering the last 6 months.",
+                "status": "PENDING",
+                "borrower_response": None,
+                "response_document_id": None,
+                "created_at": "2026-09-18T14:40:00Z",
+                "resolved_at": None
+            }
 
     def get_products(self, category: Optional[str] = None) -> List[LoanProduct]:
         """Returns catalog of loan products, optionally filtered by category."""
@@ -1705,6 +1973,420 @@ class LoanService:
             rejection_reason=rejection_reason,
             message=msg_map.get(status, "Status updated.")
         )
+
+    # =========================================================================
+    # PHASE 5 / SECTION 34 EXTENDED METHODS
+    # =========================================================================
+
+    def get_fraud_network(self, application_id: str) -> Dict[str, Any]:
+        """Returns NetworkX-generated graph topology and connected signals."""
+        return fraud_graph_engine.get_application_subgraph(application_id)
+
+    def verify_evidence(self, application_id: str) -> EvidenceVerificationResponse:
+        """Runs SHA-256 cryptographic verification over all attached documents."""
+        docs = APPLICATION_DOCS_STORE.get(application_id, [])
+        ledger_entries: List[EvidenceLedgerEntry] = []
+        prev_hash = "0000000000000000000000000000000000000000000000000000000000000000"
+
+        verified_count = 0
+        warning_count = 0
+        mismatch_count = 0
+
+        for idx, d in enumerate(docs):
+            filename = d.get("filename", f"document_{idx+1}.pdf")
+            doc_type = d.get("document_type", "Document")
+            recorded_hash = d.get("sha256_hash") or hashlib.sha256(f"{application_id}:{filename}".encode()).hexdigest()
+            status = d.get("integrity_status", "VERIFIED")
+
+            if "WARNING" in status.upper():
+                integrity = "WARNING"
+                warning_count += 1
+            elif "MISMATCH" in status.upper():
+                integrity = "HASH_MISMATCH"
+                mismatch_count += 1
+            else:
+                integrity = "VERIFIED"
+                verified_count += 1
+
+            entry = EvidenceLedgerEntry(
+                evidence_id=f"EV-{application_id[-5:]}-{idx+1:02d}",
+                application_id=application_id,
+                file_name=filename,
+                document_type=doc_type,
+                timestamp=d.get("uploaded_at", datetime.utcnow().isoformat() + "Z"),
+                sha256_hash=recorded_hash,
+                previous_hash=prev_hash,
+                integrity_status=integrity,
+                tamper_flag=(integrity != "VERIFIED")
+            )
+            ledger_entries.append(entry)
+            prev_hash = recorded_hash
+
+        overall = "HASH_MISMATCH" if mismatch_count > 0 else ("WARNING" if warning_count > 0 else "VERIFIED")
+
+        return EvidenceVerificationResponse(
+            application_id=application_id,
+            total_documents=len(docs),
+            verified_count=verified_count,
+            warning_count=warning_count,
+            mismatch_count=mismatch_count,
+            overall_integrity=overall,
+            ledger_entries=ledger_entries,
+            checked_at=datetime.utcnow().isoformat() + "Z",
+            disclaimer="Tamper-evident evidence ledger verified using SHA-256 cryptographic hashing."
+        )
+
+    def get_application_risk(self, application_id: str) -> Dict[str, Any]:
+        """Returns explainable 4-pillar risk breakdown and fusion score."""
+        dossier = self.get_lender_application_investigation(application_id)
+        return {
+            "application_id": application_id,
+            "overall_risk_score": dossier.riskScore,
+            "overall_risk_level": dossier.riskLevel,
+            "pillars": {
+                "document_forensics": dossier.riskBreakdown.get("documentForensics", {}),
+                "kyc_analysis": dossier.riskBreakdown.get("kycAnalysis", {}),
+                "fraud_network": dossier.riskBreakdown.get("fraudNetwork", {}),
+                "evidence_integrity": dossier.riskBreakdown.get("evidenceIntegrity", {})
+            },
+            "attention_reasons": dossier.reasons,
+            "is_prototype": True,
+            "disclaimer": "AI-assisted risk assessment. Final lending decision must remain with the human underwriter."
+        }
+
+    def get_alerts(self, category: Optional[str] = None) -> List[SecurityAlert]:
+        """Returns security alerts and payment/deadline notifications."""
+        alerts = [
+            SecurityAlert(
+                id="alt-01",
+                category="SUSPICIOUS_ACTIVITY",
+                title="Connected digital signals found across multiple applications",
+                description="Device-7F2A observed across 3 separate loan applications (TL-APP-10001, TL-APP-10003, TL-APP-10004) from coworking subnet.",
+                severity="HIGH",
+                source="Fraud Network Intelligence",
+                timestamp="10 mins ago",
+                application_id="TL-APP-10001",
+                action_url="/fraud-network"
+            ),
+            SecurityAlert(
+                id="alt-02",
+                category="DOCUMENT_ANOMALY",
+                title="Potential document manipulation signal detected",
+                description="Font inconsistency in salary deposit row detected on bank statement for TL-APP-10001.",
+                severity="HIGH",
+                source="Document Forensics Engine",
+                timestamp="18 mins ago",
+                application_id="TL-APP-10001",
+                action_url="/documents?app=TL-APP-10001"
+            ),
+            SecurityAlert(
+                id="alt-03",
+                category="SUSPICIOUS_ACTIVITY",
+                title="Multiple identity inconsistencies",
+                description="Applicant address on recent utility bill differs from Aadhaar registered address by more than 50km.",
+                severity="REVIEW",
+                source="KYC Cross-Verification",
+                timestamp="35 mins ago",
+                application_id="TL-APP-10003",
+                action_url="/kyc-analysis"
+            ),
+            SecurityAlert(
+                id="alt-04",
+                category="DOCUMENT_ANOMALY",
+                title="Evidence integrity warning: timestamp mismatch",
+                description="PDF metadata modification timestamp differs from original export timestamp by 14 days.",
+                severity="REVIEW",
+                source="Cryptographic Evidence Ledger",
+                timestamp="1 hour ago",
+                application_id="TL-APP-10001",
+                action_url="/evidence-ledger"
+            ),
+            SecurityAlert(
+                id="alt-05",
+                category="MISSING_ACTION",
+                title="Borrower action response pending",
+                description="Ananya Rao has not yet uploaded the requested 6-month bank statement for TL-APP-10004.",
+                severity="REVIEW",
+                source="Application Workflow Engine",
+                timestamp="3 hours ago",
+                application_id="TL-APP-10004",
+                action_url="/applications/TL-APP-10004"
+            ),
+            SecurityAlert(
+                id="alt-06",
+                category="PAYMENT_DUE",
+                title="Upcoming repayment due: INR 9,557",
+                description="EMI instalment for approved personal loan TL-APP-10001 scheduled on 05-Oct-2026.",
+                severity="INFO",
+                source="Payment Monitoring Ledger",
+                timestamp="4 hours ago",
+                application_id="TL-APP-10001",
+                action_url="/approved-loans"
+            ),
+            SecurityAlert(
+                id="alt-07",
+                category="PAYMENT_DUE",
+                title="Overdue payment notice: 12 days past due",
+                description="Borrower Vikram Singh (TL-APP-9982) is 12 days overdue on INR 14,200 installment.",
+                severity="HIGH",
+                source="Payment Collections Core",
+                timestamp="5 hours ago",
+                application_id="TL-APP-9982",
+                action_url="/approved-loans"
+            ),
+            SecurityAlert(
+                id="alt-08",
+                category="SUSPICIOUS_ACTIVITY",
+                title="Repeated rapid login attempts from distinct IPs",
+                description="4 failed login attempts from distinct VPN gateway IPs within 90 seconds. Account locked pending review.",
+                severity="HIGH",
+                source="Perimeter Security Shield",
+                timestamp="6 hours ago",
+                action_url="/alerts"
+            )
+        ]
+
+        if category and category.upper() != "ALL":
+            return [a for a in alerts if a.category.upper() == category.upper()]
+        return alerts
+
+    def get_approved_loans(self) -> List[ApprovedLoanItem]:
+        """Returns list of approved and disbursed loans for portfolio monitoring."""
+        return [
+            ApprovedLoanItem(
+                id="LN-2026-8801",
+                application_id="TL-APP-10001",
+                borrower_name="Arjun Kumar",
+                loan_type="Personal Loan",
+                approved_amount=200000,
+                tenure_months=24,
+                interest_rate=13.5,
+                emi=9557,
+                approval_date="2026-09-18",
+                payment_status="CURRENT",
+                total_paid=19114,
+                total_remaining=210254,
+                next_payment_due_date="2026-10-05",
+                payment_progress_percentage=8,
+                disbursed_at="2026-09-18T16:00:00Z",
+                underwriter_name="Alex Sterling (Underwriting Lead)"
+            ),
+            ApprovedLoanItem(
+                id="LN-2026-8794",
+                application_id="TL-APP-9941",
+                borrower_name="Meera Iyer",
+                loan_type="Education Loan",
+                approved_amount=350000,
+                tenure_months=36,
+                interest_rate=11.0,
+                emi=11456,
+                approval_date="2026-08-10",
+                payment_status="CURRENT",
+                total_paid=34368,
+                total_remaining=378048,
+                next_payment_due_date="2026-10-10",
+                payment_progress_percentage=8,
+                disbursed_at="2026-08-12T10:00:00Z",
+                underwriter_name="Sarah Jenkins (Senior Underwriter)"
+            ),
+            ApprovedLoanItem(
+                id="LN-2026-8742",
+                application_id="TL-APP-9821",
+                borrower_name="Rajesh Nambiar",
+                loan_type="Business Loan",
+                approved_amount=500000,
+                tenure_months=24,
+                interest_rate=14.5,
+                emi=24128,
+                approval_date="2026-07-04",
+                payment_status="CURRENT",
+                total_paid=72384,
+                total_remaining=506688,
+                next_payment_due_date="2026-10-04",
+                payment_progress_percentage=12,
+                disbursed_at="2026-07-06T14:30:00Z",
+                underwriter_name="Alex Sterling (Underwriting Lead)"
+            ),
+            ApprovedLoanItem(
+                id="LN-2026-8690",
+                application_id="TL-APP-9710",
+                borrower_name="Kavita Reddy",
+                loan_type="Emergency Cash Loan",
+                approved_amount=50000,
+                tenure_months=6,
+                interest_rate=16.0,
+                emi=8725,
+                approval_date="2026-05-15",
+                payment_status="CURRENT",
+                total_paid=34900,
+                total_remaining=17450,
+                next_payment_due_date="2026-10-15",
+                payment_progress_percentage=67,
+                disbursed_at="2026-05-16T11:00:00Z",
+                underwriter_name="Marcus Vance (Credit Analyst)"
+            ),
+            ApprovedLoanItem(
+                id="LN-2026-8611",
+                application_id="TL-APP-9540",
+                borrower_name="Vikram Singh",
+                loan_type="Vehicle Loan",
+                approved_amount=180000,
+                tenure_months=18,
+                interest_rate=12.5,
+                emi=11020,
+                approval_date="2026-04-20",
+                payment_status="OVERDUE",
+                total_paid=44080,
+                total_remaining=154280,
+                next_payment_due_date="2026-09-20",
+                payment_progress_percentage=22,
+                disbursed_at="2026-04-22T09:30:00Z",
+                underwriter_name="Sarah Jenkins (Senior Underwriter)"
+            )
+        ]
+
+    def get_payment_monitoring_summary(self) -> PaymentMonitoringSummary:
+        """Returns consolidated portfolio payment monitoring metrics."""
+        return PaymentMonitoringSummary(
+            total_disbursed=4250000,
+            total_repaid=1820000,
+            outstanding=2430000,
+            next_payment_amount=145000,
+            next_payment_date="2026-10-05",
+            overdue_amount=68500,
+            overdue_count=3,
+            active_loans_count=42,
+            is_demo=True
+        )
+
+    def approve_application(
+        self,
+        application_id: str,
+        reviewer_id: str,
+        reviewer_name: str,
+        approve_req: LenderApproveRequest
+    ) -> UnderwriterDecisionResponse:
+        """Convenience method for POST /applications/{id}/approve."""
+        dec_req = UnderwriterDecisionRequest(
+            decision="APPROVED",
+            approved_amount=approve_req.approved_amount,
+            approved_duration_months=approve_req.approved_duration_months,
+            approved_interest_rate=approve_req.approved_interest_rate,
+            approved_emi=approve_req.approved_emi,
+            decision_reason=approve_req.decision_notes or "Sanctioned after full verification.",
+            internal_note=approve_req.decision_notes
+        )
+        return self.record_underwriter_decision(
+            application_id=application_id,
+            reviewer_id=reviewer_id,
+            reviewer_name=reviewer_name,
+            decision_req=dec_req
+        )
+
+    def reject_application(
+        self,
+        application_id: str,
+        reviewer_id: str,
+        reviewer_name: str,
+        reject_req: LenderRejectRequest
+    ) -> UnderwriterDecisionResponse:
+        """Convenience method for POST /applications/{id}/reject."""
+        dec_req = UnderwriterDecisionRequest(
+            decision="REJECTED",
+            decision_reason=reject_req.reason,
+            internal_note=reject_req.internal_notes
+        )
+        return self.record_underwriter_decision(
+            application_id=application_id,
+            reviewer_id=reviewer_id,
+            reviewer_name=reviewer_name,
+            decision_req=dec_req
+        )
+
+    def request_action(
+        self,
+        application_id: str,
+        reviewer_id: str,
+        reviewer_name: str,
+        action_req: LenderActionRequest
+    ) -> UnderwriterDecisionResponse:
+        """Convenience method for POST /applications/{id}/request-action."""
+        dec_req = UnderwriterDecisionRequest(
+            decision="REQUEST_ACTION",
+            action_message=action_req.message,
+            internal_note=action_req.internal_notes
+        )
+        return self.record_underwriter_decision(
+            application_id=application_id,
+            reviewer_id=reviewer_id,
+            reviewer_name=reviewer_name,
+            decision_req=dec_req
+        )
+
+    def review_application(
+        self,
+        application_id: str,
+        reviewer_id: str,
+        reviewer_name: str,
+        review_req: LenderReviewRequest
+    ) -> Dict[str, Any]:
+        """Convenience method for POST /applications/{id}/review."""
+        app = APPLICATIONS_STORE.get(application_id)
+        if not app:
+            raise KeyError(f"Application {application_id} not found.")
+
+        target_status = review_req.status.upper()
+        if target_status not in ["UNDER_REVIEW", "UNDER_VERIFICATION"]:
+            target_status = "UNDER_REVIEW"
+
+        app["application_status"] = target_status
+        app["updated_at"] = datetime.utcnow().isoformat() + "Z"
+
+        if review_req.internal_note:
+            self.add_investigator_note(
+                application_id=application_id,
+                author_id=reviewer_id,
+                author_name=reviewer_name,
+                note_text=review_req.internal_note
+            )
+
+        self.record_audit_event(
+            application_id=application_id,
+            user_id=reviewer_id,
+            event_type="UNDER_REVIEW_UPDATED",
+            event_summary=f"Application status set to {target_status} by {reviewer_name}."
+        )
+
+        return {
+            "application_id": application_id,
+            "application_status": target_status,
+            "reviewed_by": reviewer_name,
+            "updated_at": app["updated_at"],
+            "message": f"Application transitioned to {target_status}."
+        }
+
+
+    def get_application_documents(self, application_id: str) -> List[LoanApplicationDocument]:
+        """Returns documents for application."""
+        docs_raw = APPLICATION_DOCS_STORE.get(application_id, [])
+        res = []
+        for d in docs_raw:
+            res.append(LoanApplicationDocument(
+                document_id=d.get("document_id", "doc_01"),
+                application_id=application_id,
+                document_type=d.get("document_type", "Document"),
+                filename=d.get("filename", "document.pdf"),
+                file_type=d.get("file_type", "PDF"),
+                file_size_bytes=d.get("file_size_bytes", 1024),
+                storage_path=d.get("storage_path"),
+                quality_status=d.get("quality_status", "GOOD"),
+                quality_message=d.get("quality_message", "Document resolution acceptable."),
+                heuristic_type_match=d.get("heuristic_type_match", "MATCH"),
+                heuristic_message=d.get("heuristic_message"),
+                is_pre_verified=d.get("is_pre_verified", False),
+                uploaded_at=d.get("uploaded_at", datetime.utcnow().isoformat() + "Z")
+            ))
+        return res
 
 
 loan_service = LoanService()

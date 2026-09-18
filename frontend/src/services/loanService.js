@@ -778,7 +778,168 @@ class LoanFrontendService {
     });
     if (!res.ok) {
       const err = await res.json().catch(() => ({}));
-      throw new Error(err.detail || 'Failed to retrieve application status.');
+      throw new Error(err.detail || 'Failed to fetch application status.');
+    }
+    return await res.json();
+  }
+
+  /**
+   * Phase 5: Get security and operational alerts
+   */
+  async getAlerts(category = null) {
+    try {
+      const url = category && category !== 'ALL'
+        ? `${API_BASE_URL}/alerts?category=${encodeURIComponent(category)}`
+        : `${API_BASE_URL}/alerts`;
+      const res = await fetch(url, { method: 'GET', headers: { 'Accept': 'application/json' } });
+      if (res.ok) {
+        return await res.json();
+      }
+    } catch {
+      // Fallback
+    }
+    return [];
+  }
+
+  /**
+   * Phase 5: Get approved loans list
+   */
+  async getApprovedLoans() {
+    try {
+      const res = await fetch(`${API_BASE_URL}/approved-loans`, {
+        method: 'GET',
+        headers: { 'Accept': 'application/json' }
+      });
+      if (res.ok) {
+        return await res.json();
+      }
+    } catch {
+      // Fallback
+    }
+    return [];
+  }
+
+  /**
+   * Phase 5: Get payment monitoring summary
+   */
+  async getPaymentMonitoringSummary() {
+    try {
+      const res = await fetch(`${API_BASE_URL}/payment-monitoring`, {
+        method: 'GET',
+        headers: { 'Accept': 'application/json' }
+      });
+      if (res.ok) {
+        return await res.json();
+      }
+    } catch {
+      // Fallback
+    }
+    return null;
+  }
+
+  /**
+   * Phase 5: Get NetworkX-powered fraud network graph
+   */
+  async getFraudNetwork(applicationId = 'TL-APP-10001') {
+    try {
+      const res = await fetch(`${API_BASE_URL}/applications/${applicationId}/fraud-network`, {
+        method: 'GET',
+        headers: { 'Accept': 'application/json' }
+      });
+      if (res.ok) {
+        return await res.json();
+      }
+    } catch {
+      // Fallback
+    }
+    return null;
+  }
+
+  /**
+   * Phase 5: Cryptographic evidence ledger verification
+   */
+  async verifyEvidence(applicationId) {
+    try {
+      const res = await fetch(`${API_BASE_URL}/applications/${applicationId}/evidence`, {
+        method: 'GET',
+        headers: { 'Accept': 'application/json' }
+      });
+      if (res.ok) {
+        return await res.json();
+      }
+    } catch {
+      // Fallback
+    }
+    return null;
+  }
+
+  /**
+   * Phase 5: Canonical Underwriter Actions (Approve, Reject, Request Action, Review)
+   */
+  async approveApplication(applicationId, approveData, lenderId = 'usr_lead_alex', lenderName = 'Alex Sterling') {
+    const res = await fetch(`${API_BASE_URL}/applications/${applicationId}/approve`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Lender-Id': lenderId,
+        'X-Lender-Name': lenderName
+      },
+      body: JSON.stringify(approveData)
+    });
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.detail || 'Approval submission failed.');
+    }
+    return await res.json();
+  }
+
+  async rejectApplication(applicationId, rejectData, lenderId = 'usr_lead_alex', lenderName = 'Alex Sterling') {
+    const res = await fetch(`${API_BASE_URL}/applications/${applicationId}/reject`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Lender-Id': lenderId,
+        'X-Lender-Name': lenderName
+      },
+      body: JSON.stringify(rejectData)
+    });
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.detail || 'Rejection submission failed.');
+    }
+    return await res.json();
+  }
+
+  async requestAction(applicationId, actionData, lenderId = 'usr_lead_alex', lenderName = 'Alex Sterling') {
+    const res = await fetch(`${API_BASE_URL}/applications/${applicationId}/request-action`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Lender-Id': lenderId,
+        'X-Lender-Name': lenderName
+      },
+      body: JSON.stringify(actionData)
+    });
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.detail || 'Action request failed.');
+    }
+    return await res.json();
+  }
+
+  async reviewApplication(applicationId, reviewData, lenderId = 'usr_lead_alex', lenderName = 'Alex Sterling') {
+    const res = await fetch(`${API_BASE_URL}/applications/${applicationId}/review`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Lender-Id': lenderId,
+        'X-Lender-Name': lenderName
+      },
+      body: JSON.stringify(reviewData)
+    });
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.detail || 'Review update failed.');
     }
     return await res.json();
   }

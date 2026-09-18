@@ -15,6 +15,8 @@ import FraudNetworkPage from './pages/FraudNetworkPage';
 import DocumentsPage from './pages/DocumentsPage';
 import KycAnalysisPage from './pages/KycAnalysisPage';
 import EvidenceLedgerPage from './pages/EvidenceLedgerPage';
+import ApprovedLoansPage from './pages/ApprovedLoansPage';
+import AlertsPage from './pages/AlertsPage';
 import SettingsPage from './pages/SettingsPage';
 
 // Customer / Borrower App Pages (Phase 1 & Phase 2)
@@ -211,6 +213,12 @@ export default function App() {
                 {/* Evidence Ledger with alias */}
                 <Route path="/evidence-ledger" element={<EvidenceLedgerPage />} />
                 <Route path="/ledger" element={<Navigate to="/evidence-ledger" replace />} />
+
+                {/* Approved Loans & Payment Servicing */}
+                <Route path="/approved-loans" element={<ApprovedLoansPage />} />
+
+                {/* Suspicious Activity & Operational Alerts */}
+                <Route path="/alerts" element={<AlertsPage />} />
 
                 <Route path="/settings" element={<SettingsPage />} />
               </Route>

@@ -339,3 +339,103 @@ class BorrowerApplicationStatusResponse(BaseModel):
     message: str
 
 
+# =============================================================================
+# PHASE 5 / SECTION 34 EXTENSIONS: ALERTS, APPROVED LOANS, EVIDENCE, FORENSICS
+# =============================================================================
+
+class SecurityAlert(BaseModel):
+    id: str
+    category: str  # SUSPICIOUS_ACTIVITY, PAYMENT_DUE, MISSING_ACTION, DOCUMENT_ANOMALY
+    title: str
+    description: str
+    severity: str  # INFO, REVIEW, HIGH
+    source: str
+    timestamp: str
+    application_id: Optional[str] = None
+    user_id: Optional[str] = None
+    action_url: Optional[str] = None
+    is_read: bool = False
+
+
+class ApprovedLoanItem(BaseModel):
+    id: str
+    application_id: str
+    borrower_name: str
+    loan_type: str
+    approved_amount: int
+    tenure_months: int
+    interest_rate: float
+    emi: int
+    approval_date: str
+    payment_status: str  # CURRENT, UPCOMING, OVERDUE, GRACE_PERIOD
+    total_paid: int
+    total_remaining: int
+    next_payment_due_date: str
+    payment_progress_percentage: int
+    disbursed_at: str
+    underwriter_name: str
+
+
+class PaymentMonitoringSummary(BaseModel):
+    total_disbursed: int
+    total_repaid: int
+    outstanding: int
+    next_payment_amount: int
+    next_payment_date: str
+    overdue_amount: int
+    overdue_count: int
+    active_loans_count: int
+    is_demo: bool = True
+
+
+class EvidenceLedgerEntry(BaseModel):
+    evidence_id: str
+    application_id: str
+    file_name: str
+    document_type: str
+    timestamp: str
+    sha256_hash: str
+    previous_hash: Optional[str] = None
+    integrity_status: str  # VERIFIED, WARNING, HASH_MISMATCH
+    tamper_flag: bool = False
+    verified_by: str = "System SHA-256 Engine"
+
+
+class EvidenceVerificationResponse(BaseModel):
+    application_id: str
+    total_documents: int
+    verified_count: int
+    warning_count: int
+    mismatch_count: int
+    overall_integrity: str  # VERIFIED, WARNING, HASH_MISMATCH
+    ledger_entries: List[EvidenceLedgerEntry]
+    checked_at: str
+    disclaimer: str = "Tamper-evident evidence ledger verified using SHA-256 cryptographic hashing."
+
+
+class LenderApproveRequest(BaseModel):
+    approved_amount: int = Field(..., gt=0)
+    approved_duration_months: int = Field(..., gt=0)
+    approved_interest_rate: float = Field(..., gt=0)
+    approved_emi: int = Field(..., gt=0)
+    processing_fee: Optional[int] = 0
+    decision_notes: Optional[str] = None
+    underwriter_name: Optional[str] = "Authorized Underwriter"
+
+
+class LenderRejectRequest(BaseModel):
+    reason: str = Field(..., min_length=3, description="Mandatory documented reason for rejection")
+    internal_notes: Optional[str] = None
+
+
+class LenderActionRequest(BaseModel):
+    request_type: str = Field("DOCUMENT_CLARIFICATION", description="Missing document, poor document quality, identity mismatch, financial clarification, other")
+    message: str = Field(..., min_length=3, description="Instruction message shown to borrower")
+    internal_notes: Optional[str] = None
+
+
+class LenderReviewRequest(BaseModel):
+    status: str = Field("UNDER_REVIEW", description="UNDER_REVIEW or UNDER_VERIFICATION")
+    internal_note: Optional[str] = None
+
+
