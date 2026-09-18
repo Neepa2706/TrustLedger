@@ -88,7 +88,7 @@ export default function App() {
   return (
     <AuthProvider>
       <UserAuthProvider>
-        <BrowserRouter>
+        <BrowserRouter basename={import.meta.env.BASE_URL}>
           <Routes>
             {/* Root Route */}
             <Route path="/" element={<RootIndexRedirect />} />
