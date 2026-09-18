@@ -1,5 +1,11 @@
 const getApiBaseUrl = () => {
-  if (import.meta.env.VITE_API_URL) return import.meta.env.VITE_API_URL;
+  if (import.meta.env.VITE_API_URL) {
+    const raw = import.meta.env.VITE_API_URL.trim();
+    if (raw.startsWith('http://') || raw.startsWith('https://')) {
+      return raw.replace(/\/+$/, '');
+    }
+    return `https://${raw}`.replace(/\/+$/, '');
+  }
   if (typeof window !== 'undefined' && window.location.hostname === 'localhost') {
     return 'http://localhost:8000';
   }
