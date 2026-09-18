@@ -198,7 +198,3 @@ Lender Investigation Portal (Underwriter Triage & Decision Panel)
 - **Clean Git Tracking**: Environment variables (`.env`), temporary files, local uploads, and personal test documents are strictly excluded via `.gitignore`.
 
 ---
-
-## 📄 License
-
-This project is licensed under the MIT License - see the LICENSE file for details.
