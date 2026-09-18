@@ -100,24 +100,7 @@ Lender Investigation Portal (Underwriter Triage & Decision Panel)
 
 ---
 
-## ⚡ Demo Mode
-
-TrustLedger includes an automated **Demo Mode** to evaluate the end-to-end verification and underwriting cycle without configuring external credentials:
-- **Pre-seeded Demo Application**: `TL-APP-10001` (Applicant: *Arjun Kumar*, Personal Loan: ₹2,00,000, 24 Months, Risk Score: 68% MEDIUM).
-- **1-Click Applicant Sign In**: Instantly authenticates as demo applicant *Arjun Kumar* with pre-verified KYC profile.
-- **Lender Underwriter Workspace**: Authoritative review queue at `/applications/TL-APP-10001` allowing underwriters to:
-  - Review 5-pillar forensics and cryptographic hashes.
-  - Record private investigator audit notes.
-  - Issue **Action Requests** (e.g. upload clearer bank statement).
-  - Issue **Approval** with customized sanctioned loan terms.
-- **Real-Time Borrower Sync**: Borrower status page (`/my-applications/TL-APP-10001`) updates live as decisions are made.
-
----
-
-## ⚠️ Prototype / Hackathon Disclaimer
-
-TrustLedger is developed as a hackathon proof-of-concept demonstration.
-
+## ⚠️ Prototype 
 ### Implemented
 - Complete end-to-end borrower application workflow (registration, camera capture, loan selection, document submission, KYC review).
 - Human-in-the-loop lender underwriter decisioning authority (Approve, Request Action, Reject).
@@ -125,7 +108,7 @@ TrustLedger is developed as a hackathon proof-of-concept demonstration.
 - Optical sharpness and dimension checking for camera captures.
 - In-memory and Supabase-compatible multi-tenant data schemas with strict IDOR protections.
 
-### Prototype / Heuristics
+### Prototype 
 - Document forensics heuristics (kerning, font anomaly scoring).
 - Optical character recognition token matching.
 - Fraud graph clustering signals (device ID, subnet collision).
