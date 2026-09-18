@@ -23,6 +23,9 @@ import UserRegisterPage from './pages/user/UserRegisterPage';
 import ProfileSetupPage from './pages/user/ProfileSetupPage';
 import UserHomePage from './pages/user/UserHomePage';
 import UserPlaceholderPage from './pages/user/UserPlaceholderPage';
+import UserProfileViewPage from './pages/user/UserProfileViewPage';
+import UserPaymentsPage from './pages/user/UserPaymentsPage';
+import UserNotificationsPage from './pages/user/UserNotificationsPage';
 import LoanMarketplacePage from './pages/user/LoanMarketplacePage';
 import LoanDetailsPage from './pages/user/LoanDetailsPage';
 import LoanApplicationPage from './pages/user/LoanApplicationPage';
@@ -163,7 +166,7 @@ export default function App() {
                 path="/payments"
                 element={
                   <BorrowerProtectedRoute>
-                    <UserPlaceholderPage type="payments" />
+                    <UserPaymentsPage />
                   </BorrowerProtectedRoute>
                 }
               />
@@ -171,7 +174,7 @@ export default function App() {
                 path="/profile"
                 element={
                   <BorrowerProtectedRoute>
-                    <UserPlaceholderPage type="profile" />
+                    <UserProfileViewPage />
                   </BorrowerProtectedRoute>
                 }
               />
@@ -179,7 +182,7 @@ export default function App() {
                 path="/notifications"
                 element={
                   <BorrowerProtectedRoute>
-                    <UserPlaceholderPage type="notifications" />
+                    <UserNotificationsPage />
                   </BorrowerProtectedRoute>
                 }
               />
