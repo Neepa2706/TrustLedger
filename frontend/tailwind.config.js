@@ -13,13 +13,55 @@ export default {
           100: '#F4EFE6',
           200: '#E8DFD1',
           300: '#D3C3AD',
-          400: '#A98E71',
-          500: '#846345',
+          400: '#8E6F4F',
+          500: '#755437',
           600: '#6F4E37', // Brand Primary Accent
           700: '#5A3D28', // Darker Primary Hover
           800: '#442D1D',
           900: '#2E1E13',
           950: '#1F1610', // Dark Espresso Text
+        },
+        // Stone mapped to high-contrast warm brown scale so all helper text is crisp and readable
+        stone: {
+          50: '#FAF8F5',
+          100: '#F5EFEB',
+          200: '#E8DFD1',
+          300: '#D8CAB7',
+          400: '#6F5849', // Crisper readable brown instead of faint light grey
+          500: '#5A4537', // Deep warm brown
+          600: '#443226', // Rich dark brown
+          700: '#32231A', // Dark espresso brown
+          800: '#231811', // Very dark brown
+          900: '#1A110B', // Near black brown
+          950: '#120B07',
+        },
+        // Slate mapped to warm coffee brown scale
+        slate: {
+          50: '#FAF8F5',
+          100: '#1F1610', // Dark espresso brown
+          200: '#32231A',
+          300: '#443226',
+          400: '#5A4537',
+          500: '#6F4E37',
+          600: '#5A3D28',
+          700: '#442D1D',
+          800: '#2E1E13',
+          900: '#1F1610',
+          950: '#120B07',
+        },
+        // Gray mapped to warm coffee brown scale
+        gray: {
+          50: '#FAF8F5',
+          100: '#1F1610',
+          200: '#32231A',
+          300: '#443226',
+          400: '#5A4537',
+          500: '#6F4E37',
+          600: '#5A3D28',
+          700: '#442D1D',
+          800: '#2E1E13',
+          900: '#1F1610',
+          950: '#120B07',
         },
         // Warm Beige & Neutral Tone Scale
         warm: {
@@ -47,8 +89,8 @@ export default {
         // Espresso Typography
         espresso: {
           DEFAULT: '#1F1610',
-          muted: '#635147',
-          subtle: '#8E7B70',
+          muted: '#5A4537',
+          subtle: '#755437',
         },
         // Legacy midnight mapping to warm espresso/coffee shades for seamless migration
         midnight: {

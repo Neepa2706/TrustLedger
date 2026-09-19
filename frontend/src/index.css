@@ -3,10 +3,41 @@
 @tailwind utilities;
 
 @layer base {
-  body {
+  :root {
+    color-scheme: light;
+    color: #1F1610;
+  }
+
+  html {
+    color-scheme: light;
     background-color: #FAF8F5;
     color: #1F1610;
+  }
+
+  body {
+    background-color: #FAF8F5;
+    color: #1F1610; /* Dark Espresso Coffee Brown */
     font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* Form Elements: Ensure rich dark brown typography and readable placeholders */
+  input, textarea, select {
+    color: #1F1610;
+  }
+
+  input::placeholder, textarea::placeholder {
+    color: #7B624E;
+    opacity: 0.85;
+  }
+
+  /* Headings & general text default to deep coffee brown */
+  h1, h2, h3, h4, h5, h6 {
+    color: #1F1610;
+  }
+
+  p, span, label, div {
+    color: inherit;
   }
 }
 

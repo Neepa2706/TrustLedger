@@ -46,14 +46,14 @@ export default function ApplicationStepper({ currentStep = 1, onStepClick }) {
                     ? 'bg-emerald-600 text-white shadow-sm cursor-pointer'
                     : isCurrent
                     ? 'bg-coffee-600 text-white ring-4 ring-coffee-100 shadow-sm cursor-default'
-                    : 'bg-white border border-coffee-200 text-coffee-400 cursor-not-allowed'
+                    : 'bg-white border border-coffee-300 text-coffee-700 cursor-not-allowed'
                 }`}
               >
                 {isDone ? <CheckCircle2 className="h-4 w-4" /> : s.num}
               </button>
               <span
-                className={`text-[10px] mt-1.5 hidden md:block text-center whitespace-nowrap ${
-                  isCurrent ? 'text-coffee-950 font-bold' : isDone ? 'text-coffee-700 font-medium' : 'text-coffee-400'
+                className={`text-[11px] mt-1.5 hidden md:block text-center whitespace-nowrap ${
+                  isCurrent ? 'text-coffee-950 font-bold' : isDone ? 'text-coffee-800 font-semibold' : 'text-coffee-700 font-medium'
                 }`}
               >
                 {s.label}
