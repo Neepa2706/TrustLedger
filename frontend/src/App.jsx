@@ -56,15 +56,6 @@ function RootIndexRedirect() {
  * Public Borrower Login Guard
  */
 function BorrowerLoginGuard() {
-  const { isAuthenticated } = useUserAuth();
-  const location = useLocation();
-  const searchParams = new URLSearchParams(location.search);
-  const queryRedirect = searchParams.get('redirect');
-  const from = queryRedirect || location.state?.from?.pathname || '/loans';
-
-  if (isAuthenticated && !searchParams.has('force')) {
-    return <Navigate to={from} replace />;
-  }
   return <UserLoginPage />;
 }
 
@@ -85,8 +76,7 @@ function BorrowerProtectedRoute({ children }) {
  * Lender Login Guard (Preserved at /lender/login)
  */
 function LenderLoginGuard() {
-  const { isAuthenticated } = useAuth();
-  return isAuthenticated ? <Navigate to="/dashboard" replace /> : <LoginPage />;
+  return <LoginPage />;
 }
 
 export default function App() {

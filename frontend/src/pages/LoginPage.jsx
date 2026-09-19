@@ -154,13 +154,13 @@ export default function LoginPage() {
 
             {/* Card Header */}
             <div className="mb-6">
-              <span className="text-xs font-mono uppercase tracking-wider text-coffee-600 font-semibold">
-                Welcome back
+              <span className="text-xs font-mono uppercase tracking-wider text-coffee-800 font-extrabold">
+                Underwriter & Fraud Desk
               </span>
-              <h2 className="text-xl font-bold tracking-tight text-espresso mt-1">
+              <h2 className="text-xl font-extrabold tracking-tight text-coffee-950 mt-1">
                 Sign in to TrustLedger
               </h2>
-              <p className="text-xs text-stone-600 mt-1">
+              <p className="text-xs text-coffee-800 mt-1 font-semibold">
                 Enter your credentials to access the investigation workspace
               </p>
             </div>
@@ -169,12 +169,12 @@ export default function LoginPage() {
             {(localError || authError) && (
               <div
                 role="alert"
-                className="mb-5 flex items-start gap-2.5 rounded-xl border border-red-200 bg-red-50 p-3 text-xs text-red-800 animate-fadeIn"
+                className="mb-5 flex items-start gap-2.5 rounded-xl border border-red-300 bg-red-50 p-3 text-xs text-red-950 font-medium animate-fadeIn"
               >
-                <AlertCircle className="h-4 w-4 text-red-600 shrink-0 mt-0.5" />
+                <AlertCircle className="h-4 w-4 text-red-700 shrink-0 mt-0.5" />
                 <div className="flex-1">
-                  <div className="font-semibold text-red-900">Unable to sign in</div>
-                  <div className="mt-0.5 text-red-800">{localError || authError}</div>
+                  <div className="font-bold text-red-950">Unable to sign in</div>
+                  <div className="mt-0.5 text-red-900 font-semibold">{localError || authError}</div>
                 </div>
                 <button
                   type="button"
@@ -182,7 +182,7 @@ export default function LoginPage() {
                     setLocalError('');
                     clearError();
                   }}
-                  className="text-red-600 hover:text-red-900"
+                  className="text-red-700 hover:text-red-950 font-bold"
                   aria-label="Dismiss error message"
                 >
                   <X className="h-3.5 w-3.5" />
@@ -196,7 +196,7 @@ export default function LoginPage() {
               <div>
                 <label
                   htmlFor="work-email"
-                  className="block text-xs font-mono uppercase tracking-wider text-stone-700 mb-1.5 font-medium"
+                  className="block text-xs font-mono uppercase tracking-wider text-coffee-950 mb-1.5 font-extrabold"
                 >
                   Work Email
                 </label>
@@ -209,7 +209,7 @@ export default function LoginPage() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="analyst@lender.com"
-                  className="w-full rounded-xl border border-coffee-200 bg-white px-3.5 py-2.5 text-xs text-espresso placeholder-stone-400 font-mono transition-colors focus:border-coffee-500 focus:ring-1 focus:ring-coffee-500 focus:outline-none"
+                  className="w-full rounded-xl border-2 border-coffee-200 bg-white px-3.5 py-2.5 text-xs text-coffee-950 placeholder-coffee-600 font-mono font-bold transition-colors focus:border-coffee-600 focus:ring-1 focus:ring-coffee-500 focus:outline-none shadow-xs"
                 />
               </div>
 
@@ -217,7 +217,7 @@ export default function LoginPage() {
               <div>
                 <label
                   htmlFor="password"
-                  className="block text-xs font-mono uppercase tracking-wider text-stone-700 mb-1.5 font-medium"
+                  className="block text-xs font-mono uppercase tracking-wider text-coffee-950 mb-1.5 font-extrabold"
                 >
                   Password
                 </label>
@@ -231,13 +231,13 @@ export default function LoginPage() {
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     placeholder="Enter security passphrase"
-                    className="w-full rounded-xl border border-coffee-200 bg-white pl-3.5 pr-10 py-2.5 text-xs text-espresso placeholder-stone-400 font-mono transition-colors focus:border-coffee-500 focus:ring-1 focus:ring-coffee-500 focus:outline-none"
+                    className="w-full rounded-xl border-2 border-coffee-200 bg-white pl-3.5 pr-10 py-2.5 text-xs text-coffee-950 placeholder-coffee-600 font-mono font-bold transition-colors focus:border-coffee-600 focus:ring-1 focus:ring-coffee-500 focus:outline-none shadow-xs"
                   />
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
                     aria-label={showPassword ? 'Hide password' : 'Show password'}
-                    className="absolute right-2.5 top-1/2 -translate-y-1/2 p-1 text-stone-400 hover:text-espresso transition-colors focus:outline-none"
+                    className="absolute right-2.5 top-1/2 -translate-y-1/2 p-1 text-coffee-600 hover:text-coffee-950 transition-colors focus:outline-none"
                   >
                     {showPassword ? (
                       <EyeOff className="h-4 w-4" />
@@ -250,7 +250,7 @@ export default function LoginPage() {
 
               {/* Remember Me & Forgot Password */}
               <div className="flex items-center justify-between pt-1">
-                <label className="flex items-center gap-2 cursor-pointer text-xs text-stone-700 select-none">
+                <label className="flex items-center gap-2 cursor-pointer text-xs text-coffee-900 font-semibold select-none">
                   <input
                     type="checkbox"
                     checked={rememberMe}
@@ -263,7 +263,7 @@ export default function LoginPage() {
                 <button
                   type="button"
                   onClick={() => setForgotPasswordOpen(true)}
-                  className="text-xs font-mono text-coffee-700 hover:text-coffee-900 hover:underline focus:outline-none"
+                  className="text-xs font-mono text-coffee-800 hover:text-coffee-950 hover:underline font-bold focus:outline-none"
                 >
                   Forgot password?
                 </button>
@@ -273,7 +273,7 @@ export default function LoginPage() {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full mt-3 flex items-center justify-center gap-2 rounded-xl bg-coffee-600 hover:bg-coffee-700 px-4 py-2.5 text-xs font-semibold uppercase tracking-wider text-white shadow-sm transition-all focus:outline-none focus:ring-2 focus:ring-coffee-500 disabled:opacity-60 disabled:cursor-not-allowed"
+                className="w-full mt-3 flex items-center justify-center gap-2 rounded-xl bg-coffee-600 hover:bg-coffee-700 px-4 py-3 text-xs font-extrabold uppercase tracking-wider text-white shadow-md transition-all focus:outline-none focus:ring-2 focus:ring-coffee-500 disabled:opacity-60 disabled:cursor-not-allowed"
               >
                 {loading ? (
                   <>
@@ -282,7 +282,7 @@ export default function LoginPage() {
                   </>
                 ) : (
                   <>
-                    <span>Sign in to TrustLedger</span>
+                    <span>Sign in to Lender Portal</span>
                     <ArrowRight className="h-4 w-4" />
                   </>
                 )}
@@ -293,7 +293,7 @@ export default function LoginPage() {
             <div className="mt-3 text-center space-y-2">
               <Link
                 to="/lender/register"
-                className="inline-flex items-center gap-1.5 text-xs font-mono text-coffee-700 hover:text-coffee-900 hover:underline py-1 font-medium"
+                className="inline-flex items-center gap-1.5 text-xs font-mono text-coffee-800 hover:text-coffee-950 hover:underline py-1 font-bold"
               >
                 <Building2 className="h-3.5 w-3.5" />
                 <span>Register new Lending Institution / Organization →</span>
@@ -301,26 +301,26 @@ export default function LoginPage() {
               <div className="pt-2 border-t border-coffee-100">
                 <Link
                   to="/login"
-                  className="text-xs text-stone-600 hover:text-espresso inline-flex items-center gap-1"
+                  className="text-xs text-coffee-800 hover:text-coffee-950 inline-flex items-center gap-1 font-semibold"
                 >
                   <span>Borrower / Loan Applicant?</span>
-                  <span className="text-coffee-700 font-semibold hover:underline">Sign in to Borrower App →</span>
+                  <span className="text-coffee-700 font-extrabold hover:underline">Sign in to Borrower App →</span>
                 </Link>
               </div>
             </div>
 
             {/* Forgot Password Notice */}
             {forgotPasswordOpen && (
-              <div className="mt-4 p-3 rounded-xl border border-coffee-200 bg-coffee-50 text-xs text-coffee-900 flex items-start justify-between gap-2 animate-fadeIn">
+              <div className="mt-4 p-3 rounded-xl border border-coffee-300 bg-coffee-50 text-xs text-coffee-950 flex items-start justify-between gap-2 animate-fadeIn">
                 <div>
-                  <span className="font-semibold block text-espresso">Password Recovery Notice</span>
-                  <span className="text-[11px] text-stone-600 mt-0.5 block">
+                  <span className="font-bold block text-coffee-950">Password Recovery Notice</span>
+                  <span className="text-[11px] text-coffee-900 mt-0.5 block font-medium">
                     Password recovery will be connected to Supabase Auth.
                   </span>
                 </div>
                 <button
                   onClick={() => setForgotPasswordOpen(false)}
-                  className="text-stone-400 hover:text-espresso"
+                  className="text-coffee-700 hover:text-coffee-950 font-bold"
                   aria-label="Close recovery notice"
                 >
                   <X className="h-3.5 w-3.5" />
@@ -334,25 +334,25 @@ export default function LoginPage() {
                 <div className="w-full border-t border-coffee-200" />
               </div>
               <div className="relative flex justify-center text-[10px] uppercase font-mono">
-                <span className="bg-white px-2 text-stone-500 font-medium">
+                <span className="bg-white px-2 text-coffee-800 font-extrabold">
                   Instant Hackathon Access
                 </span>
               </div>
             </div>
 
             {/* Try Demo Action Card */}
-            <div className="rounded-xl border border-coffee-200 bg-stone-50/80 p-4 transition-all hover:border-coffee-300">
+            <div className="rounded-xl border-2 border-coffee-200 bg-coffee-50/70 p-4 transition-all hover:border-coffee-400">
               <div className="flex items-center justify-between mb-2">
                 <div className="flex items-center gap-2">
                   <KeyRound className="h-4 w-4 text-coffee-700" />
-                  <span className="text-xs font-semibold text-espresso">Evaluation Sandbox</span>
+                  <span className="text-xs font-extrabold text-coffee-950">Evaluation Sandbox</span>
                 </div>
-                <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-coffee-100 text-coffee-800 border border-coffee-200 font-semibold">
+                <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-coffee-200 text-coffee-950 border border-coffee-300 font-bold">
                   DEMO MODE
                 </span>
               </div>
               
-              <p className="text-[11px] text-stone-600 leading-relaxed mb-3">
+              <p className="text-xs text-coffee-900 font-medium leading-relaxed mb-3">
                 Explore the TrustLedger fraud investigation dashboard using synthetic demo data.
               </p>
 
@@ -360,7 +360,7 @@ export default function LoginPage() {
                 type="button"
                 onClick={handleTryDemo}
                 disabled={loading}
-                className="w-full flex items-center justify-center gap-2 rounded-xl border border-coffee-200 bg-white hover:bg-coffee-50 px-3.5 py-2 text-xs font-mono font-medium text-coffee-800 transition-all focus:outline-none shadow-xs"
+                className="w-full flex items-center justify-center gap-2 rounded-xl border border-coffee-300 bg-white hover:bg-coffee-100 px-3.5 py-2 text-xs font-mono font-bold text-coffee-950 transition-all focus:outline-none shadow-xs"
               >
                 <Sparkles className="h-3.5 w-3.5 text-coffee-700" />
                 <span>Try Demo</span>
@@ -368,11 +368,11 @@ export default function LoginPage() {
             </div>
 
             {/* Security Message */}
-            <div className="mt-6 pt-4 border-t border-coffee-100 flex items-start gap-2 text-stone-500">
-              <ShieldCheck className="h-4 w-4 text-emerald-600 shrink-0 mt-0.5" />
+            <div className="mt-6 pt-4 border-t border-coffee-100 flex items-start gap-2 text-coffee-800">
+              <ShieldCheck className="h-4 w-4 text-emerald-700 shrink-0 mt-0.5" />
               <div>
-                <div className="text-xs font-semibold text-espresso">Protected workspace</div>
-                <p className="text-[11px] text-stone-500 leading-snug mt-0.5">
+                <div className="text-xs font-extrabold text-coffee-950">Protected workspace</div>
+                <p className="text-[11px] text-coffee-900 font-medium leading-snug mt-0.5">
                   TrustLedger uses secure authentication and controlled access to protect investigation data.
                 </p>
               </div>

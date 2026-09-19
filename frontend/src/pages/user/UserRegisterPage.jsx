@@ -102,7 +102,7 @@ export default function UserRegisterPage() {
   };
 
   return (
-    <div className="min-h-screen w-full bg-surface-base text-coffee-950 flex flex-col justify-between overflow-x-hidden selection:bg-coffee-600 selection:text-white">
+    <div className="min-h-screen w-full bg-[#FAF8F5] text-coffee-950 flex flex-col justify-between overflow-x-hidden selection:bg-coffee-600 selection:text-white">
       
       {/* Main Content Area */}
       <div className="flex-1 flex flex-col lg:flex-row w-full max-w-7xl mx-auto items-stretch p-4 sm:p-6 lg:p-10">
@@ -112,19 +112,19 @@ export default function UserRegisterPage() {
           <div>
             <div className="mb-8">
               <TrustLedgerLogo size="lg" />
-              <div className="text-xs font-semibold text-coffee-700 mt-2 tracking-wide">
+              <div className="text-xs font-bold text-coffee-800 mt-2 tracking-wide">
                 Secure digital lending, verified from the start.
               </div>
             </div>
 
             <div className="max-w-xl">
-              <span className="text-xs font-mono uppercase tracking-wider text-coffee-600 font-bold">
+              <span className="text-xs font-mono uppercase tracking-wider text-coffee-800 font-extrabold">
                 Step 1 of Borrower Onboarding
               </span>
               <h1 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight text-coffee-950 mt-1 leading-tight">
                 Create your TrustLedger account
               </h1>
-              <p className="mt-4 text-xs sm:text-sm text-coffee-700 leading-relaxed">
+              <p className="mt-4 text-sm text-coffee-900 leading-relaxed font-semibold">
                 Join India&apos;s most secure fraud-protected digital lending platform. Complete a one-time profile setup and unlock seamless loan applications.
               </p>
             </div>
@@ -135,32 +135,32 @@ export default function UserRegisterPage() {
             </div>
 
             {/* What to expect */}
-            <div className="mt-8 space-y-3 font-sans text-xs text-coffee-800">
-              <span className="text-[11px] font-mono uppercase tracking-wider text-coffee-600 font-bold block mb-2">
+            <div className="mt-8 space-y-3 font-sans text-xs text-coffee-950">
+              <span className="text-xs font-mono uppercase tracking-wider text-coffee-800 font-extrabold block mb-2">
                 What happens next:
               </span>
-              <div className="flex items-center gap-3 p-3.5 rounded-2xl border border-coffee-200 bg-white shadow-sm">
-                <span className="h-6 w-6 rounded-full bg-coffee-100 border border-coffee-200 text-coffee-800 flex items-center justify-center font-mono text-[11px] font-bold shrink-0">
+              <div className="flex items-center gap-3 p-3.5 rounded-2xl border border-coffee-300 bg-white shadow-sm font-bold">
+                <span className="h-6 w-6 rounded-full bg-coffee-100 border border-coffee-300 text-coffee-950 flex items-center justify-center font-mono text-[11px] font-extrabold shrink-0">
                   1
                 </span>
-                <span className="font-medium">Enter your personal and address details</span>
+                <span>Enter your personal and address details</span>
               </div>
-              <div className="flex items-center gap-3 p-3.5 rounded-2xl border border-coffee-200 bg-white shadow-sm">
-                <span className="h-6 w-6 rounded-full bg-coffee-100 border border-coffee-200 text-coffee-800 flex items-center justify-center font-mono text-[11px] font-bold shrink-0">
+              <div className="flex items-center gap-3 p-3.5 rounded-2xl border border-coffee-300 bg-white shadow-sm font-bold">
+                <span className="h-6 w-6 rounded-full bg-coffee-100 border border-coffee-300 text-coffee-950 flex items-center justify-center font-mono text-[11px] font-extrabold shrink-0">
                   2
                 </span>
-                <span className="font-medium">Upload your Aadhaar or KYC document for optical inspection</span>
+                <span>Upload your Aadhaar or KYC document for optical inspection</span>
               </div>
-              <div className="flex items-center gap-3 p-3.5 rounded-2xl border border-coffee-200 bg-white shadow-sm">
-                <span className="h-6 w-6 rounded-full bg-coffee-100 border border-coffee-200 text-coffee-800 flex items-center justify-center font-mono text-[11px] font-bold shrink-0">
+              <div className="flex items-center gap-3 p-3.5 rounded-2xl border border-coffee-300 bg-white shadow-sm font-bold">
+                <span className="h-6 w-6 rounded-full bg-coffee-100 border border-coffee-300 text-coffee-950 flex items-center justify-center font-mono text-[11px] font-extrabold shrink-0">
                   3
                 </span>
-                <span className="font-medium">Capture a live profile photograph using your camera</span>
+                <span>Capture a live profile photograph using your camera</span>
               </div>
             </div>
           </div>
 
-          <div className="pt-6 mt-6 border-t border-coffee-200 text-[11px] text-coffee-600 flex items-center gap-2">
+          <div className="pt-6 mt-6 border-t border-coffee-200 text-xs text-coffee-800 font-bold flex items-center gap-2">
             <ShieldCheck className="h-4 w-4 text-emerald-700" />
             <span>Zero secret exposure • Automatic Aadhaar masking</span>
           </div>
@@ -168,16 +168,16 @@ export default function UserRegisterPage() {
 
         {/* Right Panel: Registration Form */}
         <div className="lg:w-[52%] p-4 sm:p-8 lg:p-10 flex flex-col justify-center items-center">
-          <div className="w-full max-w-lg rounded-2xl border border-coffee-200 bg-white p-6 sm:p-8 shadow-card relative">
+          <div className="w-full max-w-lg rounded-2xl border-2 border-coffee-200 bg-white p-6 sm:p-8 shadow-xl relative">
             
             <div className="mb-6">
-              <span className="text-xs font-mono uppercase tracking-wider text-coffee-600 font-bold">
+              <span className="text-xs font-mono uppercase tracking-wider text-coffee-800 font-extrabold">
                 New Applicant Registration
               </span>
-              <h2 className="text-xl font-bold tracking-tight text-coffee-950 mt-1">
+              <h2 className="text-xl font-extrabold tracking-tight text-coffee-950 mt-1">
                 Create Your Applicant Account
               </h2>
-              <p className="text-xs text-coffee-600 mt-1">
+              <p className="text-xs text-coffee-800 mt-1 font-semibold">
                 Register as an individual borrower to apply for digital loans with verified identity
               </p>
             </div>
@@ -187,7 +187,7 @@ export default function UserRegisterPage() {
               type="button"
               onClick={handleGoogleRegister}
               disabled={loading}
-              className="w-full flex items-center justify-center gap-3 rounded-xl border border-coffee-200 bg-white hover:bg-coffee-50 px-4 py-2.5 text-xs font-semibold text-coffee-950 transition-all shadow-sm focus:outline-none focus:ring-1 focus:ring-coffee-500 cursor-pointer"
+              className="w-full flex items-center justify-center gap-3 rounded-xl border-2 border-coffee-200 bg-white hover:bg-coffee-50 px-4 py-2.5 text-xs font-bold text-coffee-950 transition-all shadow-sm focus:outline-none focus:ring-1 focus:ring-coffee-500 cursor-pointer"
             >
               <svg className="h-4 w-4" viewBox="0 0 24 24">
                 <path
@@ -213,10 +213,10 @@ export default function UserRegisterPage() {
             {/* Divider */}
             <div className="relative my-4">
               <div className="absolute inset-0 flex items-center">
-                <div className="w-full border-t border-coffee-100" />
+                <div className="w-full border-t border-coffee-200" />
               </div>
               <div className="relative flex justify-center text-[10px] uppercase font-mono">
-                <span className="bg-white px-2 text-coffee-500 font-semibold">
+                <span className="bg-white px-2 text-coffee-800 font-extrabold">
                   Or register with legal details
                 </span>
               </div>
@@ -226,19 +226,19 @@ export default function UserRegisterPage() {
             {(localError || authError) && (
               <div
                 role="alert"
-                className="mb-5 flex items-start gap-2.5 rounded-xl border border-rose-200 bg-rose-50 p-3.5 text-xs text-rose-900 animate-fadeIn"
+                className="mb-5 flex items-start gap-2.5 rounded-xl border border-rose-300 bg-rose-50 p-3.5 text-xs text-rose-950 font-medium animate-fadeIn"
               >
-                <AlertCircle className="h-4 w-4 text-rose-600 shrink-0 mt-0.5" />
+                <AlertCircle className="h-4 w-4 text-rose-700 shrink-0 mt-0.5" />
                 <div className="flex-1">
-                  <div className="font-bold text-rose-950">Registration failed</div>
-                  <div className="mt-0.5 text-rose-800">{localError || authError}</div>
+                  <div className="font-extrabold text-rose-950">Registration failed</div>
+                  <div className="mt-0.5 text-rose-900 font-semibold">{localError || authError}</div>
                 </div>
               </div>
             )}
 
             <form onSubmit={handleRegister} className="space-y-3.5" noValidate>
               <div>
-                <label className="block text-xs font-bold text-coffee-950 mb-1">
+                <label className="block text-xs font-extrabold text-coffee-950 mb-1">
                   Full Legal Name (as on Aadhaar / PAN) <span className="text-rose-600">*</span>
                 </label>
                 <input
@@ -247,13 +247,13 @@ export default function UserRegisterPage() {
                   value={formData.fullName}
                   onChange={handleChange}
                   placeholder="e.g. Arjun Kumar"
-                  className="w-full rounded-xl border border-coffee-200 bg-coffee-50/40 px-3.5 py-2 text-xs text-coffee-950 placeholder-coffee-400 focus:border-coffee-600 focus:outline-none focus:ring-1 focus:ring-coffee-500"
+                  className="w-full rounded-xl border-2 border-coffee-200 bg-white px-3.5 py-2.5 text-xs text-coffee-950 placeholder-coffee-600 font-bold focus:border-coffee-600 focus:outline-none focus:ring-1 focus:ring-coffee-500 shadow-xs"
                 />
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs font-bold text-coffee-950 mb-1">
+                  <label className="block text-xs font-extrabold text-coffee-950 mb-1">
                     Email Address <span className="text-rose-600">*</span>
                   </label>
                   <input
@@ -262,16 +262,16 @@ export default function UserRegisterPage() {
                     value={formData.email}
                     onChange={handleChange}
                     placeholder="name@example.com"
-                    className="w-full rounded-xl border border-coffee-200 bg-coffee-50/40 px-3.5 py-2 text-xs text-coffee-950 placeholder-coffee-400 focus:border-coffee-600 focus:outline-none focus:ring-1 focus:ring-coffee-500"
+                    className="w-full rounded-xl border-2 border-coffee-200 bg-white px-3.5 py-2.5 text-xs text-coffee-950 placeholder-coffee-600 font-bold focus:border-coffee-600 focus:outline-none focus:ring-1 focus:ring-coffee-500 shadow-xs"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-xs font-bold text-coffee-950 mb-1">
+                  <label className="block text-xs font-extrabold text-coffee-950 mb-1">
                     Mobile Number <span className="text-rose-600">*</span>
                   </label>
                   <div className="relative">
-                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-xs font-mono text-coffee-600">
+                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-xs font-mono font-bold text-coffee-800">
                       +91
                     </span>
                     <input
@@ -281,7 +281,7 @@ export default function UserRegisterPage() {
                       value={formData.mobile}
                       onChange={handleChange}
                       placeholder="98765 43210"
-                      className="w-full rounded-xl border border-coffee-200 bg-coffee-50/40 pl-12 pr-3.5 py-2 text-xs text-coffee-950 placeholder-coffee-400 font-mono focus:border-coffee-600 focus:outline-none focus:ring-1 focus:ring-coffee-500"
+                      className="w-full rounded-xl border-2 border-coffee-200 bg-white pl-12 pr-3.5 py-2.5 text-xs text-coffee-950 placeholder-coffee-600 font-mono font-bold focus:border-coffee-600 focus:outline-none focus:ring-1 focus:ring-coffee-500 shadow-xs"
                     />
                   </div>
                 </div>
@@ -289,7 +289,7 @@ export default function UserRegisterPage() {
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs font-bold text-coffee-950 mb-1">
+                  <label className="block text-xs font-extrabold text-coffee-950 mb-1">
                     Password <span className="text-rose-600">*</span>
                   </label>
                   <div className="relative">
@@ -299,20 +299,20 @@ export default function UserRegisterPage() {
                       value={formData.password}
                       onChange={handleChange}
                       placeholder="Minimum 6 characters"
-                      className="w-full rounded-xl border border-coffee-200 bg-coffee-50/40 pl-3.5 pr-9 py-2 text-xs text-coffee-950 placeholder-coffee-400 focus:border-coffee-600 focus:outline-none focus:ring-1 focus:ring-coffee-500"
+                      className="w-full rounded-xl border-2 border-coffee-200 bg-white pl-3.5 pr-9 py-2.5 text-xs text-coffee-950 placeholder-coffee-600 font-bold focus:border-coffee-600 focus:outline-none focus:ring-1 focus:ring-coffee-500 shadow-xs"
                     />
                     <button
                       type="button"
                       onClick={() => setShowPassword(!showPassword)}
-                      className="absolute right-2.5 top-1/2 -translate-y-1/2 text-coffee-500 hover:text-coffee-900"
+                      className="absolute right-2.5 top-1/2 -translate-y-1/2 text-coffee-700 hover:text-coffee-950"
                     >
-                      {showPassword ? <EyeOff className="h-3.5 w-3.5" /> : <Eye className="h-3.5 w-3.5" />}
+                      {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                     </button>
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-xs font-bold text-coffee-950 mb-1">
+                  <label className="block text-xs font-extrabold text-coffee-950 mb-1">
                     Confirm Password <span className="text-rose-600">*</span>
                   </label>
                   <input
@@ -321,14 +321,14 @@ export default function UserRegisterPage() {
                     value={formData.confirmPassword}
                     onChange={handleChange}
                     placeholder="Re-enter password"
-                    className="w-full rounded-xl border border-coffee-200 bg-coffee-50/40 px-3.5 py-2 text-xs text-coffee-950 placeholder-coffee-400 focus:border-coffee-600 focus:outline-none focus:ring-1 focus:ring-coffee-500"
+                    className="w-full rounded-xl border-2 border-coffee-200 bg-white px-3.5 py-2.5 text-xs text-coffee-950 placeholder-coffee-600 font-bold focus:border-coffee-600 focus:outline-none focus:ring-1 focus:ring-coffee-500 shadow-xs"
                   />
                 </div>
               </div>
 
               {/* Single Person Rule Checkbox Acceptance */}
               <div className="pt-2">
-                <div className="p-3 rounded-xl border border-coffee-200 bg-coffee-50 text-[11px] text-coffee-800 flex items-start gap-2">
+                <div className="p-3.5 rounded-xl border-2 border-coffee-300 bg-coffee-50 text-xs text-coffee-950 flex items-start gap-2.5">
                   <input
                     type="checkbox"
                     id="ruleAccepted"
@@ -336,7 +336,7 @@ export default function UserRegisterPage() {
                     required
                     className="mt-0.5 rounded border-coffee-300 text-coffee-600 focus:ring-coffee-500"
                   />
-                  <label htmlFor="ruleAccepted" className="leading-relaxed cursor-pointer font-medium">
+                  <label htmlFor="ruleAccepted" className="leading-relaxed cursor-pointer font-bold">
                     I confirm this account is created strictly for myself. I will upload my own authentic identity documents and live camera photo.
                   </label>
                 </div>
@@ -345,7 +345,7 @@ export default function UserRegisterPage() {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full mt-2 flex items-center justify-center gap-2 rounded-xl bg-coffee-600 hover:bg-coffee-700 px-4 py-2.5 text-xs font-bold uppercase tracking-wider text-white shadow-sm transition-all disabled:opacity-60 cursor-pointer"
+                className="w-full mt-2 flex items-center justify-center gap-2 rounded-xl bg-coffee-600 hover:bg-coffee-700 px-4 py-3 text-xs font-extrabold uppercase tracking-wider text-white shadow-md transition-all disabled:opacity-60 cursor-pointer"
               >
                 {loading ? (
                   <>
@@ -362,9 +362,9 @@ export default function UserRegisterPage() {
             </form>
 
             <div className="mt-5 text-center border-t border-coffee-100 pt-4">
-              <span className="text-xs text-coffee-600">
+              <span className="text-xs text-coffee-900 font-semibold">
                 Already registered?{' '}
-                <Link to="/login" className="text-coffee-800 hover:text-coffee-950 font-bold hover:underline">
+                <Link to="/login" className="text-coffee-700 hover:text-coffee-950 font-extrabold underline">
                   Sign in here →
                 </Link>
               </span>
@@ -374,7 +374,7 @@ export default function UserRegisterPage() {
 
       </div>
 
-      <footer className="w-full border-t border-coffee-200 py-4 px-6 text-center text-[11px] font-medium text-coffee-600 bg-white">
+      <footer className="w-full border-t border-coffee-200 py-4 px-6 text-center text-xs font-bold text-coffee-800 bg-white">
         TrustLedger © 2026 • One Person = One Verified User Account
       </footer>
     </div>
