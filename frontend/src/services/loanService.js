@@ -276,17 +276,22 @@ class LoanFrontendService {
         const doc = await res.json();
         const app = await this.getApplicationById(applicationId, userId);
         if (app) {
-          app.documents = app.documents.filter((d) => d.document_type !== documentType);
+          app.documents = (app.documents || []).filter((d) => d.document_type !== documentType);
           app.documents.push(doc);
           this.saveLocalApp(app, userId);
         }
         return doc;
+      } else {
+        const err = await res.json().catch(() => ({}));
+        throw new Error(err.detail || 'Document validation failed. Please check file format and relevance.');
       }
-    } catch {
-      // Fallback
+    } catch (err) {
+      if (err.message && !err.message.includes('Failed to fetch') && !err.message.includes('NetworkError')) {
+        throw err;
+      }
+      // Fallback for offline mode only
     }
-
-    // Client-side fallback
+    // Client-side fallback for offline mode
     const ext = file.name.split('.').pop().toUpperCase();
     const docRecord = {
       document_id: `doc_${Math.random().toString(36).substring(2, 8)}`,
@@ -311,6 +316,13 @@ class LoanFrontendService {
     }
 
     return docRecord;
+  }
+
+  /**
+   * Alias for uploadDocument
+   */
+  async uploadApplicationDocument(applicationId, documentType, file, userId) {
+    return this.uploadDocument(applicationId, documentType, file, userId);
   }
 
   /**

@@ -21,6 +21,20 @@ export default {
           900: '#2E1E13',
           950: '#1F1610', // Dark Espresso Text
         },
+        // Warm Beige & Neutral Tone Scale
+        warm: {
+          50: '#FAF8F5',
+          100: '#F5EFEB',
+          200: '#E8DFD1',
+          300: '#D8CAB7',
+          400: '#B8A48F',
+          500: '#98806B',
+          600: '#7B624E',
+          700: '#5F4736',
+          800: '#433023',
+          900: '#2A1D15',
+          950: '#1F1610',
+        },
         // Warm White & Crisp White Surfaces
         surface: {
           base: '#FAF8F5',       // Warm White page background

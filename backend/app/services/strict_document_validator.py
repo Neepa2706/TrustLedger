@@ -419,17 +419,17 @@ class StrictDocumentValidator:
         if not category:
             return {"valid": True, "confidence": "NEUTRAL", "notes": "No specific category requested."}
 
-        category_key = category.upper().strip()
+        category_key = category.upper().strip().replace(" ", "_").replace("-", "_")
         # Normalization of common aliases
-        if category_key in {"KYC", "IDENTITY", "IDENTITY_PROOF", "AADHAAR", "PAN", "PASSPORT"}:
+        if category_key in {"KYC", "IDENTITY", "IDENTITY_PROOF", "KYC_IDENTITY", "AADHAAR", "PAN", "PASSPORT"}:
             category_key = "KYC_IDENTITY"
         elif category_key in {"BANK", "STATEMENT", "BANK_STATEMENT", "FINANCIAL_STATEMENT"}:
             category_key = "BANK_STATEMENT"
-        elif category_key in {"DRONE", "DRONE_DOCUMENT", "DGCA", "UIN", "UAV"}:
+        elif category_key in {"DRONE", "DRONE_DOCUMENT", "DGCA", "UIN", "UAV", "DRONE_REGISTRATION", "DRONE_INSURANCE"}:
             category_key = "DRONE_DOCUMENT"
-        elif category_key in {"INCOME", "SALARY", "PAYSLIP"}:
+        elif category_key in {"INCOME", "SALARY", "PAYSLIP", "INCOME_PROOF"}:
             category_key = "INCOME_PROOF"
-        elif category_key in {"ADDRESS", "UTILITY"}:
+        elif category_key in {"ADDRESS", "UTILITY", "ADDRESS_PROOF"}:
             category_key = "ADDRESS_PROOF"
 
         tokens_cfg = CATEGORY_TOKENS.get(category_key)

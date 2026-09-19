@@ -209,21 +209,28 @@ export default function LoanApplicationPage() {
 
   // Step 4: Documents Upload -> Step 5
   const handleDocumentUpload = async (docType, file) => {
-    if (!application?.application_id || !user?.id) return;
+    if (!application?.application_id || !user?.id) {
+      const err = new Error('Application draft not ready. Please refresh the page.');
+      setFormError(err.message);
+      throw err;
+    }
     setLoading(true);
     setFormError('');
     try {
-      const res = await loanService.uploadApplicationDocument(
+      await loanService.uploadDocument(
         application.application_id,
         docType,
         file,
         user.id
       );
-      if (res?.application) {
-        setApplication(res.application);
+      const refreshed = await loanService.getApplicationById(application.application_id, user.id);
+      if (refreshed) {
+        setApplication(refreshed);
       }
     } catch (err) {
-      setFormError('Document upload failed. Please verify format (PDF/JPG/PNG) and size (<10MB).');
+      const msg = err.message || 'Document upload failed. Please verify format (PDF/JPG/PNG) and size (<10MB).';
+      setFormError(msg);
+      throw err;
     } finally {
       setLoading(false);
     }
@@ -703,6 +710,8 @@ export default function LoanApplicationPage() {
             uploadedDocuments={application?.documents || []}
             onUploadDocument={handleDocumentUpload}
             isProcessing={loading}
+            errorMessage={formError}
+            onClearError={() => setFormError('')}
           />
 
           <div className="flex items-center justify-between pt-4 border-t border-coffee-100">

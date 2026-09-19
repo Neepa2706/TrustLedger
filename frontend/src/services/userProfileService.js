@@ -139,9 +139,15 @@ class UserProfileService {
         profile.completion_percentage = Math.min(100, (profile.completion_percentage || 50) + 20);
         localStorage.setItem(`${PROFILE_STORAGE_KEY_PREFIX}${userId}`, JSON.stringify(profile));
         return data;
+      } else {
+        const err = await res.json().catch(() => ({}));
+        throw new Error(err.detail || 'Document validation failed. Please upload an authentic identity document.');
       }
-    } catch {
-      // Fallback
+    } catch (err) {
+      if (err.message && !err.message.includes('Failed to fetch') && !err.message.includes('NetworkError')) {
+        throw err;
+      }
+      // Fallback for offline mode only
     }
 
     // Client-side simulated fallback

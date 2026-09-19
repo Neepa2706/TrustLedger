@@ -29,7 +29,9 @@ export default function LoanDocumentUploader({
   uploadedDocuments = [],
   onUploadDocument,
   onRemoveDocument,
-  isProcessing = false
+  isProcessing = false,
+  errorMessage = '',
+  onClearError
 }) {
   const [activeUploadType, setActiveUploadType] = useState(null);
   const [previewDoc, setPreviewDoc] = useState(null);
@@ -39,13 +41,14 @@ export default function LoanDocumentUploader({
   const handleTriggerUpload = (docType) => {
     setActiveUploadType(docType);
     setUploadError('');
+    if (onClearError) onClearError();
     if (fileInputRef.current) {
       fileInputRef.current.value = '';
       fileInputRef.current.click();
     }
   };
 
-  const handleFileChange = (e) => {
+  const handleFileChange = async (e) => {
     const file = e.target.files?.[0];
     if (!file || !activeUploadType) return;
 
@@ -74,8 +77,15 @@ export default function LoanDocumentUploader({
       return;
     }
 
-    onUploadDocument(activeUploadType, file);
-    setActiveUploadType(null);
+    try {
+      if (onUploadDocument) {
+        await onUploadDocument(activeUploadType, file);
+      }
+    } catch (err) {
+      setUploadError(err.message || 'Upload rejected. Document did not pass validation standards.');
+    } finally {
+      setActiveUploadType(null);
+    }
   };
 
   // Map uploaded documents by type
@@ -125,14 +135,21 @@ export default function LoanDocumentUploader({
       </div>
 
       {/* Global upload error banner */}
-      {uploadError && (
+      {(uploadError || errorMessage) && (
         <div className="p-3.5 rounded-xl border border-rose-200 bg-rose-50 text-xs text-rose-900 flex items-start gap-2.5 animate-fadeIn">
           <AlertCircle className="h-4 w-4 text-rose-600 shrink-0 mt-0.5" />
           <div className="flex-1">
             <span className="font-bold block text-rose-950">File rejected</span>
-            <p className="mt-0.5 text-rose-800">{uploadError}</p>
+            <p className="mt-0.5 text-rose-800">{uploadError || errorMessage}</p>
           </div>
-          <button onClick={() => setUploadError('')} className="text-rose-600 hover:text-rose-900 p-0.5">
+          <button
+            type="button"
+            onClick={() => {
+              setUploadError('');
+              if (onClearError) onClearError();
+            }}
+            className="text-rose-600 hover:text-rose-900 p-0.5 cursor-pointer"
+          >
             <X className="h-4 w-4" />
           </button>
         </div>
