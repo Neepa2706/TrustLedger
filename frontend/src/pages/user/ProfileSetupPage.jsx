@@ -138,11 +138,7 @@ export default function ProfileSetupPage() {
       return;
     }
     if (!personalData.address.trim()) {
-      setError('Please enter your residential address.');
-      return;
-    }
-    if (!personalData.pincode || personalData.pincode.length < 6) {
-      setError('Please enter a valid 6-digit PIN code.');
+      setError('Please enter your current residential address.');
       return;
     }
 
@@ -153,6 +149,7 @@ export default function ProfileSetupPage() {
         date_of_birth: personalData.dob,
         gender: personalData.gender,
         mobile: personalData.mobile,
+        email: personalData.email,
         address: personalData.address.trim(),
         city: personalData.city.trim(),
         state: personalData.state.trim(),
@@ -161,61 +158,73 @@ export default function ProfileSetupPage() {
         employment_type: personalData.employmentType,
         monthly_income: personalData.monthlyIncome
       });
+
+      // Mirror full name into identity step default
+      setIdentityData((prev) => ({
+        ...prev,
+        nameOnAadhaar: prev.nameOnAadhaar || personalData.fullName.trim()
+      }));
+
       setCurrentStep(2);
     } catch (err) {
-      setError(err.message || 'Unable to save personal details. Please try again.');
+      setError(err.message || 'Failed to update personal details.');
     } finally {
       setLoading(false);
     }
   };
 
   // -----------------------------------------------------------------
-  // STEP 2 HANDLER (Aadhaar & PAN Masking)
+  // STEP 2 HANDLER
   // -----------------------------------------------------------------
   const handleStep2Next = async (e) => {
     e.preventDefault();
     setError('');
 
-    const cleanAadhaar = identityData.aadhaarNumber.replace(/\D/g, '');
-    if (cleanAadhaar.length !== 12) {
+    const rawAadhaar = identityData.aadhaarNumber.replace(/\s+/g, '');
+    if (rawAadhaar.length !== 12 || !/^\d+$/.test(rawAadhaar)) {
       setError('Please enter a valid 12-digit Aadhaar number.');
       return;
     }
 
-    const cleanPan = identityData.panNumber.toUpperCase().trim();
-    const panRegex = /^[A-Z]{5}[0-9]{4}[A-Z]{1}$/;
-    if (!panRegex.test(cleanPan)) {
-      setError('Please enter a valid 10-character PAN number (e.g. ABCDE1234F).');
+    const panClean = identityData.panNumber.trim().toUpperCase();
+    if (panClean.length !== 10) {
+      setError('Please enter a valid 10-character PAN number.');
       return;
     }
 
     setLoading(true);
     try {
       await updateProfile({
-        aadhaar_number: cleanAadhaar,
-        pan_number: cleanPan,
-        aadhaar_name: identityData.nameOnAadhaar.trim() || personalData.fullName
+        aadhaar_masked: `XXXX XXXX ${rawAadhaar.slice(-4)}`,
+        pan_masked: `${panClean.slice(0, 2)}•••••${panClean.slice(-1)}`,
+        name_on_aadhaar: identityData.nameOnAadhaar.trim()
       });
+
       setCurrentStep(3);
     } catch (err) {
-      setError(err.message || 'Unable to record identity details.');
+      setError(err.message || 'Failed to save identity numbers.');
     } finally {
       setLoading(false);
     }
   };
 
   // -----------------------------------------------------------------
-  // STEP 3 HANDLER (Document Upload)
+  // STEP 3 HANDLER
   // -----------------------------------------------------------------
-  const handleDocumentSelected = (file, previewUrl) => {
+  const handleDocumentSelected = async (file) => {
     setDocFile(file);
-    setUploadedDoc({
-      filename: file.name,
-      fileType: file.name.split('.').pop().toUpperCase(),
-      size: file.size,
-      previewUrl
-    });
     setError('');
+    setLoading(true);
+    try {
+      const res = await uploadDocument(file, 'AADHAAR_FRONT_BACK');
+      if (res) {
+        setUploadedDoc(res);
+      }
+    } catch (err) {
+      setError(err.message || 'Document upload failed. Ensure the file is a clear PDF or JPG/PNG image.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleRemoveDocument = () => {
@@ -223,80 +232,56 @@ export default function ProfileSetupPage() {
     setDocFile(null);
   };
 
-  const handleStep3Next = async () => {
-    if (!uploadedDoc && !profile?.has_document) {
-      setError('Please upload your Aadhaar document to proceed.');
+  const handleStep3Next = () => {
+    if (!uploadedDoc && !profile?.has_documents) {
+      setError('Please upload your Aadhaar document before proceeding.');
       return;
     }
-
-    setLoading(true);
-    try {
-      if (docFile) {
-        await uploadDocument(docFile);
-      }
-      setCurrentStep(4);
-      // Automatically run analysis check for step 4
-      runVerificationCheck();
-    } catch (err) {
-      setError(err.message || 'Document could not be uploaded. Please try again.');
-    } finally {
-      setLoading(false);
-    }
+    setError('');
+    setCurrentStep(4);
   };
 
   // -----------------------------------------------------------------
-  // STEP 4 HANDLER (Verification & Matching)
+  // STEP 4 HANDLER
   // -----------------------------------------------------------------
-  const runVerificationCheck = async () => {
+  const handleStep4Next = async () => {
     setLoading(true);
     setError('');
     try {
-      const res = await verifyIdentity(isDemo);
+      const res = await verifyIdentity();
       setVerificationResult(res);
+      setCurrentStep(5);
     } catch (err) {
-      setError('Verification analysis in progress. You can proceed to the camera step.');
+      setError(err.message || 'Verification could not be processed.');
     } finally {
       setLoading(false);
     }
   };
 
-  const handleStep4Next = () => {
-    setCurrentStep(5);
-  };
-
   // -----------------------------------------------------------------
-  // STEP 5 HANDLER (Camera Capture Confirmation)
+  // STEP 5 HANDLER
   // -----------------------------------------------------------------
-  const handlePhotoCaptured = async (blob, dataUrl) => {
-    setPhotoBlob(blob);
+  const handlePhotoCaptured = async (dataUrl, blob, quality) => {
     setCapturedPhotoUrl(dataUrl);
-    setLoading(true);
+    setPhotoBlob(blob);
     setError('');
+    setLoading(true);
     try {
       await uploadPhoto(blob);
     } catch (err) {
-      setError('Unable to store photograph. Please try capturing again.');
+      setError(err.message || 'Failed to save photograph. Please retry.');
     } finally {
       setLoading(false);
     }
   };
 
-  const handleStep5Next = async () => {
+  const handleStep5Next = () => {
     if (!capturedPhotoUrl && !profile?.has_photo) {
-      setError('Please capture your live verification photograph before proceeding.');
+      setError('Please capture your live photograph using your device camera before proceeding.');
       return;
     }
-
-    setLoading(true);
-    try {
-      const res = await verifyIdentity(isDemo);
-      setVerificationResult(res);
-      setCurrentStep(6);
-    } catch (err) {
-      setError(err.message || 'Final verification step pending.');
-    } finally {
-      setLoading(false);
-    }
+    setError('');
+    setCurrentStep(6);
   };
 
   // Helper: Mask Aadhaar for UI
@@ -306,19 +291,19 @@ export default function ProfileSetupPage() {
   };
 
   return (
-    <div className="min-h-screen bg-midnight-950 text-slate-100 flex flex-col justify-between selection:bg-cyan-500 selection:text-midnight-950">
+    <div className="min-h-screen bg-surface-base text-espresso flex flex-col justify-between selection:bg-coffee-200 selection:text-coffee-950 animate-fadeIn">
       
       {/* Top Header */}
-      <header className="border-b border-surface-border/80 bg-midnight-950/90 backdrop-blur-md py-3 px-4 sm:px-6">
+      <header className="border-b border-coffee-200 bg-white/90 backdrop-blur-md py-3 px-4 sm:px-6">
         <div className="max-w-5xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-3">
             <TrustLedgerLogo size="default" />
-            <span className="hidden sm:inline-block text-xs font-mono text-cyan-400 border-l border-surface-border pl-3">
+            <span className="hidden sm:inline-block text-xs font-mono text-coffee-700 border-l border-coffee-200 pl-3">
               Profile Setup & Identity Verification
             </span>
           </div>
           {isDemo && (
-            <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-cyan-950 text-cyan-300 border border-cyan-500/30">
+            <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-coffee-50 text-coffee-800 border border-coffee-200 font-medium">
               DEMO MODE
             </span>
           )}
@@ -332,35 +317,34 @@ export default function ProfileSetupPage() {
         <div className="mb-8">
           <div className="flex items-center justify-between relative">
             {/* Background connecting bar */}
-            <div className="absolute top-1/2 left-0 right-0 -translate-y-1/2 h-[2px] bg-surface-border z-0" />
+            <div className="absolute top-1/2 left-0 right-0 -translate-y-1/2 h-[2px] bg-coffee-200 z-0" />
             
             {/* Active connecting bar */}
             <div
-              className="absolute top-1/2 left-0 -translate-y-1/2 h-[2px] bg-gradient-to-r from-cyan-400 to-blue-500 z-0 transition-all duration-300"
+              className="absolute top-1/2 left-0 -translate-y-1/2 h-[2px] bg-coffee-600 z-0 transition-all duration-300"
               style={{ width: `${((currentStep - 1) / (steps.length - 1)) * 100}%` }}
             />
 
             {steps.map((s) => {
               const isDone = currentStep > s.num;
               const isCurrent = currentStep === s.num;
-              const Icon = s.icon;
 
               return (
                 <div key={s.num} className="relative z-10 flex flex-col items-center">
                   <div
                     className={`h-9 w-9 rounded-full flex items-center justify-center font-mono text-xs font-bold transition-all ${
                       isDone
-                        ? 'bg-emerald-500 text-midnight-950 shadow-[0_0_12px_rgba(16,185,129,0.4)]'
+                        ? 'bg-emerald-600 text-white shadow-xs'
                         : isCurrent
-                        ? 'bg-cyan-400 text-midnight-950 ring-4 ring-cyan-500/20 shadow-[0_0_15px_rgba(0,240,255,0.4)]'
-                        : 'bg-midnight-900 border border-surface-border text-slate-500'
+                        ? 'bg-coffee-700 text-white ring-4 ring-coffee-100 shadow-xs'
+                        : 'bg-stone-50 border border-coffee-200 text-stone-400'
                     }`}
                   >
                     {isDone ? <CheckCircle2 className="h-4 w-4" /> : s.num}
                   </div>
                   <span
                     className={`text-[10px] font-medium mt-1.5 hidden md:block text-center whitespace-nowrap ${
-                      isCurrent ? 'text-cyan-300 font-semibold' : isDone ? 'text-slate-300' : 'text-slate-500'
+                      isCurrent ? 'text-coffee-900 font-semibold' : isDone ? 'text-stone-700' : 'text-stone-400'
                     }`}
                   >
                     {s.label}
@@ -371,7 +355,7 @@ export default function ProfileSetupPage() {
           </div>
 
           <div className="md:hidden text-center mt-3">
-            <span className="text-xs font-semibold text-cyan-300">
+            <span className="text-xs font-semibold text-coffee-800">
               STEP {currentStep} OF {steps.length}: {steps[currentStep - 1].label}
             </span>
           </div>
@@ -379,8 +363,8 @@ export default function ProfileSetupPage() {
 
         {/* Global Error Notice */}
         {error && (
-          <div className="mb-6 p-3.5 rounded-xl border border-red-500/40 bg-red-950/40 text-xs text-red-200 flex items-start gap-2.5 animate-fadeIn">
-            <AlertCircle className="h-4 w-4 text-red-400 shrink-0 mt-0.5" />
+          <div className="mb-6 p-3.5 rounded-xl border border-red-200 bg-red-50 text-xs text-red-800 flex items-start gap-2.5 animate-fadeIn">
+            <AlertCircle className="h-4 w-4 text-red-600 shrink-0 mt-0.5" />
             <div className="flex-1 font-medium">{error}</div>
           </div>
         )}
@@ -389,15 +373,15 @@ export default function ProfileSetupPage() {
             STEP 1: PERSONAL DETAILS
             ===================================================================== */}
         {currentStep === 1 && (
-          <div className="rounded-2xl border border-surface-border bg-surface-card p-6 sm:p-8 shadow-xl">
+          <div className="rounded-2xl border border-coffee-200 bg-white p-6 sm:p-8 shadow-card">
             <div className="mb-6">
-              <span className="text-xs font-mono uppercase tracking-wider text-cyan-400">
+              <span className="text-xs font-mono uppercase tracking-wider text-coffee-600 font-semibold">
                 Step 1 of 6
               </span>
-              <h2 className="text-xl font-bold text-white mt-1">
+              <h2 className="text-xl font-bold text-espresso mt-1">
                 Personal & Residential Details
               </h2>
-              <p className="text-xs text-slate-400 mt-1">
+              <p className="text-xs text-stone-600 mt-1">
                 Enter your real legal details required for the digital lending profile
               </p>
             </div>
@@ -405,7 +389,7 @@ export default function ProfileSetupPage() {
             <form onSubmit={handleStep1Next} className="space-y-4">
               {/* Full Name */}
               <div>
-                <label className="block text-xs font-mono uppercase tracking-wider text-slate-300 mb-1">
+                <label className="block text-xs font-mono uppercase tracking-wider text-stone-700 mb-1">
                   Full Name (as on official ID)
                 </label>
                 <input
@@ -414,14 +398,14 @@ export default function ProfileSetupPage() {
                   value={personalData.fullName}
                   onChange={(e) => setPersonalData({ ...personalData, fullName: e.target.value })}
                   placeholder="e.g. Ramesh Kumar Sharma"
-                  className="w-full rounded-lg border border-surface-border bg-midnight-950 px-3.5 py-2.5 text-xs text-white placeholder-slate-500 focus:border-cyan-400 focus:outline-none"
+                  className="w-full rounded-xl border border-coffee-200 bg-white px-3.5 py-2.5 text-xs text-espresso placeholder-stone-400 focus:border-coffee-500 focus:ring-1 focus:ring-coffee-500 focus:outline-none"
                 />
               </div>
 
               {/* DOB & Gender */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-mono uppercase tracking-wider text-slate-300 mb-1">
+                  <label className="block text-xs font-mono uppercase tracking-wider text-stone-700 mb-1">
                     Date of Birth
                   </label>
                   <input
@@ -429,18 +413,18 @@ export default function ProfileSetupPage() {
                     required
                     value={personalData.dob}
                     onChange={(e) => setPersonalData({ ...personalData, dob: e.target.value })}
-                    className="w-full rounded-lg border border-surface-border bg-midnight-950 px-3.5 py-2.5 text-xs text-white focus:border-cyan-400 focus:outline-none"
+                    className="w-full rounded-xl border border-coffee-200 bg-white px-3.5 py-2.5 text-xs text-espresso focus:border-coffee-500 focus:ring-1 focus:ring-coffee-500 focus:outline-none"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-xs font-mono uppercase tracking-wider text-slate-300 mb-1">
+                  <label className="block text-xs font-mono uppercase tracking-wider text-stone-700 mb-1">
                     Gender
                   </label>
                   <select
                     value={personalData.gender}
                     onChange={(e) => setPersonalData({ ...personalData, gender: e.target.value })}
-                    className="w-full rounded-lg border border-surface-border bg-midnight-950 px-3.5 py-2.5 text-xs text-white focus:border-cyan-400 focus:outline-none"
+                    className="w-full rounded-xl border border-coffee-200 bg-white px-3.5 py-2.5 text-xs text-espresso focus:border-coffee-500 focus:ring-1 focus:ring-coffee-500 focus:outline-none"
                   >
                     <option value="Male">Male</option>
                     <option value="Female">Female</option>
@@ -452,7 +436,7 @@ export default function ProfileSetupPage() {
               {/* Contact: Email & Mobile */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-mono uppercase tracking-wider text-slate-300 mb-1">
+                  <label className="block text-xs font-mono uppercase tracking-wider text-stone-700 mb-1">
                     Mobile Number
                   </label>
                   <input
@@ -460,12 +444,12 @@ export default function ProfileSetupPage() {
                     readOnly={Boolean(user?.mobile)}
                     value={personalData.mobile}
                     onChange={(e) => setPersonalData({ ...personalData, mobile: e.target.value })}
-                    className="w-full rounded-lg border border-surface-border bg-midnight-950 px-3.5 py-2.5 text-xs text-white placeholder-slate-500 focus:border-cyan-400 focus:outline-none"
+                    className="w-full rounded-xl border border-coffee-200 bg-white px-3.5 py-2.5 text-xs text-espresso placeholder-stone-400 focus:border-coffee-500 focus:ring-1 focus:ring-coffee-500 focus:outline-none"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-xs font-mono uppercase tracking-wider text-slate-300 mb-1">
+                  <label className="block text-xs font-mono uppercase tracking-wider text-stone-700 mb-1">
                     Email Address
                   </label>
                   <input
@@ -473,14 +457,14 @@ export default function ProfileSetupPage() {
                     readOnly={Boolean(user?.email)}
                     value={personalData.email}
                     onChange={(e) => setPersonalData({ ...personalData, email: e.target.value })}
-                    className="w-full rounded-lg border border-surface-border bg-midnight-950 px-3.5 py-2.5 text-xs text-white placeholder-slate-500 focus:border-cyan-400 focus:outline-none"
+                    className="w-full rounded-xl border border-coffee-200 bg-white px-3.5 py-2.5 text-xs text-espresso placeholder-stone-400 focus:border-coffee-500 focus:ring-1 focus:ring-coffee-500 focus:outline-none"
                   />
                 </div>
               </div>
 
-              {/* Residential Address: Friendly phrasing */}
+              {/* Residential Address */}
               <div>
-                <label className="block text-xs font-mono uppercase tracking-wider text-slate-300 mb-1">
+                <label className="block text-xs font-mono uppercase tracking-wider text-stone-700 mb-1">
                   Where do you currently live? (Address)
                 </label>
                 <input
@@ -489,14 +473,14 @@ export default function ProfileSetupPage() {
                   value={personalData.address}
                   onChange={(e) => setPersonalData({ ...personalData, address: e.target.value })}
                   placeholder="Flat / House No., Street, Landmark"
-                  className="w-full rounded-lg border border-surface-border bg-midnight-950 px-3.5 py-2.5 text-xs text-white placeholder-slate-500 focus:border-cyan-400 focus:outline-none"
+                  className="w-full rounded-xl border border-coffee-200 bg-white px-3.5 py-2.5 text-xs text-espresso placeholder-stone-400 focus:border-coffee-500 focus:ring-1 focus:ring-coffee-500 focus:outline-none"
                 />
               </div>
 
               {/* City, State, PIN Code */}
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <div>
-                  <label className="block text-xs font-mono uppercase tracking-wider text-slate-300 mb-1">
+                  <label className="block text-xs font-mono uppercase tracking-wider text-stone-700 mb-1">
                     City
                   </label>
                   <input
@@ -505,12 +489,12 @@ export default function ProfileSetupPage() {
                     value={personalData.city}
                     onChange={(e) => setPersonalData({ ...personalData, city: e.target.value })}
                     placeholder="e.g. Pune"
-                    className="w-full rounded-lg border border-surface-border bg-midnight-950 px-3.5 py-2.5 text-xs text-white placeholder-slate-500 focus:border-cyan-400 focus:outline-none"
+                    className="w-full rounded-xl border border-coffee-200 bg-white px-3.5 py-2.5 text-xs text-espresso placeholder-stone-400 focus:border-coffee-500 focus:ring-1 focus:ring-coffee-500 focus:outline-none"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-xs font-mono uppercase tracking-wider text-slate-300 mb-1">
+                  <label className="block text-xs font-mono uppercase tracking-wider text-stone-700 mb-1">
                     State
                   </label>
                   <input
@@ -519,12 +503,12 @@ export default function ProfileSetupPage() {
                     value={personalData.state}
                     onChange={(e) => setPersonalData({ ...personalData, state: e.target.value })}
                     placeholder="e.g. Maharashtra"
-                    className="w-full rounded-lg border border-surface-border bg-midnight-950 px-3.5 py-2.5 text-xs text-white placeholder-slate-500 focus:border-cyan-400 focus:outline-none"
+                    className="w-full rounded-xl border border-coffee-200 bg-white px-3.5 py-2.5 text-xs text-espresso placeholder-stone-400 focus:border-coffee-500 focus:ring-1 focus:ring-coffee-500 focus:outline-none"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-xs font-mono uppercase tracking-wider text-slate-300 mb-1">
+                  <label className="block text-xs font-mono uppercase tracking-wider text-stone-700 mb-1">
                     PIN Code
                   </label>
                   <input
@@ -534,7 +518,7 @@ export default function ProfileSetupPage() {
                     value={personalData.pincode}
                     onChange={(e) => setPersonalData({ ...personalData, pincode: e.target.value.replace(/\D/g, '') })}
                     placeholder="6 digits"
-                    className="w-full rounded-lg border border-surface-border bg-midnight-950 px-3.5 py-2.5 text-xs text-white placeholder-slate-500 focus:border-cyan-400 focus:outline-none"
+                    className="w-full rounded-xl border border-coffee-200 bg-white px-3.5 py-2.5 text-xs text-espresso placeholder-stone-400 focus:border-coffee-500 focus:ring-1 focus:ring-coffee-500 focus:outline-none"
                   />
                 </div>
               </div>
@@ -542,13 +526,13 @@ export default function ProfileSetupPage() {
               {/* Employment & Monthly Income */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-mono uppercase tracking-wider text-slate-300 mb-1">
+                  <label className="block text-xs font-mono uppercase tracking-wider text-stone-700 mb-1">
                     Employment Type
                   </label>
                   <select
                     value={personalData.employmentType}
                     onChange={(e) => setPersonalData({ ...personalData, employmentType: e.target.value })}
-                    className="w-full rounded-lg border border-surface-border bg-midnight-950 px-3.5 py-2.5 text-xs text-white focus:border-cyan-400 focus:outline-none"
+                    className="w-full rounded-xl border border-coffee-200 bg-white px-3.5 py-2.5 text-xs text-espresso focus:border-coffee-500 focus:ring-1 focus:ring-coffee-500 focus:outline-none"
                   >
                     <option value="Full-time Salaried">Full-time Salaried</option>
                     <option value="Self-Employed / Business">Self-Employed / Business</option>
@@ -558,7 +542,7 @@ export default function ProfileSetupPage() {
                 </div>
 
                 <div>
-                  <label className="block text-xs font-mono uppercase tracking-wider text-slate-300 mb-1">
+                  <label className="block text-xs font-mono uppercase tracking-wider text-stone-700 mb-1">
                     Approximate Monthly Income (₹)
                   </label>
                   <input
@@ -566,7 +550,7 @@ export default function ProfileSetupPage() {
                     value={personalData.monthlyIncome}
                     onChange={(e) => setPersonalData({ ...personalData, monthlyIncome: e.target.value })}
                     placeholder="e.g. 75,000"
-                    className="w-full rounded-lg border border-surface-border bg-midnight-950 px-3.5 py-2.5 text-xs text-white placeholder-slate-500 focus:border-cyan-400 focus:outline-none"
+                    className="w-full rounded-xl border border-coffee-200 bg-white px-3.5 py-2.5 text-xs text-espresso placeholder-stone-400 focus:border-coffee-500 focus:ring-1 focus:ring-coffee-500 focus:outline-none"
                   />
                 </div>
               </div>
@@ -578,7 +562,7 @@ export default function ProfileSetupPage() {
                 <button
                   type="submit"
                   disabled={loading}
-                  className="flex items-center gap-2 rounded-lg bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 px-6 py-2.5 text-xs font-semibold uppercase tracking-wider text-midnight-950 shadow-[0_0_20px_rgba(0,240,255,0.25)] transition-all"
+                  className="flex items-center gap-2 rounded-xl bg-coffee-600 hover:bg-coffee-700 px-6 py-2.5 text-xs font-semibold uppercase tracking-wider text-white shadow-sm transition-all"
                 >
                   {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <span>Next: Identity Details</span>}
                   <ArrowRight className="h-4 w-4" />
@@ -592,15 +576,15 @@ export default function ProfileSetupPage() {
             STEP 2: IDENTITY DETAILS (Sensitive Data Masking)
             ===================================================================== */}
         {currentStep === 2 && (
-          <div className="rounded-2xl border border-surface-border bg-surface-card p-6 sm:p-8 shadow-xl">
+          <div className="rounded-2xl border border-coffee-200 bg-white p-6 sm:p-8 shadow-card">
             <div className="mb-6">
-              <span className="text-xs font-mono uppercase tracking-wider text-cyan-400">
+              <span className="text-xs font-mono uppercase tracking-wider text-coffee-600 font-semibold">
                 Step 2 of 6
               </span>
-              <h2 className="text-xl font-bold text-white mt-1">
+              <h2 className="text-xl font-bold text-espresso mt-1">
                 Official Identity Details
               </h2>
-              <p className="text-xs text-slate-400 mt-1">
+              <p className="text-xs text-stone-600 mt-1">
                 Aadhaar and PAN details are encrypted and masked for your security
               </p>
             </div>
@@ -608,7 +592,7 @@ export default function ProfileSetupPage() {
             <form onSubmit={handleStep2Next} className="space-y-4">
               {/* Aadhaar Number */}
               <div>
-                <label className="block text-xs font-mono uppercase tracking-wider text-slate-300 mb-1">
+                <label className="block text-xs font-mono uppercase tracking-wider text-stone-700 mb-1">
                   Aadhaar Number (12 Digits)
                 </label>
                 <div className="relative">
@@ -619,21 +603,21 @@ export default function ProfileSetupPage() {
                     value={formatAadhaarInput(identityData.aadhaarNumber)}
                     onChange={(e) => setIdentityData({ ...identityData, aadhaarNumber: e.target.value })}
                     placeholder="XXXX XXXX 1234"
-                    className="w-full rounded-lg border border-surface-border bg-midnight-950 px-3.5 py-2.5 text-xs font-mono text-white placeholder-slate-500 focus:border-cyan-400 focus:outline-none tracking-widest"
+                    className="w-full rounded-xl border border-coffee-200 bg-white px-3.5 py-2.5 text-xs font-mono text-espresso placeholder-stone-400 focus:border-coffee-500 focus:ring-1 focus:ring-coffee-500 focus:outline-none tracking-widest"
                   />
-                  <div className="absolute right-3 top-1/2 -translate-y-1/2 text-[10px] font-mono text-emerald-400 flex items-center gap-1">
+                  <div className="absolute right-3 top-1/2 -translate-y-1/2 text-[10px] font-mono text-emerald-700 flex items-center gap-1">
                     <ShieldCheck className="h-3.5 w-3.5" />
                     <span>Masked</span>
                   </div>
                 </div>
-                <span className="text-[11px] text-slate-400 mt-1 block">
+                <span className="text-[11px] text-stone-500 mt-1 block">
                   Example preview after save: XXXX XXXX {identityData.aadhaarNumber.slice(-4) || '4821'}
                 </span>
               </div>
 
               {/* PAN Number */}
               <div>
-                <label className="block text-xs font-mono uppercase tracking-wider text-slate-300 mb-1">
+                <label className="block text-xs font-mono uppercase tracking-wider text-stone-700 mb-1">
                   Permanent Account Number (PAN)
                 </label>
                 <input
@@ -643,13 +627,13 @@ export default function ProfileSetupPage() {
                   value={identityData.panNumber}
                   onChange={(e) => setIdentityData({ ...identityData, panNumber: e.target.value.toUpperCase() })}
                   placeholder="ABCDE1234F"
-                  className="w-full rounded-lg border border-surface-border bg-midnight-950 px-3.5 py-2.5 text-xs font-mono uppercase text-white placeholder-slate-500 focus:border-cyan-400 focus:outline-none tracking-wider"
+                  className="w-full rounded-xl border border-coffee-200 bg-white px-3.5 py-2.5 text-xs font-mono uppercase text-espresso placeholder-stone-400 focus:border-coffee-500 focus:ring-1 focus:ring-coffee-500 focus:outline-none tracking-wider"
                 />
               </div>
 
               {/* Name as on Aadhaar */}
               <div>
-                <label className="block text-xs font-mono uppercase tracking-wider text-slate-300 mb-1">
+                <label className="block text-xs font-mono uppercase tracking-wider text-stone-700 mb-1">
                   Name as shown on Aadhaar Card
                 </label>
                 <input
@@ -658,17 +642,17 @@ export default function ProfileSetupPage() {
                   value={identityData.nameOnAadhaar}
                   onChange={(e) => setIdentityData({ ...identityData, nameOnAadhaar: e.target.value })}
                   placeholder="Exact name printed on your Aadhaar card"
-                  className="w-full rounded-lg border border-surface-border bg-midnight-950 px-3.5 py-2.5 text-xs text-white placeholder-slate-500 focus:border-cyan-400 focus:outline-none"
+                  className="w-full rounded-xl border border-coffee-200 bg-white px-3.5 py-2.5 text-xs text-espresso placeholder-stone-400 focus:border-coffee-500 focus:ring-1 focus:ring-coffee-500 focus:outline-none"
                 />
               </div>
 
               {/* Security Banner */}
-              <div className="p-3.5 rounded-xl border border-surface-border bg-midnight-950 text-xs text-slate-300 space-y-1">
-                <div className="flex items-center gap-2 text-cyan-300 font-semibold">
-                  <ShieldCheck className="h-4 w-4 text-cyan-400" />
+              <div className="p-3.5 rounded-xl border border-coffee-200 bg-stone-50/80 text-xs text-stone-700 space-y-1">
+                <div className="flex items-center gap-2 text-coffee-800 font-semibold">
+                  <ShieldCheck className="h-4 w-4 text-coffee-700" />
                   <span>Privacy & Zero Secret Exposure</span>
                 </div>
-                <p className="text-[11px] text-slate-400 leading-relaxed pl-6">
+                <p className="text-[11px] text-stone-600 leading-relaxed pl-6">
                   Full Aadhaar and PAN numbers are never stored in plain text, logged in the console, or exposed in URLs.
                 </p>
               </div>
@@ -677,7 +661,7 @@ export default function ProfileSetupPage() {
                 <button
                   type="button"
                   onClick={() => setCurrentStep(1)}
-                  className="px-4 py-2 text-xs font-medium text-slate-400 hover:text-white"
+                  className="px-4 py-2 text-xs font-medium text-stone-600 hover:text-espresso"
                 >
                   ← Back to Personal Details
                 </button>
@@ -685,7 +669,7 @@ export default function ProfileSetupPage() {
                 <button
                   type="submit"
                   disabled={loading}
-                  className="flex items-center gap-2 rounded-lg bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 px-6 py-2.5 text-xs font-semibold uppercase tracking-wider text-midnight-950 shadow-[0_0_20px_rgba(0,240,255,0.25)] transition-all"
+                  className="flex items-center gap-2 rounded-xl bg-coffee-600 hover:bg-coffee-700 px-6 py-2.5 text-xs font-semibold uppercase tracking-wider text-white shadow-sm transition-all"
                 >
                   {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <span>Next: Upload Documents</span>}
                   <ArrowRight className="h-4 w-4" />
@@ -711,7 +695,7 @@ export default function ProfileSetupPage() {
               <button
                 type="button"
                 onClick={() => setCurrentStep(2)}
-                className="px-4 py-2 text-xs font-medium text-slate-400 hover:text-white"
+                className="px-4 py-2 text-xs font-medium text-stone-600 hover:text-espresso"
               >
                 ← Back to Identity Details
               </button>
@@ -720,7 +704,7 @@ export default function ProfileSetupPage() {
                 type="button"
                 onClick={handleStep3Next}
                 disabled={loading}
-                className="flex items-center gap-2 rounded-lg bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 px-6 py-2.5 text-xs font-semibold uppercase tracking-wider text-midnight-950 shadow-[0_0_20px_rgba(0,240,255,0.25)] transition-all"
+                className="flex items-center gap-2 rounded-xl bg-coffee-600 hover:bg-coffee-700 px-6 py-2.5 text-xs font-semibold uppercase tracking-wider text-white shadow-sm transition-all"
               >
                 {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <span>Proceed to Verification</span>}
                 <ArrowRight className="h-4 w-4" />
@@ -733,86 +717,86 @@ export default function ProfileSetupPage() {
             STEP 4: IDENTITY VERIFICATION & MATCHING
             ===================================================================== */}
         {currentStep === 4 && (
-          <div className="rounded-2xl border border-surface-border bg-surface-card p-6 sm:p-8 shadow-xl space-y-6">
+          <div className="rounded-2xl border border-coffee-200 bg-white p-6 sm:p-8 shadow-card space-y-6">
             <div>
-              <span className="text-xs font-mono uppercase tracking-wider text-cyan-400">
+              <span className="text-xs font-mono uppercase tracking-wider text-coffee-600 font-semibold">
                 Step 4 of 6
               </span>
-              <h2 className="text-xl font-bold text-white mt-1">
+              <h2 className="text-xl font-bold text-espresso mt-1">
                 Document-Based Identity Verification
               </h2>
-              <p className="text-xs text-slate-400 mt-1">
+              <p className="text-xs text-stone-600 mt-1">
                 Comparing registered personal details against uploaded Aadhaar document
               </p>
             </div>
 
             {/* Checklist items */}
             <div className="space-y-3">
-              <div className="flex items-center justify-between p-3.5 rounded-xl border border-surface-border bg-midnight-950">
+              <div className="flex items-center justify-between p-3.5 rounded-xl border border-coffee-100 bg-stone-50/80">
                 <div className="flex items-center gap-3">
-                  <CheckCircle2 className="h-5 w-5 text-emerald-400 shrink-0" />
+                  <CheckCircle2 className="h-5 w-5 text-emerald-600 shrink-0" />
                   <div>
-                    <span className="text-xs font-semibold text-white block">Identity details</span>
-                    <span className="text-[11px] text-slate-400">
+                    <span className="text-xs font-semibold text-espresso block">Identity details</span>
+                    <span className="text-[11px] text-stone-500">
                       Aadhaar: {profile?.aadhaar_masked || 'XXXX XXXX 4821'} • PAN: {profile?.pan_masked || 'ABCDE••••F'}
                     </span>
                   </div>
                 </div>
-                <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-950 text-emerald-300 border border-emerald-500/30">
+                <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-50 text-emerald-700 border border-emerald-200">
                   Completed
                 </span>
               </div>
 
-              <div className="flex items-center justify-between p-3.5 rounded-xl border border-surface-border bg-midnight-950">
+              <div className="flex items-center justify-between p-3.5 rounded-xl border border-coffee-100 bg-stone-50/80">
                 <div className="flex items-center gap-3">
-                  <CheckCircle2 className="h-5 w-5 text-emerald-400 shrink-0" />
+                  <CheckCircle2 className="h-5 w-5 text-emerald-600 shrink-0" />
                   <div>
-                    <span className="text-xs font-semibold text-white block">Identity document</span>
-                    <span className="text-[11px] text-slate-400">
+                    <span className="text-xs font-semibold text-espresso block">Identity document</span>
+                    <span className="text-[11px] text-stone-500">
                       {uploadedDoc?.filename || 'Aadhaar_Document.pdf'}
                     </span>
                   </div>
                 </div>
-                <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-950 text-emerald-300 border border-emerald-500/30">
+                <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-50 text-emerald-700 border border-emerald-200">
                   Uploaded
                 </span>
               </div>
 
-              <div className="flex items-center justify-between p-3.5 rounded-xl border border-surface-border bg-midnight-950">
+              <div className="flex items-center justify-between p-3.5 rounded-xl border border-coffee-100 bg-stone-50/80">
                 <div className="flex items-center gap-3">
-                  <CheckCircle2 className="h-5 w-5 text-emerald-400 shrink-0" />
+                  <CheckCircle2 className="h-5 w-5 text-emerald-600 shrink-0" />
                   <div>
-                    <span className="text-xs font-semibold text-white block">Document quality check</span>
-                    <span className="text-[11px] text-slate-400">
+                    <span className="text-xs font-semibold text-espresso block">Document quality check</span>
+                    <span className="text-[11px] text-stone-500">
                       Sharpness, luminance & contrast verified
                     </span>
                   </div>
                 </div>
-                <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-950 text-emerald-300 border border-emerald-500/30">
+                <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-50 text-emerald-700 border border-emerald-200">
                   Passed
                 </span>
               </div>
 
-              <div className="flex items-center justify-between p-3.5 rounded-xl border border-surface-border bg-midnight-950">
+              <div className="flex items-center justify-between p-3.5 rounded-xl border border-coffee-100 bg-stone-50/80">
                 <div className="flex items-center gap-3">
-                  <CheckCircle2 className="h-5 w-5 text-emerald-400 shrink-0" />
+                  <CheckCircle2 className="h-5 w-5 text-emerald-600 shrink-0" />
                   <div>
-                    <span className="text-xs font-semibold text-white block">Registered name vs Document</span>
-                    <span className="text-[11px] text-slate-400">
+                    <span className="text-xs font-semibold text-espresso block">Registered name vs Document</span>
+                    <span className="text-[11px] text-stone-500">
                       Name match confirmed: {personalData.fullName}
                     </span>
                   </div>
                 </div>
-                <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-950 text-emerald-300 border border-emerald-500/30">
+                <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-50 text-emerald-700 border border-emerald-200">
                   Matched
                 </span>
               </div>
             </div>
 
             {/* Prototype compliance note */}
-            <div className="p-3 rounded-lg border border-cyan-500/30 bg-cyan-950/20 text-xs text-cyan-200">
-              <span className="font-semibold block text-cyan-300">Document-based identity verification</span>
-              <p className="text-[11px] text-slate-300 mt-0.5 leading-relaxed">
+            <div className="p-3 rounded-xl border border-coffee-200 bg-coffee-50/50 text-xs text-stone-700">
+              <span className="font-semibold block text-espresso">Document-based identity verification</span>
+              <p className="text-[11px] text-stone-600 mt-0.5 leading-relaxed">
                 Verification is performed by inspecting uploaded document optics and matching profile details.
                 Government database verification will occur once official UIDAI provider APIs are licensed.
               </p>
@@ -822,7 +806,7 @@ export default function ProfileSetupPage() {
               <button
                 type="button"
                 onClick={() => setCurrentStep(3)}
-                className="px-4 py-2 text-xs font-medium text-slate-400 hover:text-white"
+                className="px-4 py-2 text-xs font-medium text-stone-600 hover:text-espresso"
               >
                 ← Back to Documents
               </button>
@@ -830,7 +814,7 @@ export default function ProfileSetupPage() {
               <button
                 type="button"
                 onClick={handleStep4Next}
-                className="flex items-center gap-2 rounded-lg bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 px-6 py-2.5 text-xs font-semibold uppercase tracking-wider text-midnight-950 shadow-[0_0_20px_rgba(0,240,255,0.25)] transition-all"
+                className="flex items-center gap-2 rounded-xl bg-coffee-600 hover:bg-coffee-700 px-6 py-2.5 text-xs font-semibold uppercase tracking-wider text-white shadow-sm transition-all"
               >
                 <span>Next: Capture Profile Photograph</span>
                 <ArrowRight className="h-4 w-4" />
@@ -843,25 +827,25 @@ export default function ProfileSetupPage() {
             STEP 5: PROFILE PHOTOGRAPH (Camera Only)
             ===================================================================== */}
         {currentStep === 5 && (
-          <div className="rounded-2xl border border-surface-border bg-surface-card p-6 sm:p-8 shadow-xl space-y-6">
+          <div className="rounded-2xl border border-coffee-200 bg-white p-6 sm:p-8 shadow-card space-y-6">
             <div>
-              <span className="text-xs font-mono uppercase tracking-wider text-cyan-400">
+              <span className="text-xs font-mono uppercase tracking-wider text-coffee-600 font-semibold">
                 Step 5 of 6
               </span>
-              <h2 className="text-xl font-bold text-white mt-1">
+              <h2 className="text-xl font-bold text-espresso mt-1">
                 Take your profile photograph
               </h2>
-              <p className="text-xs text-slate-400 mt-1">
+              <p className="text-xs text-stone-600 mt-1">
                 For identity verification, take a new photograph using your device camera.
               </p>
             </div>
 
             {/* Camera Only Notice */}
-            <div className="p-3.5 rounded-xl border border-amber-500/30 bg-amber-950/20 text-xs text-amber-200 flex items-start gap-2.5">
-              <Camera className="h-4 w-4 text-amber-400 shrink-0 mt-0.5" />
+            <div className="p-3.5 rounded-xl border border-amber-200 bg-amber-50 text-xs text-amber-900 flex items-start gap-2.5">
+              <Camera className="h-4 w-4 text-amber-600 shrink-0 mt-0.5" />
               <div>
-                <span className="font-semibold block text-amber-300">Live Camera Only</span>
-                <span className="text-[11px] text-slate-300 mt-0.5 block">
+                <span className="font-semibold block text-amber-950">Live Camera Only</span>
+                <span className="text-[11px] text-amber-800 mt-0.5 block">
                   Gallery uploads and file selection are not permitted for profile photographs.
                   This ensures biometric authenticity and prevents fraudulent impersonation.
                 </span>
@@ -870,56 +854,56 @@ export default function ProfileSetupPage() {
 
             {/* Photo Capture Preview or Action Card */}
             {!capturedPhotoUrl ? (
-              <div className="border-2 border-dashed border-surface-border rounded-xl p-8 flex flex-col items-center justify-center bg-midnight-950/60 text-center space-y-4">
-                <div className="h-16 w-16 rounded-full bg-cyan-950 border border-cyan-500/40 flex items-center justify-center text-cyan-400 shadow-inner">
+              <div className="border-2 border-dashed border-coffee-200 rounded-xl p-8 flex flex-col items-center justify-center bg-stone-50/50 text-center space-y-4">
+                <div className="h-16 w-16 rounded-full bg-coffee-50 border border-coffee-200 flex items-center justify-center text-coffee-700 shadow-xs">
                   <Camera className="h-8 w-8" />
                 </div>
                 <div>
-                  <h4 className="text-sm font-semibold text-white">No photograph captured yet</h4>
-                  <p className="text-xs text-slate-400 mt-1 max-w-sm">
+                  <h4 className="text-sm font-semibold text-espresso">No photograph captured yet</h4>
+                  <p className="text-xs text-stone-500 mt-1 max-w-sm">
                     Open your device camera to capture your live verification photo within the guided face frame.
                   </p>
                 </div>
                 <button
                   type="button"
                   onClick={() => setCameraModalOpen(true)}
-                  className="flex items-center gap-2 rounded-lg bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 px-6 py-2.5 text-xs font-semibold uppercase tracking-wider text-midnight-950 shadow-[0_0_20px_rgba(0,240,255,0.25)] transition-all"
+                  className="flex items-center gap-2 rounded-xl bg-coffee-600 hover:bg-coffee-700 px-6 py-2.5 text-xs font-semibold uppercase tracking-wider text-white shadow-sm transition-all"
                 >
                   <Camera className="h-4 w-4" />
                   <span>Open Camera</span>
                 </button>
               </div>
             ) : (
-              <div className="rounded-xl border border-surface-border bg-midnight-950 p-4 space-y-4">
+              <div className="rounded-xl border border-coffee-200 bg-white p-4 space-y-4 shadow-xs">
                 <div className="flex flex-col sm:flex-row items-center gap-4">
-                  <div className="relative w-36 h-36 rounded-xl overflow-hidden border-2 border-emerald-500/50 shrink-0 shadow-lg">
+                  <div className="relative w-36 h-36 rounded-xl overflow-hidden border-2 border-emerald-500 shrink-0 shadow-sm">
                     <img
                       src={capturedPhotoUrl}
                       alt="Verified profile capture"
                       className="w-full h-full object-cover"
                     />
-                    <div className="absolute bottom-1 right-1 p-1 rounded-full bg-emerald-500 text-midnight-950">
+                    <div className="absolute bottom-1 right-1 p-1 rounded-full bg-emerald-600 text-white">
                       <CheckCircle2 className="h-3.5 w-3.5" />
                     </div>
                   </div>
 
                   <div className="space-y-1.5 text-center sm:text-left">
                     <div className="flex items-center gap-2 justify-center sm:justify-start">
-                      <span className="text-xs font-semibold text-white">
+                      <span className="text-xs font-semibold text-espresso">
                         Live Profile Photograph Registered
                       </span>
-                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-950 text-emerald-300 border border-emerald-500/30">
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-50 text-emerald-700 border border-emerald-200">
                         Camera Verified
                       </span>
                     </div>
-                    <p className="text-xs text-slate-400 leading-relaxed">
+                    <p className="text-xs text-stone-600 leading-relaxed">
                       Captured via device webcam/camera with face oval positioning.
                       Biometric presence confirmed.
                     </p>
                     <button
                       type="button"
                       onClick={() => setCameraModalOpen(true)}
-                      className="text-xs font-mono text-cyan-400 hover:text-cyan-300 hover:underline inline-flex items-center gap-1 pt-1"
+                      className="text-xs font-mono text-coffee-700 hover:text-coffee-900 hover:underline inline-flex items-center gap-1 pt-1"
                     >
                       <span>Retake photograph →</span>
                     </button>
@@ -932,7 +916,7 @@ export default function ProfileSetupPage() {
               <button
                 type="button"
                 onClick={() => setCurrentStep(4)}
-                className="px-4 py-2 text-xs font-medium text-slate-400 hover:text-white"
+                className="px-4 py-2 text-xs font-medium text-stone-600 hover:text-espresso"
               >
                 ← Back to Verification
               </button>
@@ -941,7 +925,7 @@ export default function ProfileSetupPage() {
                 type="button"
                 onClick={handleStep5Next}
                 disabled={loading || (!capturedPhotoUrl && !profile?.has_photo)}
-                className="flex items-center gap-2 rounded-lg bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 px-6 py-2.5 text-xs font-semibold uppercase tracking-wider text-midnight-950 shadow-[0_0_20px_rgba(16,185,129,0.3)] transition-all disabled:opacity-60"
+                className="flex items-center gap-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 px-6 py-2.5 text-xs font-semibold uppercase tracking-wider text-white shadow-sm transition-all disabled:opacity-60"
               >
                 {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <span>Complete Profile</span>}
                 <ArrowRight className="h-4 w-4" />
@@ -954,61 +938,61 @@ export default function ProfileSetupPage() {
             STEP 6: COMPLETE (Ready & Continue to Loans)
             ===================================================================== */}
         {currentStep === 6 && (
-          <div className="rounded-2xl border border-surface-border bg-surface-card p-6 sm:p-10 shadow-2xl text-center space-y-6">
+          <div className="rounded-2xl border border-coffee-200 bg-white p-6 sm:p-10 shadow-card text-center space-y-6">
             
             {/* Success Shield Icon */}
-            <div className="relative mx-auto w-20 h-20 rounded-2xl bg-gradient-to-br from-cyan-950 to-emerald-950 border border-emerald-500/40 flex items-center justify-center text-emerald-400 shadow-[0_0_30px_rgba(16,185,129,0.25)]">
+            <div className="relative mx-auto w-20 h-20 rounded-2xl bg-emerald-50 border border-emerald-200 flex items-center justify-center text-emerald-600 shadow-sm">
               <ShieldCheck className="h-10 w-10" />
             </div>
 
             <div>
-              <span className="text-xs font-mono uppercase tracking-wider text-emerald-400 font-semibold">
+              <span className="text-xs font-mono uppercase tracking-wider text-emerald-700 font-semibold">
                 Setup Complete
               </span>
-              <h2 className="text-2xl sm:text-3xl font-bold text-white mt-1">
+              <h2 className="text-2xl sm:text-3xl font-bold text-espresso mt-1">
                 Your profile is ready
               </h2>
-              <p className="text-xs sm:text-sm text-slate-300 mt-2 max-w-md mx-auto leading-relaxed">
+              <p className="text-xs sm:text-sm text-stone-600 mt-2 max-w-md mx-auto leading-relaxed">
                 Your identity information has been submitted for verification.
                 Your personal account is now ready to explore loan opportunities.
               </p>
             </div>
 
             {/* Checklist of all 6 verified items */}
-            <div className="max-w-md mx-auto rounded-xl border border-surface-border bg-midnight-950 p-4 space-y-2.5 text-left text-xs">
+            <div className="max-w-md mx-auto rounded-xl border border-coffee-200 bg-stone-50/80 p-4 space-y-2.5 text-left text-xs">
               <div className="flex items-center justify-between">
-                <span className="text-slate-300">Identity details</span>
-                <span className="text-emerald-400 font-semibold flex items-center gap-1">
+                <span className="text-stone-700">Identity details</span>
+                <span className="text-emerald-700 font-semibold flex items-center gap-1">
                   <CheckCircle2 className="h-3.5 w-3.5" /> Completed
                 </span>
               </div>
               <div className="flex items-center justify-between">
-                <span className="text-slate-300">Identity document</span>
-                <span className="text-emerald-400 font-semibold flex items-center gap-1">
+                <span className="text-stone-700">Identity document</span>
+                <span className="text-emerald-700 font-semibold flex items-center gap-1">
                   <CheckCircle2 className="h-3.5 w-3.5" /> Uploaded
                 </span>
               </div>
               <div className="flex items-center justify-between">
-                <span className="text-slate-300">Document quality</span>
-                <span className="text-emerald-400 font-semibold flex items-center gap-1">
+                <span className="text-stone-700">Document quality</span>
+                <span className="text-emerald-700 font-semibold flex items-center gap-1">
                   <CheckCircle2 className="h-3.5 w-3.5" /> Passed
                 </span>
               </div>
               <div className="flex items-center justify-between">
-                <span className="text-slate-300">Profile photograph</span>
-                <span className="text-emerald-400 font-semibold flex items-center gap-1">
+                <span className="text-stone-700">Profile photograph</span>
+                <span className="text-emerald-700 font-semibold flex items-center gap-1">
                   <CheckCircle2 className="h-3.5 w-3.5" /> Captured
                 </span>
               </div>
               <div className="flex items-center justify-between">
-                <span className="text-slate-300">Face check</span>
-                <span className="text-emerald-400 font-semibold flex items-center gap-1">
+                <span className="text-stone-700">Face check</span>
+                <span className="text-emerald-700 font-semibold flex items-center gap-1">
                   <CheckCircle2 className="h-3.5 w-3.5" /> Completed
                 </span>
               </div>
               <div className="flex items-center justify-between">
-                <span className="text-slate-300">Identity comparison</span>
-                <span className="text-emerald-400 font-semibold flex items-center gap-1">
+                <span className="text-stone-700">Identity comparison</span>
+                <span className="text-emerald-700 font-semibold flex items-center gap-1">
                   <CheckCircle2 className="h-3.5 w-3.5" /> Completed
                 </span>
               </div>
@@ -1019,7 +1003,7 @@ export default function ProfileSetupPage() {
               <button
                 type="button"
                 onClick={() => navigate('/loans')}
-                className="w-full flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 px-6 py-3 text-xs font-semibold uppercase tracking-wider text-midnight-950 shadow-[0_0_25px_rgba(0,240,255,0.3)] transition-all"
+                className="w-full flex items-center justify-center gap-2 rounded-xl bg-coffee-600 hover:bg-coffee-700 px-6 py-3 text-xs font-semibold uppercase tracking-wider text-white shadow-sm transition-all"
               >
                 <span>Continue to Loans</span>
                 <ArrowRight className="h-4 w-4" />
@@ -1028,7 +1012,7 @@ export default function ProfileSetupPage() {
               <button
                 type="button"
                 onClick={() => navigate('/home')}
-                className="text-xs text-slate-400 hover:text-white"
+                className="text-xs text-stone-600 hover:text-espresso font-medium"
               >
                 Go to my home dashboard
               </button>
@@ -1047,7 +1031,7 @@ export default function ProfileSetupPage() {
       />
 
       {/* Simple Footer */}
-      <footer className="border-t border-surface-border/50 py-3 px-6 text-center text-[11px] font-mono text-slate-500">
+      <footer className="border-t border-coffee-200 py-3 px-6 text-center text-[11px] font-mono text-stone-500">
         TrustLedger • Secure digital lending, verified from the start
       </footer>
     </div>

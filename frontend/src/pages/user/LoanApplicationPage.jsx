@@ -137,7 +137,7 @@ export default function LoanApplicationPage() {
   if (!product) {
     return (
       <div className="p-8 text-center">
-        <span className="text-white">Loan product not found.</span>
+        <span className="text-espresso font-medium">Loan product not found.</span>
       </div>
     );
   }
@@ -149,95 +149,81 @@ export default function LoanApplicationPage() {
     if (!application?.application_id || !user?.id) return;
     setSaving(true);
     try {
-      const updated = await loanService.updateApplication(
-        application.application_id,
-        {
-          requested_amount: formData.requestedAmount,
-          requested_duration_months: formData.requestedDuration,
-          loan_purpose: formData.loanPurpose,
-          current_step: nextStep,
-          financial_details: {
-            employer_or_business_name: formData.employerName,
-            work_experience_years: Number(formData.workExperience),
-            monthly_income: formData.monthlyIncome,
-            monthly_existing_obligations: formData.existingObligations,
-            approximate_monthly_expenses: formData.monthlyExpenses,
-            payout_bank_name: formData.payoutBankName,
-            payout_account_number: formData.payoutAccountNumber || undefined,
-            payout_account_masked: formData.payoutAccountMasked,
-            payout_ifsc_code: formData.payoutIfsc
-          }
-        },
-        user.id
-      );
+      const payload = {
+        current_step: nextStep,
+        requested_amount: Number(formData.requestedAmount),
+        requested_duration_months: Number(formData.requestedDuration),
+        loan_purpose: formData.loanPurpose,
+        financial_details: {
+          employment_type: 'SALARIED',
+          employer_or_business_name: formData.employerName,
+          work_experience_years: Number(formData.workExperience) || 0,
+          monthly_income: formData.monthlyIncome,
+          monthly_existing_obligations: formData.existingObligations,
+          approximate_monthly_expenses: formData.monthlyExpenses,
+          payout_bank_name: formData.payoutBankName,
+          payout_account_masked: formData.payoutAccountNumber
+            ? `XXXX XXXX ${formData.payoutAccountNumber.slice(-4)}`
+            : formData.payoutAccountMasked,
+          payout_ifsc_code: formData.payoutIfsc
+        }
+      };
+      const updated = await loanService.updateApplication(application.application_id, payload, user.id);
       if (updated) setApplication(updated);
     } catch (err) {
-      console.warn('Failed to save draft progress:', err);
+      console.error('Failed to save draft:', err);
     } finally {
       setSaving(false);
     }
   };
 
-  // Step 1: Personal Details Next
+  // Step 1: Locked Personal Details -> Step 2
   const handleStep1Next = async () => {
     setCurrentStep(2);
     await saveDraftProgress(2);
   };
 
-  // Step 2: Loan Details Next
+  // Step 2: Loan Details -> Step 3
   const handleStep2Next = async (e) => {
     e.preventDefault();
-    setFormError('');
-
     if (formData.requestedAmount < product.minAmount || formData.requestedAmount > product.maxAmount) {
-      setFormError(`Please enter an amount within the allowed range (₹${product.minAmount.toLocaleString('en-IN')} - ₹${product.maxAmount.toLocaleString('en-IN')}).`);
+      setFormError(`Loan amount must be between ₹${product.minAmount.toLocaleString('en-IN')} and ₹${product.maxAmount.toLocaleString('en-IN')}`);
       return;
     }
-    if (formData.requestedDuration < product.minDurationMonths || formData.requestedDuration > product.maxDurationMonths) {
-      setFormError(`Please select a valid loan duration (${product.minDurationMonths} - ${product.maxDurationMonths} months).`);
-      return;
-    }
-    if (!formData.loanPurpose.trim()) {
-      setFormError('Please select or enter the purpose of your loan.');
-      return;
-    }
-
-    // Mask bank account if user entered a new one
-    if (formData.payoutAccountNumber) {
-      const clean = formData.payoutAccountNumber.replace(/\s+/g, '');
-      const masked = clean.length >= 4 ? `XXXX XXXX ${clean.slice(-4)}` : 'XXXX XXXX 4821';
-      setFormData((prev) => ({ ...prev, payoutAccountMasked: masked }));
-    }
-
+    setFormError('');
     setCurrentStep(3);
     await saveDraftProgress(3);
   };
 
-  // Step 3: Financial Details Next
+  // Step 3: Financial Details -> Step 4
   const handleStep3Next = async (e) => {
     e.preventDefault();
-    setFormError('');
-
-    if (!formData.monthlyIncome || !formData.monthlyIncome.trim()) {
-      setFormError('Please enter your monthly income.');
+    if (!formData.employerName.trim()) {
+      setFormError('Please provide your employer or business name.');
       return;
     }
-
+    setFormError('');
     setCurrentStep(4);
     await saveDraftProgress(4);
   };
 
-  // Step 4: Documents Upload & Next
+  // Step 4: Documents Upload -> Step 5
   const handleDocumentUpload = async (docType, file) => {
     if (!application?.application_id || !user?.id) return;
     setLoading(true);
     setFormError('');
     try {
-      await loanService.uploadDocument(application.application_id, docType, file, user.id);
-      const refreshed = await loanService.getApplicationById(application.application_id, user.id);
-      if (refreshed) setApplication(refreshed);
+      const res = await loanService.uploadApplicationDocument(
+        application.application_id,
+        docType,
+        file,
+        user.id
+      );
+      if (res?.application) {
+        setApplication(res.application);
+      }
     } catch (err) {
-      setFormError('Document upload failed. Please try again.');
+      setFormError('Document upload failed. Please verify format (PDF/JPG/PNG) and size (<10MB).');
     } finally {
       setLoading(false);
     }
@@ -248,7 +234,7 @@ export default function LoanApplicationPage() {
     await saveDraftProgress(5);
     // Run pre-review validation
     if (application?.application_id && user?.id) {
-      const valResult = await loanService.validateApplication(application.application_id, user.id);
+      await loanService.validateApplication(application.application_id, user.id);
       const refreshed = await loanService.getApplicationById(application.application_id, user.id);
       if (refreshed) setApplication(refreshed);
     }
@@ -300,32 +286,32 @@ export default function LoanApplicationPage() {
       
       {/* Top Breadcrumb & Heading */}
       <div>
-        <div className="flex items-center gap-2 text-xs font-mono text-slate-400 mb-2">
-          <Link to="/loans" className="hover:text-cyan-300 flex items-center gap-1">
+        <div className="flex items-center gap-2 text-xs font-mono text-coffee-600 mb-2">
+          <Link to="/loans" className="hover:text-coffee-800 flex items-center gap-1 font-medium">
             <ArrowLeft className="h-3.5 w-3.5" />
             <span>Loan Marketplace</span>
           </Link>
-          <span>/</span>
-          <Link to={`/loans/${product.id}`} className="hover:text-cyan-300">
+          <span className="text-coffee-300">/</span>
+          <Link to={`/loans/${product.id}`} className="hover:text-coffee-800 font-medium">
             {product.name}
           </Link>
-          <span>/</span>
-          <span className="text-cyan-400 font-semibold">Application</span>
+          <span className="text-coffee-300">/</span>
+          <span className="text-coffee-800 font-semibold">Application</span>
         </div>
 
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
           <div>
-            <h1 className="text-2xl font-bold text-white tracking-tight">
+            <h1 className="text-2xl font-bold text-espresso tracking-tight">
               Loan Application
             </h1>
-            <p className="text-xs text-slate-400 mt-1">
+            <p className="text-xs text-stone-600 mt-1">
               Some of your verified profile details are already filled in. Please check the information and provide the remaining details.
             </p>
           </div>
 
           {application?.application_id && (
-            <div className="text-[11px] font-mono px-3 py-1 rounded-xl bg-midnight-900 border border-surface-border text-slate-300 self-start sm:self-auto">
-              Ref: <span className="text-cyan-400 font-bold">{application.application_id}</span>
+            <div className="text-[11px] font-mono px-3 py-1 rounded-xl bg-white border border-coffee-200 text-espresso shadow-xs self-start sm:self-auto">
+              Ref: <span className="text-coffee-700 font-bold">{application.application_id}</span>
             </div>
           )}
         </div>
@@ -343,8 +329,8 @@ export default function LoanApplicationPage() {
 
       {/* Form Error Banner */}
       {formError && (
-        <div className="p-3.5 rounded-xl border border-red-500/40 bg-red-950/40 text-xs text-red-200 flex items-start gap-2 animate-fadeIn">
-          <AlertCircle className="h-4 w-4 text-red-400 shrink-0 mt-0.5" />
+        <div className="p-3.5 rounded-xl border border-red-200 bg-red-50 text-xs text-red-800 flex items-start gap-2 animate-fadeIn">
+          <AlertCircle className="h-4 w-4 text-red-600 shrink-0 mt-0.5" />
           <div className="flex-1 font-medium">{formError}</div>
         </div>
       )}
@@ -353,27 +339,27 @@ export default function LoanApplicationPage() {
           STEP 1: PRE-FILLED & LOCKED PERSONAL DETAILS
           ===================================================================== */}
       {currentStep === 1 && (
-        <div className="rounded-2xl border border-surface-border bg-surface-card p-6 sm:p-8 shadow-xl space-y-5">
-          <div className="flex items-center justify-between pb-3 border-b border-surface-border">
+        <div className="rounded-2xl border border-coffee-200 bg-white p-6 sm:p-8 shadow-card space-y-5">
+          <div className="flex items-center justify-between pb-3 border-b border-coffee-100">
             <div>
-              <span className="text-xs font-mono uppercase tracking-wider text-cyan-400">
+              <span className="text-xs font-mono uppercase tracking-wider text-coffee-600 font-semibold">
                 Step 1 of 6
               </span>
-              <h2 className="text-lg font-bold text-white mt-0.5">
+              <h2 className="text-lg font-bold text-espresso mt-0.5">
                 Verified Personal Details
               </h2>
             </div>
-            <span className="text-xs font-mono px-2.5 py-1 rounded-md bg-emerald-950 text-emerald-300 border border-emerald-500/30 flex items-center gap-1.5 font-medium">
+            <span className="text-xs font-mono px-2.5 py-1 rounded-md bg-emerald-50 text-emerald-700 border border-emerald-200 flex items-center gap-1.5 font-medium">
               <Lock className="h-3.5 w-3.5" />
               <span>Verified Profile Information</span>
             </span>
           </div>
 
-          <div className="p-3.5 rounded-xl border border-surface-border bg-midnight-950/80 text-xs text-slate-300 flex items-start gap-2.5">
-            <ShieldCheck className="h-4 w-4 text-cyan-400 shrink-0 mt-0.5" />
+          <div className="p-3.5 rounded-xl border border-coffee-200 bg-coffee-50/50 text-xs text-stone-700 flex items-start gap-2.5">
+            <ShieldCheck className="h-4 w-4 text-coffee-700 shrink-0 mt-0.5" />
             <div>
-              <span className="font-semibold text-white block">Identity Details are Protected & Locked</span>
-              <p className="text-[11px] text-slate-400 mt-0.5 leading-relaxed">
+              <span className="font-semibold text-espresso block">Identity Details are Protected & Locked</span>
+              <p className="text-[11px] text-stone-600 mt-0.5 leading-relaxed">
                 To prevent identity tampering, verified personal details cannot be changed inside a loan application.
                 If your details have changed, please update them directly in your TrustLedger profile.
               </p>
@@ -382,44 +368,44 @@ export default function LoanApplicationPage() {
 
           {/* Locked Fields Grid */}
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3.5 text-xs">
-            <div className="p-3 rounded-xl border border-surface-border bg-midnight-950">
-              <label className="text-[10px] font-mono uppercase text-slate-400 block mb-1">Full Name</label>
-              <span className="font-semibold text-white block">{profile?.full_name || user?.fullName || 'Arjun Kumar'}</span>
+            <div className="p-3 rounded-xl border border-coffee-100 bg-stone-50/80">
+              <label className="text-[10px] font-mono uppercase text-stone-500 block mb-1">Full Name</label>
+              <span className="font-semibold text-espresso block">{profile?.full_name || user?.fullName || 'Arjun Kumar'}</span>
             </div>
-            <div className="p-3 rounded-xl border border-surface-border bg-midnight-950">
-              <label className="text-[10px] font-mono uppercase text-slate-400 block mb-1">Date of Birth</label>
-              <span className="text-slate-200 block">{profile?.date_of_birth || '1992-05-14'}</span>
+            <div className="p-3 rounded-xl border border-coffee-100 bg-stone-50/80">
+              <label className="text-[10px] font-mono uppercase text-stone-500 block mb-1">Date of Birth</label>
+              <span className="text-stone-700 block">{profile?.date_of_birth || '1992-05-14'}</span>
             </div>
-            <div className="p-3 rounded-xl border border-surface-border bg-midnight-950">
-              <label className="text-[10px] font-mono uppercase text-slate-400 block mb-1">Gender</label>
-              <span className="text-slate-200 block">{profile?.gender || 'Male'}</span>
+            <div className="p-3 rounded-xl border border-coffee-100 bg-stone-50/80">
+              <label className="text-[10px] font-mono uppercase text-stone-500 block mb-1">Gender</label>
+              <span className="text-stone-700 block">{profile?.gender || 'Male'}</span>
             </div>
-            <div className="p-3 rounded-xl border border-surface-border bg-midnight-950">
-              <label className="text-[10px] font-mono uppercase text-slate-400 block mb-1">Mobile Number</label>
-              <span className="text-slate-200 block">{profile?.mobile || user?.mobile || '9876543210'}</span>
+            <div className="p-3 rounded-xl border border-coffee-100 bg-stone-50/80">
+              <label className="text-[10px] font-mono uppercase text-stone-500 block mb-1">Mobile Number</label>
+              <span className="text-stone-700 block">{profile?.mobile || user?.mobile || '9876543210'}</span>
             </div>
-            <div className="p-3 rounded-xl border border-surface-border bg-midnight-950">
-              <label className="text-[10px] font-mono uppercase text-slate-400 block mb-1">Email</label>
-              <span className="text-slate-200 block truncate">{profile?.email || user?.email}</span>
+            <div className="p-3 rounded-xl border border-coffee-100 bg-stone-50/80">
+              <label className="text-[10px] font-mono uppercase text-stone-500 block mb-1">Email</label>
+              <span className="text-stone-700 block truncate">{profile?.email || user?.email}</span>
             </div>
-            <div className="p-3 rounded-xl border border-surface-border bg-midnight-950">
-              <label className="text-[10px] font-mono uppercase text-slate-400 block mb-1">Aadhaar (Masked)</label>
-              <span className="font-mono text-cyan-300 font-semibold">{profile?.aadhaar_masked || 'XXXX XXXX 4821'}</span>
+            <div className="p-3 rounded-xl border border-coffee-100 bg-stone-50/80">
+              <label className="text-[10px] font-mono uppercase text-stone-500 block mb-1">Aadhaar (Masked)</label>
+              <span className="font-mono text-coffee-800 font-semibold">{profile?.aadhaar_masked || 'XXXX XXXX 4821'}</span>
             </div>
-            <div className="p-3 rounded-xl border border-surface-border bg-midnight-950 sm:col-span-2">
-              <label className="text-[10px] font-mono uppercase text-slate-400 block mb-1">Residential Address</label>
-              <span className="text-slate-200 block truncate">{profile?.address || 'Sector 14, Gurugram, Haryana'} - {profile?.pincode || '122001'}</span>
+            <div className="p-3 rounded-xl border border-coffee-100 bg-stone-50/80 sm:col-span-2">
+              <label className="text-[10px] font-mono uppercase text-stone-500 block mb-1">Residential Address</label>
+              <span className="text-stone-700 block truncate">{profile?.address || 'Sector 14, Gurugram, Haryana'} - {profile?.pincode || '122001'}</span>
             </div>
-            <div className="p-3 rounded-xl border border-surface-border bg-midnight-950">
-              <label className="text-[10px] font-mono uppercase text-slate-400 block mb-1">PAN (Masked)</label>
-              <span className="font-mono text-cyan-300 font-semibold">{profile?.pan_masked || 'AB•••••4821'}</span>
+            <div className="p-3 rounded-xl border border-coffee-100 bg-stone-50/80">
+              <label className="text-[10px] font-mono uppercase text-stone-500 block mb-1">PAN (Masked)</label>
+              <span className="font-mono text-coffee-800 font-semibold">{profile?.pan_masked || 'AB•••••4821'}</span>
             </div>
           </div>
 
-          <div className="flex items-center justify-between pt-4 border-t border-surface-border">
+          <div className="flex items-center justify-between pt-4 border-t border-coffee-100">
             <Link
               to="/profile"
-              className="text-xs font-mono text-cyan-400 hover:text-cyan-300 inline-flex items-center gap-1"
+              className="text-xs font-mono text-coffee-600 hover:text-coffee-800 inline-flex items-center gap-1 font-medium"
             >
               <span>Go to Profile to change details</span>
               <ExternalLink className="h-3.5 w-3.5" />
@@ -428,7 +414,7 @@ export default function LoanApplicationPage() {
             <button
               type="button"
               onClick={handleStep1Next}
-              className="flex items-center gap-2 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 px-6 py-2.5 text-xs font-semibold uppercase tracking-wider text-midnight-950 shadow-[0_0_20px_rgba(0,240,255,0.25)] transition-all"
+              className="flex items-center gap-2 rounded-xl bg-coffee-600 hover:bg-coffee-700 px-6 py-2.5 text-xs font-semibold uppercase tracking-wider text-white shadow-sm transition-all"
             >
               <span>Confirm & Proceed</span>
               <ArrowRight className="h-4 w-4" />
@@ -441,15 +427,15 @@ export default function LoanApplicationPage() {
           STEP 2: LOAN-SPECIFIC DETAILS & PAYOUT ACCOUNT
           ===================================================================== */}
       {currentStep === 2 && (
-        <div className="rounded-2xl border border-surface-border bg-surface-card p-6 sm:p-8 shadow-xl">
+        <div className="rounded-2xl border border-coffee-200 bg-white p-6 sm:p-8 shadow-card">
           <div className="mb-5">
-            <span className="text-xs font-mono uppercase tracking-wider text-cyan-400">
+            <span className="text-xs font-mono uppercase tracking-wider text-coffee-600 font-semibold">
               Step 2 of 6
             </span>
-            <h2 className="text-lg font-bold text-white mt-0.5">
+            <h2 className="text-lg font-bold text-espresso mt-0.5">
               Loan Preferences & Disbursement Account
             </h2>
-            <p className="text-xs text-slate-400 mt-1">
+            <p className="text-xs text-stone-600 mt-1">
               Select your required loan amount, preferred duration, and disbursement bank
             </p>
           </div>
@@ -458,7 +444,7 @@ export default function LoanApplicationPage() {
             {/* Amount & Duration */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <label className="block text-xs font-mono uppercase text-slate-300 mb-1">
+                <label className="block text-xs font-mono uppercase text-stone-700 mb-1">
                   Requested Loan Amount (₹)
                 </label>
                 <input
@@ -469,15 +455,15 @@ export default function LoanApplicationPage() {
                   step={5000}
                   value={formData.requestedAmount}
                   onChange={(e) => setFormData({ ...formData, requestedAmount: Number(e.target.value) })}
-                  className="w-full rounded-xl border border-surface-border bg-midnight-950 px-3.5 py-2.5 text-xs text-white font-mono font-bold focus:border-cyan-400 focus:outline-none"
+                  className="w-full rounded-xl border border-coffee-200 bg-white px-3.5 py-2.5 text-xs text-espresso font-mono font-bold focus:border-coffee-500 focus:ring-1 focus:ring-coffee-500 focus:outline-none"
                 />
-                <span className="text-[10px] font-mono text-slate-500 mt-1 block">
+                <span className="text-[10px] font-mono text-stone-500 mt-1 block">
                   Allowed range: ₹{product.minAmount.toLocaleString('en-IN')} – ₹{product.maxAmount.toLocaleString('en-IN')}
                 </span>
               </div>
 
               <div>
-                <label className="block text-xs font-mono uppercase text-slate-300 mb-1">
+                <label className="block text-xs font-mono uppercase text-stone-700 mb-1">
                   Preferred Duration (Months)
                 </label>
                 <input
@@ -488,9 +474,9 @@ export default function LoanApplicationPage() {
                   step={3}
                   value={formData.requestedDuration}
                   onChange={(e) => setFormData({ ...formData, requestedDuration: Number(e.target.value) })}
-                  className="w-full rounded-xl border border-surface-border bg-midnight-950 px-3.5 py-2.5 text-xs text-white font-mono font-bold focus:border-cyan-400 focus:outline-none"
+                  className="w-full rounded-xl border border-coffee-200 bg-white px-3.5 py-2.5 text-xs text-espresso font-mono font-bold focus:border-coffee-500 focus:ring-1 focus:ring-coffee-500 focus:outline-none"
                 />
-                <span className="text-[10px] font-mono text-slate-500 mt-1 block">
+                <span className="text-[10px] font-mono text-stone-500 mt-1 block">
                   Allowed range: {product.minDurationMonths} – {product.maxDurationMonths} Months
                 </span>
               </div>
@@ -498,13 +484,13 @@ export default function LoanApplicationPage() {
 
             {/* Loan Purpose */}
             <div>
-              <label className="block text-xs font-mono uppercase text-slate-300 mb-1">
+              <label className="block text-xs font-mono uppercase text-stone-700 mb-1">
                 Loan Purpose
               </label>
               <select
                 value={formData.loanPurpose}
                 onChange={(e) => setFormData({ ...formData, loanPurpose: e.target.value })}
-                className="w-full rounded-xl border border-surface-border bg-midnight-950 px-3.5 py-2.5 text-xs text-white focus:border-cyan-400 focus:outline-none"
+                className="w-full rounded-xl border border-coffee-200 bg-white px-3.5 py-2.5 text-xs text-espresso focus:border-coffee-500 focus:ring-1 focus:ring-coffee-500 focus:outline-none"
               >
                 {product.purposeOptions?.map((opt, idx) => (
                   <option key={idx} value={opt}>{opt}</option>
@@ -513,40 +499,40 @@ export default function LoanApplicationPage() {
             </div>
 
             {/* Bank Account Details (Masked Protection) */}
-            <div className="pt-3 border-t border-surface-border space-y-3">
-              <span className="text-xs font-mono uppercase tracking-wider text-cyan-400 font-semibold block">
+            <div className="pt-3 border-t border-coffee-100 space-y-3">
+              <span className="text-xs font-mono uppercase tracking-wider text-coffee-700 font-semibold block">
                 Disbursement Bank Account
               </span>
 
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                 <div>
-                  <label className="block text-xs font-mono uppercase text-slate-300 mb-1">Bank Name</label>
+                  <label className="block text-xs font-mono uppercase text-stone-700 mb-1">Bank Name</label>
                   <input
                     type="text"
                     required
                     value={formData.payoutBankName}
                     onChange={(e) => setFormData({ ...formData, payoutBankName: e.target.value })}
                     placeholder="e.g. HDFC Bank / SBI"
-                    className="w-full rounded-xl border border-surface-border bg-midnight-950 px-3 py-2 text-xs text-white focus:border-cyan-400 focus:outline-none"
+                    className="w-full rounded-xl border border-coffee-200 bg-white px-3 py-2 text-xs text-espresso focus:border-coffee-500 focus:ring-1 focus:ring-coffee-500 focus:outline-none"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-xs font-mono uppercase text-slate-300 mb-1">Account Number</label>
+                  <label className="block text-xs font-mono uppercase text-stone-700 mb-1">Account Number</label>
                   <input
                     type="text"
                     value={formData.payoutAccountNumber}
                     onChange={(e) => setFormData({ ...formData, payoutAccountNumber: e.target.value })}
                     placeholder="Enter or keep existing masked"
-                    className="w-full rounded-xl border border-surface-border bg-midnight-950 px-3 py-2 text-xs font-mono text-white focus:border-cyan-400 focus:outline-none"
+                    className="w-full rounded-xl border border-coffee-200 bg-white px-3 py-2 text-xs font-mono text-espresso focus:border-coffee-500 focus:ring-1 focus:ring-coffee-500 focus:outline-none"
                   />
-                  <span className="text-[10px] font-mono text-slate-400 mt-0.5 block">
+                  <span className="text-[10px] font-mono text-stone-500 mt-0.5 block">
                     Current masked: {formData.payoutAccountMasked}
                   </span>
                 </div>
 
                 <div>
-                  <label className="block text-xs font-mono uppercase text-slate-300 mb-1">IFSC Code</label>
+                  <label className="block text-xs font-mono uppercase text-stone-700 mb-1">IFSC Code</label>
                   <input
                     type="text"
                     required
@@ -554,17 +540,17 @@ export default function LoanApplicationPage() {
                     value={formData.payoutIfsc}
                     onChange={(e) => setFormData({ ...formData, payoutIfsc: e.target.value.toUpperCase() })}
                     placeholder="e.g. HDFC0001234"
-                    className="w-full rounded-xl border border-surface-border bg-midnight-950 px-3 py-2 text-xs font-mono uppercase text-white focus:border-cyan-400 focus:outline-none"
+                    className="w-full rounded-xl border border-coffee-200 bg-white px-3 py-2 text-xs font-mono uppercase text-espresso focus:border-coffee-500 focus:ring-1 focus:ring-coffee-500 focus:outline-none"
                   />
                 </div>
               </div>
             </div>
 
-            <div className="flex items-center justify-between pt-4 border-t border-surface-border">
+            <div className="flex items-center justify-between pt-4 border-t border-coffee-100">
               <button
                 type="button"
                 onClick={() => setCurrentStep(1)}
-                className="px-4 py-2 text-xs text-slate-400 hover:text-white"
+                className="px-4 py-2 text-xs text-stone-600 hover:text-espresso font-medium"
               >
                 ← Back
               </button>
@@ -572,7 +558,7 @@ export default function LoanApplicationPage() {
               <button
                 type="submit"
                 disabled={saving}
-                className="flex items-center gap-2 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 px-6 py-2.5 text-xs font-semibold uppercase tracking-wider text-midnight-950 shadow-[0_0_20px_rgba(0,240,255,0.25)] transition-all"
+                className="flex items-center gap-2 rounded-xl bg-coffee-600 hover:bg-coffee-700 px-6 py-2.5 text-xs font-semibold uppercase tracking-wider text-white shadow-sm transition-all"
               >
                 <span>Save & Continue</span>
                 <ArrowRight className="h-4 w-4" />
@@ -586,15 +572,15 @@ export default function LoanApplicationPage() {
           STEP 3: FINANCIAL & EMPLOYMENT DETAILS
           ===================================================================== */}
       {currentStep === 3 && (
-        <div className="rounded-2xl border border-surface-border bg-surface-card p-6 sm:p-8 shadow-xl">
+        <div className="rounded-2xl border border-coffee-200 bg-white p-6 sm:p-8 shadow-card">
           <div className="mb-5">
-            <span className="text-xs font-mono uppercase tracking-wider text-cyan-400">
+            <span className="text-xs font-mono uppercase tracking-wider text-coffee-600 font-semibold">
               Step 3 of 6
             </span>
-            <h2 className="text-lg font-bold text-white mt-0.5">
+            <h2 className="text-lg font-bold text-espresso mt-0.5">
               Financial & Employment Assessment
             </h2>
-            <p className="text-xs text-slate-400 mt-1">
+            <p className="text-xs text-stone-600 mt-1">
               Provide your employment or business details and existing obligations
             </p>
           </div>
@@ -602,7 +588,7 @@ export default function LoanApplicationPage() {
           <form onSubmit={handleStep3Next} className="space-y-4">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <label className="block text-xs font-mono uppercase text-slate-300 mb-1">
+                <label className="block text-xs font-mono uppercase text-stone-700 mb-1">
                   Employer / Business Name
                 </label>
                 <input
@@ -611,12 +597,12 @@ export default function LoanApplicationPage() {
                   value={formData.employerName}
                   onChange={(e) => setFormData({ ...formData, employerName: e.target.value })}
                   placeholder="e.g. Infosys Ltd / Shri Ganesh Traders"
-                  className="w-full rounded-xl border border-surface-border bg-midnight-950 px-3.5 py-2.5 text-xs text-white focus:border-cyan-400 focus:outline-none"
+                  className="w-full rounded-xl border border-coffee-200 bg-white px-3.5 py-2.5 text-xs text-espresso focus:border-coffee-500 focus:ring-1 focus:ring-coffee-500 focus:outline-none"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-mono uppercase text-slate-300 mb-1">
+                <label className="block text-xs font-mono uppercase text-stone-700 mb-1">
                   Total Work / Business Experience (Years)
                 </label>
                 <input
@@ -625,14 +611,14 @@ export default function LoanApplicationPage() {
                   min="0"
                   value={formData.workExperience}
                   onChange={(e) => setFormData({ ...formData, workExperience: e.target.value })}
-                  className="w-full rounded-xl border border-surface-border bg-midnight-950 px-3.5 py-2.5 text-xs text-white font-mono focus:border-cyan-400 focus:outline-none"
+                  className="w-full rounded-xl border border-coffee-200 bg-white px-3.5 py-2.5 text-xs text-espresso font-mono focus:border-coffee-500 focus:ring-1 focus:ring-coffee-500 focus:outline-none"
                 />
               </div>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
               <div>
-                <label className="block text-xs font-mono uppercase text-slate-300 mb-1">
+                <label className="block text-xs font-mono uppercase text-stone-700 mb-1">
                   Monthly Net Income (₹)
                 </label>
                 <input
@@ -641,12 +627,12 @@ export default function LoanApplicationPage() {
                   value={formData.monthlyIncome}
                   onChange={(e) => setFormData({ ...formData, monthlyIncome: e.target.value })}
                   placeholder="75,000"
-                  className="w-full rounded-xl border border-surface-border bg-midnight-950 px-3.5 py-2.5 text-xs text-white font-mono focus:border-cyan-400 focus:outline-none"
+                  className="w-full rounded-xl border border-coffee-200 bg-white px-3.5 py-2.5 text-xs text-espresso font-mono focus:border-coffee-500 focus:ring-1 focus:ring-coffee-500 focus:outline-none"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-mono uppercase text-slate-300 mb-1">
+                <label className="block text-xs font-mono uppercase text-stone-700 mb-1">
                   Existing Monthly EMIs (₹)
                 </label>
                 <input
@@ -654,12 +640,12 @@ export default function LoanApplicationPage() {
                   value={formData.existingObligations}
                   onChange={(e) => setFormData({ ...formData, existingObligations: e.target.value })}
                   placeholder="0 if none"
-                  className="w-full rounded-xl border border-surface-border bg-midnight-950 px-3.5 py-2.5 text-xs text-white font-mono focus:border-cyan-400 focus:outline-none"
+                  className="w-full rounded-xl border border-coffee-200 bg-white px-3.5 py-2.5 text-xs text-espresso font-mono focus:border-coffee-500 focus:ring-1 focus:ring-coffee-500 focus:outline-none"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-mono uppercase text-slate-300 mb-1">
+                <label className="block text-xs font-mono uppercase text-stone-700 mb-1">
                   Approx. Monthly Expenses (₹)
                 </label>
                 <input
@@ -667,16 +653,16 @@ export default function LoanApplicationPage() {
                   value={formData.monthlyExpenses}
                   onChange={(e) => setFormData({ ...formData, monthlyExpenses: e.target.value })}
                   placeholder="30,000"
-                  className="w-full rounded-xl border border-surface-border bg-midnight-950 px-3.5 py-2.5 text-xs text-white font-mono focus:border-cyan-400 focus:outline-none"
+                  className="w-full rounded-xl border border-coffee-200 bg-white px-3.5 py-2.5 text-xs text-espresso font-mono focus:border-coffee-500 focus:ring-1 focus:ring-coffee-500 focus:outline-none"
                 />
               </div>
             </div>
 
-            <div className="flex items-center justify-between pt-4 border-t border-surface-border">
+            <div className="flex items-center justify-between pt-4 border-t border-coffee-100">
               <button
                 type="button"
                 onClick={() => setCurrentStep(2)}
-                className="px-4 py-2 text-xs text-slate-400 hover:text-white"
+                className="px-4 py-2 text-xs text-stone-600 hover:text-espresso font-medium"
               >
                 ← Back
               </button>
@@ -684,7 +670,7 @@ export default function LoanApplicationPage() {
               <button
                 type="submit"
                 disabled={saving}
-                className="flex items-center gap-2 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 px-6 py-2.5 text-xs font-semibold uppercase tracking-wider text-midnight-950 shadow-[0_0_20px_rgba(0,240,255,0.25)] transition-all"
+                className="flex items-center gap-2 rounded-xl bg-coffee-600 hover:bg-coffee-700 px-6 py-2.5 text-xs font-semibold uppercase tracking-wider text-white shadow-sm transition-all"
               >
                 <span>Save & Continue</span>
                 <ArrowRight className="h-4 w-4" />
@@ -698,15 +684,15 @@ export default function LoanApplicationPage() {
           STEP 4: REQUIRED SUPPORTING DOCUMENTS UPLOAD
           ===================================================================== */}
       {currentStep === 4 && (
-        <div className="rounded-2xl border border-surface-border bg-surface-card p-6 sm:p-8 shadow-xl space-y-5">
+        <div className="rounded-2xl border border-coffee-200 bg-white p-6 sm:p-8 shadow-card space-y-5">
           <div>
-            <span className="text-xs font-mono uppercase tracking-wider text-cyan-400">
+            <span className="text-xs font-mono uppercase tracking-wider text-coffee-600 font-semibold">
               Step 4 of 6
             </span>
-            <h2 className="text-lg font-bold text-white mt-0.5">
+            <h2 className="text-lg font-bold text-espresso mt-0.5">
               Upload Supporting Documents
             </h2>
-            <p className="text-xs text-slate-400 mt-1">
+            <p className="text-xs text-stone-600 mt-1">
               Upload the required documentation for {product.name}. Your verified identity document is pre-linked.
             </p>
           </div>
@@ -719,11 +705,11 @@ export default function LoanApplicationPage() {
             isProcessing={loading}
           />
 
-          <div className="flex items-center justify-between pt-4 border-t border-surface-border">
+          <div className="flex items-center justify-between pt-4 border-t border-coffee-100">
             <button
               type="button"
               onClick={() => setCurrentStep(3)}
-              className="px-4 py-2 text-xs text-slate-400 hover:text-white"
+              className="px-4 py-2 text-xs text-stone-600 hover:text-espresso font-medium"
             >
               ← Back
             </button>
@@ -732,7 +718,7 @@ export default function LoanApplicationPage() {
               type="button"
               disabled={loading}
               onClick={handleStep4Next}
-              className="flex items-center gap-2 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 px-6 py-2.5 text-xs font-semibold uppercase tracking-wider text-midnight-950 shadow-[0_0_20px_rgba(0,240,255,0.25)] transition-all"
+              className="flex items-center gap-2 rounded-xl bg-coffee-600 hover:bg-coffee-700 px-6 py-2.5 text-xs font-semibold uppercase tracking-wider text-white shadow-sm transition-all"
             >
               <span>Proceed to Review</span>
               <ArrowRight className="h-4 w-4" />
@@ -756,7 +742,7 @@ export default function LoanApplicationPage() {
             <button
               type="button"
               onClick={() => setCurrentStep(4)}
-              className="px-4 py-2 text-xs text-slate-400 hover:text-white"
+              className="px-4 py-2 text-xs text-stone-600 hover:text-espresso font-medium"
             >
               ← Back to Documents
             </button>
@@ -765,7 +751,7 @@ export default function LoanApplicationPage() {
               type="button"
               disabled={loading}
               onClick={handleStep5Next}
-              className="flex items-center gap-2 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 px-6 py-2.5 text-xs font-semibold uppercase tracking-wider text-midnight-950 shadow-[0_0_20px_rgba(0,240,255,0.25)] transition-all"
+              className="flex items-center gap-2 rounded-xl bg-coffee-600 hover:bg-coffee-700 px-6 py-2.5 text-xs font-semibold uppercase tracking-wider text-white shadow-sm transition-all"
             >
               {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : (
                 <>
@@ -783,42 +769,42 @@ export default function LoanApplicationPage() {
           STEP 6: READY TO SUBMIT & CONFIRMATION
           ===================================================================== */}
       {currentStep === 6 && (
-        <div className="rounded-2xl border border-surface-border bg-surface-card p-6 sm:p-10 shadow-2xl space-y-6 text-center">
+        <div className="rounded-2xl border border-coffee-200 bg-white p-6 sm:p-10 shadow-card space-y-6 text-center">
           {!submittedSuccess ? (
             <div className="space-y-5 max-w-md mx-auto">
-              <div className="w-16 h-16 rounded-2xl bg-cyan-950 border border-cyan-500/40 text-cyan-400 flex items-center justify-center mx-auto shadow-inner">
+              <div className="w-16 h-16 rounded-2xl bg-coffee-50 border border-coffee-200 text-coffee-700 flex items-center justify-center mx-auto shadow-sm">
                 <Send className="h-8 w-8" />
               </div>
 
               <div>
-                <span className="text-xs font-mono uppercase tracking-wider text-cyan-400 font-semibold">
+                <span className="text-xs font-mono uppercase tracking-wider text-coffee-600 font-semibold">
                   Step 6 of 6
                 </span>
-                <h2 className="text-xl font-bold text-white mt-1">
+                <h2 className="text-xl font-bold text-espresso mt-1">
                   Ready to Submit Application
                 </h2>
-                <p className="text-xs text-slate-300 mt-2 leading-relaxed">
+                <p className="text-xs text-stone-600 mt-2 leading-relaxed">
                   All required form entries, identity references, and documents have passed initial checks.
                   Click below to record your application reference as Ready for Review.
                 </p>
               </div>
 
-              <div className="p-3.5 rounded-xl border border-surface-border bg-midnight-950 text-left text-xs space-y-2">
+              <div className="p-3.5 rounded-xl border border-coffee-200 bg-stone-50/80 text-left text-xs space-y-2">
                 <div className="flex items-center justify-between">
-                  <span className="text-slate-400">Application ID</span>
-                  <span className="font-mono text-cyan-400 font-bold">{application?.application_id}</span>
+                  <span className="text-stone-500">Application ID</span>
+                  <span className="font-mono text-coffee-700 font-bold">{application?.application_id}</span>
                 </div>
                 <div className="flex items-center justify-between">
-                  <span className="text-slate-400">Loan Amount</span>
-                  <span className="font-mono text-white font-semibold">₹{application?.requested_amount?.toLocaleString('en-IN')}</span>
+                  <span className="text-stone-500">Loan Amount</span>
+                  <span className="font-mono text-espresso font-semibold">₹{application?.requested_amount?.toLocaleString('en-IN')}</span>
                 </div>
                 <div className="flex items-center justify-between">
-                  <span className="text-slate-400">Duration</span>
-                  <span className="font-mono text-white">{application?.requested_duration_months} Months</span>
+                  <span className="text-stone-500">Duration</span>
+                  <span className="font-mono text-espresso">{application?.requested_duration_months} Months</span>
                 </div>
                 <div className="flex items-center justify-between">
-                  <span className="text-slate-400">Underwriting Gate</span>
-                  <span className="text-emerald-400 font-semibold flex items-center gap-1">
+                  <span className="text-stone-500">Underwriting Gate</span>
+                  <span className="text-emerald-700 font-semibold flex items-center gap-1">
                     <CheckCircle2 className="h-3 w-3" /> Ready for Review
                   </span>
                 </div>
@@ -828,7 +814,7 @@ export default function LoanApplicationPage() {
                 <button
                   type="button"
                   onClick={() => setCurrentStep(5)}
-                  className="px-4 py-2.5 rounded-xl border border-surface-border bg-midnight-900 text-xs text-slate-300 hover:text-white"
+                  className="px-4 py-2.5 rounded-xl border border-coffee-200 bg-white text-xs text-stone-600 hover:text-espresso font-medium"
                 >
                   ← Review Again
                 </button>
@@ -837,7 +823,7 @@ export default function LoanApplicationPage() {
                   type="button"
                   disabled={loading}
                   onClick={handleFinalSubmit}
-                  className="flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 px-6 py-2.5 text-xs font-semibold uppercase tracking-wider text-midnight-950 shadow-[0_0_20px_rgba(16,185,129,0.3)] transition-all"
+                  className="flex items-center justify-center gap-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 px-6 py-2.5 text-xs font-semibold uppercase tracking-wider text-white shadow-sm transition-all"
                 >
                   {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <span>Confirm & Submit Application</span>}
                 </button>
@@ -845,20 +831,20 @@ export default function LoanApplicationPage() {
             </div>
           ) : (
             <div className="space-y-6 max-w-lg mx-auto">
-              <div className="w-20 h-20 rounded-2xl bg-emerald-950 border border-emerald-500/40 text-emerald-400 flex items-center justify-center mx-auto shadow-[0_0_30px_rgba(16,185,129,0.25)]">
+              <div className="w-20 h-20 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-600 flex items-center justify-center mx-auto shadow-sm">
                 <CheckCircle2 className="h-10 w-10" />
               </div>
 
               <div>
-                <span className="text-xs font-mono uppercase tracking-wider text-emerald-400 font-semibold">
+                <span className="text-xs font-mono uppercase tracking-wider text-emerald-700 font-semibold">
                   Application Logged Successfully
                 </span>
-                <h2 className="text-2xl font-bold text-white mt-1">
+                <h2 className="text-2xl font-bold text-espresso mt-1">
                   Application Ready for Review
                 </h2>
-                <p className="text-xs sm:text-sm text-slate-300 mt-2 leading-relaxed">
+                <p className="text-xs sm:text-sm text-stone-600 mt-2 leading-relaxed">
                   Your loan application has been recorded under your verified account.
-                  The lending institution review workflow will be implemented in the next phase.
+                  The lending institution review workflow will inspect your verification and documents.
                 </p>
               </div>
 
@@ -868,13 +854,13 @@ export default function LoanApplicationPage() {
               <div className="pt-2 flex items-center justify-center gap-3">
                 <Link
                   to="/home"
-                  className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 font-semibold text-xs text-midnight-950 uppercase tracking-wider shadow"
+                  className="px-5 py-2.5 rounded-xl bg-coffee-600 hover:bg-coffee-700 font-semibold text-xs text-white uppercase tracking-wider shadow-sm"
                 >
                   Return to Home
                 </Link>
                 <Link
                   to="/loans"
-                  className="px-4 py-2.5 rounded-xl bg-midnight-900 border border-surface-border text-xs text-slate-300 hover:text-white"
+                  className="px-4 py-2.5 rounded-xl bg-white border border-coffee-200 text-xs text-stone-700 hover:text-espresso font-medium"
                 >
                   Explore More Loans
                 </Link>

@@ -65,19 +65,27 @@ class DocumentAnalyzerService:
         self.storage_dir = storage_dir or STORAGE_ROOT
         self.storage_dir.mkdir(parents=True, exist_ok=True)
 
-    def validate_file(self, filename: str, file_size: int, content_type: str) -> None:
-        """Validate file size, extension, and MIME type."""
+    def validate_file(self, filename: str, file_size: int, content_type: str, content: Optional[bytes] = None) -> None:
+        """Validate file size, extension, MIME type, and magic bytes."""
         ext = Path(filename).suffix.lower()
+        if ext in {'.ppt', '.pptx', '.key', '.odp'}:
+            raise ValueError(f"Presentation files ({ext}) are strictly not accepted. Please upload an authentic PDF or image.")
+
         if ext not in ALLOWED_EXTENSIONS:
-            raise ValueError(f"Unsupported file format '{ext}'. Supported formats: PDF, PNG, JPG/JPEG.")
+            raise ValueError(f"Unsupported file format '{ext}'. Only PDF, PNG, and JPG/JPEG files are accepted.")
 
         if file_size > MAX_FILE_SIZE_BYTES:
             raise ValueError(f"File size ({file_size / (1024*1024):.1f} MB) exceeds maximum allowed limit of 10 MB.")
 
         if content_type and content_type.lower() not in ALLOWED_MIME_TYPES:
-            # Tolerant fallback if generic application/octet-stream but extension matches
             if content_type != 'application/octet-stream' and not content_type.startswith('image/'):
                 raise ValueError(f"Invalid MIME type '{content_type}'. Must be application/pdf or image/png/jpeg.")
+
+        if content:
+            from app.services.strict_document_validator import strict_document_validator
+            res = strict_document_validator.validate_file_security_and_type(filename, content)
+            if not res["valid"]:
+                raise ValueError(res["error"])
 
     def save_uploaded_file(self, application_id: str, filename: str, content: bytes) -> Tuple[str, str]:
         """Save file to local storage abstraction with safe generated filename."""

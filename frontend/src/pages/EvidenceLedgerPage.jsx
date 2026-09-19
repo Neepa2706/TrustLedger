@@ -37,15 +37,15 @@ export default function EvidenceLedgerPage() {
       {/* Header */}
       <div className="flex flex-wrap items-center justify-between gap-4">
         <div>
-          <div className="flex items-center gap-2 text-xs font-mono text-cyan-400">
+          <div className="flex items-center gap-2 text-xs font-mono text-coffee-600">
             <span>CRYPTOGRAPHIC AUDIT</span>
-            <span>/</span>
-            <span className="text-slate-400">TAMPER-EVIDENT LEDGER</span>
+            <span className="text-stone-400">/</span>
+            <span className="text-stone-500">TAMPER-EVIDENT LEDGER</span>
           </div>
-          <h1 className="text-2xl font-bold tracking-tight text-white mt-1">
+          <h1 className="text-2xl font-bold tracking-tight text-espresso mt-1">
             Immutable Evidence Audit Chain
           </h1>
-          <p className="text-xs text-slate-400 mt-0.5">
+          <p className="text-xs text-stone-500 mt-0.5">
             Every loan application, document hash, and decision audit log is permanently sealed
           </p>
         </div>
@@ -67,33 +67,33 @@ export default function EvidenceLedgerPage() {
       />
 
       {/* Ledger Block Explorer */}
-      <div className="rounded-xl border border-surface-border bg-surface-card p-5">
-        <div className="flex items-center justify-between mb-4 pb-3 border-b border-surface-border">
-          <h3 className="text-sm font-semibold text-white">Anchored Ledger Blocks</h3>
-          <span className="text-xs font-mono text-slate-400">Chain Height: #49821</span>
+      <div className="rounded-xl border border-coffee-200 bg-white p-5 shadow-sm">
+        <div className="flex items-center justify-between mb-4 pb-3 border-b border-coffee-200">
+          <h3 className="text-sm font-semibold text-espresso">Anchored Ledger Blocks</h3>
+          <span className="text-xs font-mono text-stone-500">Chain Height: #49821</span>
         </div>
 
         <div className="space-y-3 font-mono text-xs">
           {ledgerBlocks.map((b) => (
-            <div key={b.block} className="p-3.5 rounded-lg border border-surface-border bg-midnight-950 flex flex-wrap items-center justify-between gap-3">
+            <div key={b.block} className="p-3.5 rounded-lg border border-coffee-200 bg-warm-50/70 hover:bg-warm-50 flex flex-wrap items-center justify-between gap-3 transition-colors">
               <div className="flex items-center gap-3">
-                <div className="h-8 w-8 rounded bg-cyan-950/60 border border-cyan-500/30 flex items-center justify-center text-cyan-400 font-bold">
+                <div className="h-8 w-8 rounded bg-warm-100 border border-coffee-200 flex items-center justify-center text-coffee-700 font-bold">
                   #{b.block.toString().slice(-3)}
                 </div>
                 <div>
-                  <div className="text-white font-semibold flex items-center gap-2">
+                  <div className="text-espresso font-semibold flex items-center gap-2">
                     <span>Block #{b.block}</span>
                     <StatusBadge status="SAFE" customLabel={b.status} size="sm" />
                   </div>
-                  <div className="text-slate-400 text-[11px] truncate max-w-sm sm:max-w-md">
+                  <div className="text-stone-500 text-[11px] truncate max-w-sm sm:max-w-md">
                     Hash: {b.hash}
                   </div>
                 </div>
               </div>
 
-              <div className="text-right text-[11px] text-slate-400">
-                <div>{b.txCount} Evidence Signatures</div>
-                <div className="text-slate-500">{b.timestamp}</div>
+              <div className="text-right text-[11px] text-stone-600">
+                <div className="font-medium">{b.txCount} Evidence Signatures</div>
+                <div className="text-stone-400">{b.timestamp}</div>
               </div>
             </div>
           ))}

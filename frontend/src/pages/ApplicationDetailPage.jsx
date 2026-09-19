@@ -51,8 +51,8 @@ export default function ApplicationDetailPage() {
   // Loading State
   if (loading) {
     return (
-      <div className="flex flex-col items-center justify-center p-24 text-slate-400 font-mono">
-        <Loader2 className="h-8 w-8 animate-spin text-cyan-400 mb-3" />
+      <div className="flex flex-col items-center justify-center p-24 text-stone-500 font-mono">
+        <Loader2 className="h-8 w-8 animate-spin text-coffee-600 mb-3" />
         <span>Loading loan investigation dossier...</span>
       </div>
     );
@@ -61,19 +61,19 @@ export default function ApplicationDetailPage() {
   // 404 Not Found State
   if (!application) {
     return (
-      <div className="rounded-2xl border border-surface-border bg-surface-card/90 p-12 text-center max-w-lg mx-auto my-12 backdrop-blur-xl">
-        <div className="h-12 w-12 rounded-full bg-red-950/40 border border-red-500/40 flex items-center justify-center mx-auto text-red-400 mb-4">
+      <div className="rounded-2xl border border-coffee-200 bg-white p-12 text-center max-w-lg mx-auto my-12 shadow-md">
+        <div className="h-12 w-12 rounded-full bg-rose-50 border border-rose-200 flex items-center justify-center mx-auto text-rose-600 mb-4">
           <FileX2 className="h-6 w-6" />
         </div>
-        <h2 className="text-lg font-bold text-white font-mono">
+        <h2 className="text-lg font-bold text-espresso font-mono">
           Application Not Found
         </h2>
-        <p className="text-xs text-slate-400 mt-1">
-          No loan application record corresponds to identifier <span className="text-cyan-300 font-mono font-semibold">"{id}"</span>. Return to the applications queue.
+        <p className="text-xs text-stone-500 mt-1">
+          No loan application record corresponds to identifier <span className="text-coffee-700 font-mono font-semibold">"{id}"</span>. Return to the applications queue.
         </p>
         <button
           onClick={() => navigate('/applications')}
-          className="mt-6 inline-flex items-center gap-2 rounded-lg border border-cyan-500/40 bg-cyan-950/40 hover:bg-cyan-950/70 px-4 py-2 text-xs font-mono text-cyan-300 transition-colors"
+          className="mt-6 inline-flex items-center gap-2 rounded-xl bg-coffee-600 hover:bg-coffee-700 px-4 py-2 text-xs font-mono text-white transition-colors shadow-sm"
         >
           <ArrowLeft className="h-4 w-4" />
           <span>Back to Applications</span>

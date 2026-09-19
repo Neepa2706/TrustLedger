@@ -4,6 +4,7 @@
  * Enforces mandatory single-person account rule:
  * ONE PERSON = ONE USER ACCOUNT
  * Redirects immediately upon creation to /profile-setup.
+ * Styled in White & Coffee Brown fintech design system.
  */
 
 import React, { useState } from 'react';
@@ -76,11 +77,17 @@ export default function UserRegisterPage() {
     }
 
     try {
-      await register(formData);
-      // Navigate directly to profile setup for new user
+      await register({
+        fullName: formData.fullName.trim(),
+        email: formData.email.trim(),
+        mobile: cleanMobile,
+        password: formData.password
+      });
+
+      // Redirect immediately to Profile Setup Wizard as required by user flow
       navigate('/profile-setup', { replace: true });
     } catch (err) {
-      setLocalError(err.message || 'Your account could not be created. Please try again.');
+      setLocalError(err.message || 'Registration failed. Please try again.');
     }
   };
 
@@ -89,42 +96,36 @@ export default function UserRegisterPage() {
     clearError();
     try {
       await loginWithGoogle();
-      navigate('/profile-setup', { replace: true });
-    } catch {
-      setLocalError('Google sign-in could not be completed. Please try again.');
+    } catch (err) {
+      setLocalError(err.message || 'Google sign-up failed.');
     }
   };
 
   return (
-    <div className="min-h-screen w-full bg-midnight-950 text-slate-100 flex flex-col justify-between overflow-x-hidden relative selection:bg-cyan-500 selection:text-midnight-950">
+    <div className="min-h-screen w-full bg-surface-base text-coffee-950 flex flex-col justify-between overflow-x-hidden selection:bg-coffee-600 selection:text-white">
       
-      {/* Glows */}
-      <div className="absolute top-0 right-1/4 w-96 h-96 bg-cyan-500/10 rounded-full blur-3xl pointer-events-none" />
-      <div className="absolute bottom-0 left-1/4 w-96 h-96 bg-blue-600/10 rounded-full blur-3xl pointer-events-none" />
-
-      {/* Main Container */}
+      {/* Main Content Area */}
       <div className="flex-1 flex flex-col lg:flex-row w-full max-w-7xl mx-auto items-stretch p-4 sm:p-6 lg:p-10">
         
-        {/* Left Panel: Information & Rules */}
-        <div className="lg:w-[48%] p-6 sm:p-10 flex flex-col justify-between border-b lg:border-b-0 lg:border-r border-surface-border/80">
+        {/* Left Panel: Principles & Setup Walkthrough */}
+        <div className="lg:w-[48%] p-6 sm:p-10 flex flex-col justify-between border-b lg:border-b-0 lg:border-r border-coffee-200">
           <div>
-            <div className="mb-6">
+            <div className="mb-8">
               <TrustLedgerLogo size="lg" />
-              <div className="text-xs font-mono text-cyan-400/90 mt-2 tracking-wide">
+              <div className="text-xs font-semibold text-coffee-700 mt-2 tracking-wide">
                 Secure digital lending, verified from the start.
               </div>
             </div>
 
-            <div className="max-w-md">
-              <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-white leading-tight">
-                Create your{' '}
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500">
-                  TrustLedger account
-                </span>
+            <div className="max-w-xl">
+              <span className="text-xs font-mono uppercase tracking-wider text-coffee-600 font-bold">
+                Step 1 of Borrower Onboarding
+              </span>
+              <h1 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight text-coffee-950 mt-1 leading-tight">
+                Create your TrustLedger account
               </h1>
-
-              <p className="mt-3 text-xs sm:text-sm text-slate-300 leading-relaxed">
-                Your account is for your personal loan applications and verification.
+              <p className="mt-4 text-xs sm:text-sm text-coffee-700 leading-relaxed">
+                Join India&apos;s most secure fraud-protected digital lending platform. Complete a one-time profile setup and unlock seamless loan applications.
               </p>
             </div>
 
@@ -134,51 +135,49 @@ export default function UserRegisterPage() {
             </div>
 
             {/* What to expect */}
-            <div className="mt-8 space-y-3 font-sans text-xs text-slate-300">
-              <span className="text-[11px] font-mono uppercase tracking-wider text-cyan-400 font-semibold block mb-2">
+            <div className="mt-8 space-y-3 font-sans text-xs text-coffee-800">
+              <span className="text-[11px] font-mono uppercase tracking-wider text-coffee-600 font-bold block mb-2">
                 What happens next:
               </span>
-              <div className="flex items-center gap-3 p-3 rounded-xl border border-surface-border bg-midnight-900/60">
-                <span className="h-6 w-6 rounded-full bg-cyan-950 border border-cyan-500/40 text-cyan-300 flex items-center justify-center font-mono text-[11px] font-bold shrink-0">
+              <div className="flex items-center gap-3 p-3.5 rounded-2xl border border-coffee-200 bg-white shadow-sm">
+                <span className="h-6 w-6 rounded-full bg-coffee-100 border border-coffee-200 text-coffee-800 flex items-center justify-center font-mono text-[11px] font-bold shrink-0">
                   1
                 </span>
-                <span>Enter your personal and address details</span>
+                <span className="font-medium">Enter your personal and address details</span>
               </div>
-              <div className="flex items-center gap-3 p-3 rounded-xl border border-surface-border bg-midnight-900/60">
-                <span className="h-6 w-6 rounded-full bg-cyan-950 border border-cyan-500/40 text-cyan-300 flex items-center justify-center font-mono text-[11px] font-bold shrink-0">
+              <div className="flex items-center gap-3 p-3.5 rounded-2xl border border-coffee-200 bg-white shadow-sm">
+                <span className="h-6 w-6 rounded-full bg-coffee-100 border border-coffee-200 text-coffee-800 flex items-center justify-center font-mono text-[11px] font-bold shrink-0">
                   2
                 </span>
-                <span>Upload your Aadhaar document for document-based verification</span>
+                <span className="font-medium">Upload your Aadhaar or KYC document for optical inspection</span>
               </div>
-              <div className="flex items-center gap-3 p-3 rounded-xl border border-surface-border bg-midnight-900/60">
-                <span className="h-6 w-6 rounded-full bg-cyan-950 border border-cyan-500/40 text-cyan-300 flex items-center justify-center font-mono text-[11px] font-bold shrink-0">
+              <div className="flex items-center gap-3 p-3.5 rounded-2xl border border-coffee-200 bg-white shadow-sm">
+                <span className="h-6 w-6 rounded-full bg-coffee-100 border border-coffee-200 text-coffee-800 flex items-center justify-center font-mono text-[11px] font-bold shrink-0">
                   3
                 </span>
-                <span>Capture a live profile photograph using your camera</span>
+                <span className="font-medium">Capture a live profile photograph using your camera</span>
               </div>
             </div>
           </div>
 
-          <div className="pt-6 mt-6 border-t border-surface-border/50 text-[11px] font-mono text-slate-400 flex items-center gap-2">
-            <ShieldCheck className="h-3.5 w-3.5 text-emerald-400" />
+          <div className="pt-6 mt-6 border-t border-coffee-200 text-[11px] text-coffee-600 flex items-center gap-2">
+            <ShieldCheck className="h-4 w-4 text-emerald-700" />
             <span>Zero secret exposure • Automatic Aadhaar masking</span>
           </div>
         </div>
 
         {/* Right Panel: Registration Form */}
         <div className="lg:w-[52%] p-4 sm:p-8 lg:p-10 flex flex-col justify-center items-center">
-          <div className="w-full max-w-lg rounded-2xl border border-surface-border bg-surface-card/95 p-6 sm:p-8 shadow-2xl backdrop-blur-xl relative">
+          <div className="w-full max-w-lg rounded-2xl border border-coffee-200 bg-white p-6 sm:p-8 shadow-card relative">
             
-            <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-cyan-400 to-transparent rounded-t-2xl" />
-
             <div className="mb-6">
-              <span className="text-xs font-mono uppercase tracking-wider text-cyan-400 font-semibold">
+              <span className="text-xs font-mono uppercase tracking-wider text-coffee-600 font-bold">
                 New Applicant Registration
               </span>
-              <h2 className="text-xl font-bold tracking-tight text-white mt-1">
+              <h2 className="text-xl font-bold tracking-tight text-coffee-950 mt-1">
                 Create Your Applicant Account
               </h2>
-              <p className="text-xs text-slate-400 mt-1">
+              <p className="text-xs text-coffee-600 mt-1">
                 Register as an individual borrower to apply for digital loans with verified identity
               </p>
             </div>
@@ -188,7 +187,7 @@ export default function UserRegisterPage() {
               type="button"
               onClick={handleGoogleRegister}
               disabled={loading}
-              className="w-full flex items-center justify-center gap-3 rounded-lg border border-surface-border bg-midnight-950 hover:bg-midnight-900 px-4 py-2.5 text-xs font-medium text-white transition-all shadow-sm focus:outline-none focus:ring-1 focus:ring-cyan-400"
+              className="w-full flex items-center justify-center gap-3 rounded-xl border border-coffee-200 bg-white hover:bg-coffee-50 px-4 py-2.5 text-xs font-semibold text-coffee-950 transition-all shadow-sm focus:outline-none focus:ring-1 focus:ring-coffee-500 cursor-pointer"
             >
               <svg className="h-4 w-4" viewBox="0 0 24 24">
                 <path
@@ -214,94 +213,98 @@ export default function UserRegisterPage() {
             {/* Divider */}
             <div className="relative my-4">
               <div className="absolute inset-0 flex items-center">
-                <div className="w-full border-t border-surface-border" />
+                <div className="w-full border-t border-coffee-100" />
               </div>
               <div className="relative flex justify-center text-[10px] uppercase font-mono">
-                <span className="bg-surface-card px-2 text-slate-400">
-                  Or register with personal details
+                <span className="bg-white px-2 text-coffee-500 font-semibold">
+                  Or register with legal details
                 </span>
               </div>
             </div>
 
             {/* Error Message */}
             {(localError || authError) && (
-              <div className="mb-4 p-3 rounded-lg border border-red-500/40 bg-red-950/40 text-xs text-red-200 flex items-start gap-2">
-                <AlertCircle className="h-4 w-4 text-red-400 shrink-0 mt-0.5" />
-                <div className="flex-1">{localError || authError}</div>
+              <div
+                role="alert"
+                className="mb-5 flex items-start gap-2.5 rounded-xl border border-rose-200 bg-rose-50 p-3.5 text-xs text-rose-900 animate-fadeIn"
+              >
+                <AlertCircle className="h-4 w-4 text-rose-600 shrink-0 mt-0.5" />
+                <div className="flex-1">
+                  <div className="font-bold text-rose-950">Registration failed</div>
+                  <div className="mt-0.5 text-rose-800">{localError || authError}</div>
+                </div>
               </div>
             )}
 
             <form onSubmit={handleRegister} className="space-y-3.5" noValidate>
-              {/* Full Name */}
               <div>
-                <label className="block text-xs font-mono uppercase tracking-wider text-slate-300 mb-1">
-                  Full Name (as per official documents)
+                <label className="block text-xs font-bold text-coffee-950 mb-1">
+                  Full Legal Name (as on Aadhaar / PAN) <span className="text-rose-600">*</span>
                 </label>
                 <input
                   type="text"
                   name="fullName"
-                  required
                   value={formData.fullName}
                   onChange={handleChange}
-                  placeholder="e.g. Ramesh Kumar Sharma"
-                  className="w-full rounded-lg border border-surface-border bg-midnight-950 px-3.5 py-2 text-xs text-white placeholder-slate-500 focus:border-cyan-400 focus:outline-none"
+                  placeholder="e.g. Arjun Kumar"
+                  className="w-full rounded-xl border border-coffee-200 bg-coffee-50/40 px-3.5 py-2 text-xs text-coffee-950 placeholder-coffee-400 focus:border-coffee-600 focus:outline-none focus:ring-1 focus:ring-coffee-500"
                 />
               </div>
 
-              {/* Email & Mobile */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs font-mono uppercase tracking-wider text-slate-300 mb-1">
-                    Email Address
+                  <label className="block text-xs font-bold text-coffee-950 mb-1">
+                    Email Address <span className="text-rose-600">*</span>
                   </label>
                   <input
                     type="email"
                     name="email"
-                    required
                     value={formData.email}
                     onChange={handleChange}
-                    placeholder="ramesh@example.com"
-                    className="w-full rounded-lg border border-surface-border bg-midnight-950 px-3.5 py-2 text-xs text-white placeholder-slate-500 focus:border-cyan-400 focus:outline-none"
+                    placeholder="name@example.com"
+                    className="w-full rounded-xl border border-coffee-200 bg-coffee-50/40 px-3.5 py-2 text-xs text-coffee-950 placeholder-coffee-400 focus:border-coffee-600 focus:outline-none focus:ring-1 focus:ring-coffee-500"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-xs font-mono uppercase tracking-wider text-slate-300 mb-1">
-                    Mobile Number
+                  <label className="block text-xs font-bold text-coffee-950 mb-1">
+                    Mobile Number <span className="text-rose-600">*</span>
                   </label>
-                  <input
-                    type="tel"
-                    name="mobile"
-                    required
-                    maxLength={10}
-                    value={formData.mobile}
-                    onChange={handleChange}
-                    placeholder="10-digit mobile number"
-                    className="w-full rounded-lg border border-surface-border bg-midnight-950 px-3.5 py-2 text-xs text-white placeholder-slate-500 focus:border-cyan-400 focus:outline-none"
-                  />
+                  <div className="relative">
+                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-xs font-mono text-coffee-600">
+                      +91
+                    </span>
+                    <input
+                      type="tel"
+                      name="mobile"
+                      maxLength={10}
+                      value={formData.mobile}
+                      onChange={handleChange}
+                      placeholder="98765 43210"
+                      className="w-full rounded-xl border border-coffee-200 bg-coffee-50/40 pl-12 pr-3.5 py-2 text-xs text-coffee-950 placeholder-coffee-400 font-mono focus:border-coffee-600 focus:outline-none focus:ring-1 focus:ring-coffee-500"
+                    />
+                  </div>
                 </div>
               </div>
 
-              {/* Password & Confirm Password */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs font-mono uppercase tracking-wider text-slate-300 mb-1">
-                    Password
+                  <label className="block text-xs font-bold text-coffee-950 mb-1">
+                    Password <span className="text-rose-600">*</span>
                   </label>
                   <div className="relative">
                     <input
                       type={showPassword ? 'text' : 'password'}
                       name="password"
-                      required
                       value={formData.password}
                       onChange={handleChange}
-                      placeholder="Min 6 characters"
-                      className="w-full rounded-lg border border-surface-border bg-midnight-950 pl-3.5 pr-8 py-2 text-xs text-white placeholder-slate-500 focus:border-cyan-400 focus:outline-none"
+                      placeholder="Minimum 6 characters"
+                      className="w-full rounded-xl border border-coffee-200 bg-coffee-50/40 pl-3.5 pr-9 py-2 text-xs text-coffee-950 placeholder-coffee-400 focus:border-coffee-600 focus:outline-none focus:ring-1 focus:ring-coffee-500"
                     />
                     <button
                       type="button"
                       onClick={() => setShowPassword(!showPassword)}
-                      className="absolute right-2 top-1/2 -translate-y-1/2 text-slate-400 hover:text-cyan-300"
+                      className="absolute right-2.5 top-1/2 -translate-y-1/2 text-coffee-500 hover:text-coffee-900"
                     >
                       {showPassword ? <EyeOff className="h-3.5 w-3.5" /> : <Eye className="h-3.5 w-3.5" />}
                     </button>
@@ -309,72 +312,70 @@ export default function UserRegisterPage() {
                 </div>
 
                 <div>
-                  <label className="block text-xs font-mono uppercase tracking-wider text-slate-300 mb-1">
-                    Confirm Password
+                  <label className="block text-xs font-bold text-coffee-950 mb-1">
+                    Confirm Password <span className="text-rose-600">*</span>
                   </label>
                   <input
                     type={showPassword ? 'text' : 'password'}
                     name="confirmPassword"
-                    required
                     value={formData.confirmPassword}
                     onChange={handleChange}
-                    placeholder="Repeat password"
-                    className="w-full rounded-lg border border-surface-border bg-midnight-950 px-3.5 py-2 text-xs text-white placeholder-slate-500 focus:border-cyan-400 focus:outline-none"
+                    placeholder="Re-enter password"
+                    className="w-full rounded-xl border border-coffee-200 bg-coffee-50/40 px-3.5 py-2 text-xs text-coffee-950 placeholder-coffee-400 focus:border-coffee-600 focus:outline-none focus:ring-1 focus:ring-coffee-500"
                   />
                 </div>
               </div>
 
-              {/* Pre-completion Ownership Banner */}
-              <div className="pt-1">
-                <SingleAccountNotice variant="inline" />
+              {/* Single Person Rule Checkbox Acceptance */}
+              <div className="pt-2">
+                <div className="p-3 rounded-xl border border-coffee-200 bg-coffee-50 text-[11px] text-coffee-800 flex items-start gap-2">
+                  <input
+                    type="checkbox"
+                    id="ruleAccepted"
+                    defaultChecked
+                    required
+                    className="mt-0.5 rounded border-coffee-300 text-coffee-600 focus:ring-coffee-500"
+                  />
+                  <label htmlFor="ruleAccepted" className="leading-relaxed cursor-pointer font-medium">
+                    I confirm this account is created strictly for myself. I will upload my own authentic identity documents and live camera photo.
+                  </label>
+                </div>
               </div>
 
-              {/* Submit Button */}
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full mt-2 flex items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 px-4 py-2.5 text-xs font-semibold uppercase tracking-wider text-midnight-950 shadow-[0_0_20px_rgba(0,240,255,0.25)] transition-all disabled:opacity-60"
+                className="w-full mt-2 flex items-center justify-center gap-2 rounded-xl bg-coffee-600 hover:bg-coffee-700 px-4 py-2.5 text-xs font-bold uppercase tracking-wider text-white shadow-sm transition-all disabled:opacity-60 cursor-pointer"
               >
                 {loading ? (
                   <>
                     <Loader2 className="h-4 w-4 animate-spin" />
-                    <span>Creating personal account...</span>
+                    <span>Creating your account...</span>
                   </>
                 ) : (
                   <>
-                    <span>Create Account & Start Profile Setup</span>
+                    <span>Agree & Create Account</span>
                     <ArrowRight className="h-4 w-4" />
                   </>
                 )}
               </button>
             </form>
 
-            <div className="mt-4 text-center border-t border-surface-border/70 pt-3">
-              <span className="text-xs text-slate-400">
+            <div className="mt-5 text-center border-t border-coffee-100 pt-4">
+              <span className="text-xs text-coffee-600">
                 Already registered?{' '}
-                <Link to="/login" className="text-cyan-400 hover:underline font-semibold">
-                  Sign in directly
+                <Link to="/login" className="text-coffee-800 hover:text-coffee-950 font-bold hover:underline">
+                  Sign in here →
                 </Link>
               </span>
             </div>
-
-            {/* Browse loans link */}
-            <div className="mt-2 text-center">
-              <Link
-                to="/loans"
-                className="inline-flex items-center gap-1.5 text-xs font-medium text-slate-400 hover:text-cyan-300"
-              >
-                <span>Explore loan catalog first →</span>
-              </Link>
-            </div>
-
           </div>
         </div>
 
       </div>
 
-      <footer className="w-full border-t border-surface-border/50 py-3 px-6 text-center text-[11px] font-mono text-slate-500">
-        TrustLedger © 2026 • Secure digital lending, verified from the start
+      <footer className="w-full border-t border-coffee-200 py-4 px-6 text-center text-[11px] font-medium text-coffee-600 bg-white">
+        TrustLedger © 2026 • One Person = One Verified User Account
       </footer>
     </div>
   );

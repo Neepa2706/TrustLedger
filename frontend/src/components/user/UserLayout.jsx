@@ -1,6 +1,7 @@
 /**
  * TrustLedger UserLayout Component
  * Clean, trustworthy, mobile-first navigation for Indian borrower application.
+ * Styled in White + Coffee Brown fintech design system.
  */
 
 import React, { useState } from 'react';
@@ -46,13 +47,10 @@ export default function UserLayout() {
   const displayName = profile?.full_name || user?.fullName || 'Beneficiary';
 
   return (
-    <div className="min-h-screen bg-midnight-950 text-slate-100 flex flex-col justify-between selection:bg-cyan-500 selection:text-midnight-950">
+    <div className="min-h-screen bg-surface-base text-coffee-950 flex flex-col justify-between selection:bg-coffee-600 selection:text-white">
       
-      {/* Top Ambient Glow */}
-      <div className="fixed top-0 left-1/3 w-[500px] h-[300px] bg-cyan-500/5 rounded-full blur-3xl pointer-events-none -translate-y-1/2" />
-
       {/* Main Top Header */}
-      <header className="sticky top-0 z-40 w-full border-b border-surface-border/80 bg-midnight-950/90 backdrop-blur-md">
+      <header className="sticky top-0 z-40 w-full border-b border-coffee-200 bg-white/95 backdrop-blur-md shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             
@@ -61,12 +59,12 @@ export default function UserLayout() {
               <Link to="/home" className="flex items-center gap-2">
                 <TrustLedgerLogo size="default" />
               </Link>
-              <div className="hidden md:flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-cyan-950/60 border border-cyan-500/30 text-[11px] font-mono text-cyan-300">
-                <ShieldCheck className="h-3 w-3 text-cyan-400" />
+              <div className="hidden md:flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-coffee-50 border border-coffee-200 text-[11px] font-mono text-coffee-800 font-semibold">
+                <ShieldCheck className="h-3.5 w-3.5 text-coffee-600" />
                 <span>Borrower Portal</span>
               </div>
               {isDemo && (
-                <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-amber-950/70 text-amber-300 border border-amber-500/30 font-medium">
+                <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-amber-50 text-amber-800 border border-amber-200 font-semibold">
                   DEMO MODE
                 </span>
               )}
@@ -81,10 +79,10 @@ export default function UserLayout() {
                     key={item.path}
                     to={item.path}
                     className={({ isActive }) =>
-                      `flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-medium transition-all ${
+                      `flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-semibold transition-all ${
                         isActive
-                          ? 'bg-cyan-950/70 text-cyan-300 border border-cyan-500/40 shadow-[0_0_12px_rgba(0,240,255,0.15)]'
-                          : 'text-slate-400 hover:text-white hover:bg-midnight-900'
+                          ? 'bg-coffee-600 text-white shadow-sm'
+                          : 'text-coffee-700 hover:text-coffee-950 hover:bg-coffee-50'
                       }`
                     }
                   >
@@ -100,20 +98,20 @@ export default function UserLayout() {
               {user ? (
                 <>
                   {/* Verification Status Pill */}
-                  <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg border border-surface-border bg-midnight-900 text-[11px]">
+                  <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl border border-coffee-200 bg-coffee-50 text-xs shadow-sm">
                     {isVerified ? (
                       <>
-                        <CheckCircle2 className="h-3.5 w-3.5 text-emerald-400" />
-                        <span className="text-emerald-300 font-semibold">Verified</span>
+                        <CheckCircle2 className="h-3.5 w-3.5 text-emerald-600" />
+                        <span className="text-emerald-800 font-bold">Verified</span>
                       </>
                     ) : (
                       <>
-                        <Clock className="h-3.5 w-3.5 text-amber-400" />
-                        <span className="text-amber-300 font-medium">Setup Pending</span>
+                        <Clock className="h-3.5 w-3.5 text-amber-600" />
+                        <span className="text-amber-800 font-bold">Setup Pending</span>
                       </>
                     )}
-                    <span className="text-slate-500">|</span>
-                    <span className="text-slate-200 font-medium truncate max-w-[120px]">
+                    <span className="text-coffee-300">|</span>
+                    <span className="text-coffee-950 font-semibold truncate max-w-[130px]">
                       {displayName}
                     </span>
                   </div>
@@ -121,7 +119,7 @@ export default function UserLayout() {
                   {/* Logout Button */}
                   <button
                     onClick={handleLogout}
-                    className="p-2 rounded-lg text-slate-400 hover:text-red-300 hover:bg-red-950/30 border border-transparent hover:border-red-500/30 transition-all text-xs"
+                    className="p-2 rounded-xl text-coffee-700 hover:text-rose-700 hover:bg-rose-50 border border-transparent hover:border-rose-200 transition-all text-xs cursor-pointer shadow-sm"
                     title="Sign out"
                   >
                     <LogOut className="h-4 w-4" />
@@ -131,13 +129,13 @@ export default function UserLayout() {
                 <div className="flex items-center gap-2">
                   <Link
                     to="/login"
-                    className="px-3.5 py-1.5 rounded-lg bg-gradient-to-r from-cyan-500 to-blue-600 font-semibold text-xs text-midnight-950 uppercase tracking-wider shadow"
+                    className="px-4 py-2 rounded-xl bg-coffee-600 hover:bg-coffee-700 font-bold text-xs text-white uppercase tracking-wider shadow-sm transition-colors"
                   >
-                    Applicant Sign In
+                    Sign In
                   </Link>
                   <Link
                     to="/register"
-                    className="px-3.5 py-1.5 rounded-lg bg-midnight-900 border border-surface-border text-xs text-slate-300 hover:text-white"
+                    className="px-4 py-2 rounded-xl bg-white border border-coffee-200 text-xs font-semibold text-coffee-950 hover:bg-coffee-50 transition-colors shadow-sm"
                   >
                     Register
                   </Link>
@@ -149,7 +147,7 @@ export default function UserLayout() {
             <div className="flex md:hidden items-center gap-2">
               <button
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                className="p-2 rounded-lg border border-surface-border text-slate-300 hover:text-white bg-midnight-900"
+                className="p-2 rounded-xl border border-coffee-200 text-coffee-700 hover:text-coffee-950 bg-coffee-50 cursor-pointer"
                 aria-label="Toggle navigation menu"
               >
                 {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
@@ -161,20 +159,20 @@ export default function UserLayout() {
 
         {/* Mobile Dropdown Menu */}
         {mobileMenuOpen && (
-          <div className="md:hidden border-t border-surface-border bg-midnight-950 px-4 pt-3 pb-4 space-y-2 animate-fadeIn">
+          <div className="md:hidden border-t border-coffee-200 bg-white px-4 pt-3 pb-4 space-y-2 animate-fadeIn shadow-lg">
             {/* User status banner */}
-            <div className="p-3 rounded-lg border border-surface-border bg-midnight-900 mb-3 flex items-center justify-between">
+            <div className="p-3 rounded-xl border border-coffee-200 bg-coffee-50 mb-3 flex items-center justify-between">
               <div>
-                <span className="text-xs font-semibold text-white block">{displayName}</span>
-                <span className="text-[10px] text-slate-400 block">{user?.email}</span>
+                <span className="text-xs font-bold text-coffee-950 block">{displayName}</span>
+                <span className="text-[10px] text-coffee-600 block">{user?.email}</span>
               </div>
               <div className="flex items-center gap-1 text-[11px]">
                 {isVerified ? (
-                  <span className="text-emerald-400 font-medium flex items-center gap-1">
+                  <span className="text-emerald-700 font-bold flex items-center gap-1">
                     <CheckCircle2 className="h-3 w-3" /> Verified
                   </span>
                 ) : (
-                  <span className="text-amber-400 font-medium flex items-center gap-1">
+                  <span className="text-amber-700 font-bold flex items-center gap-1">
                     <Clock className="h-3 w-3" /> Pending Setup
                   </span>
                 )}
@@ -190,24 +188,24 @@ export default function UserLayout() {
                   to={item.path}
                   onClick={() => setMobileMenuOpen(false)}
                   className={({ isActive }) =>
-                    `flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-xs font-medium transition-all ${
+                    `flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-all ${
                       isActive
-                        ? 'bg-cyan-950/70 text-cyan-300 border border-cyan-500/40'
-                        : 'text-slate-300 hover:bg-midnight-900'
+                        ? 'bg-coffee-600 text-white shadow-sm'
+                        : 'text-coffee-800 hover:bg-coffee-50'
                     }`
                   }
                 >
-                  <Icon className="h-4 w-4 text-cyan-400" />
+                  <Icon className="h-4 w-4" />
                   <span>{item.name}</span>
                 </NavLink>
               );
             })}
 
             {/* Mobile Logout */}
-            <div className="pt-2 border-t border-surface-border">
+            <div className="pt-2 border-t border-coffee-100">
               <button
                 onClick={handleLogout}
-                className="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-xs font-medium text-red-400 hover:bg-red-950/30 transition-all"
+                className="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold text-rose-700 hover:bg-rose-50 transition-all cursor-pointer"
               >
                 <LogOut className="h-4 w-4" />
                 <span>Sign Out</span>
@@ -223,9 +221,9 @@ export default function UserLayout() {
       </main>
 
       {/* Trust Ledger Customer Footer */}
-      <footer className="border-t border-surface-border/60 bg-midnight-950 py-4 px-6 text-center text-[11px] font-mono text-slate-500 flex flex-col sm:flex-row items-center justify-between max-w-7xl mx-auto w-full gap-2">
+      <footer className="border-t border-coffee-200 bg-white py-5 px-6 text-center text-[11px] font-medium text-coffee-600 flex flex-col sm:flex-row items-center justify-between max-w-7xl mx-auto w-full gap-2">
         <div className="flex items-center gap-2">
-          <ShieldCheck className="h-3.5 w-3.5 text-cyan-400" />
+          <ShieldCheck className="h-4 w-4 text-coffee-600" />
           <span>TrustLedger • Secure digital lending, verified from the start.</span>
         </div>
         <div>

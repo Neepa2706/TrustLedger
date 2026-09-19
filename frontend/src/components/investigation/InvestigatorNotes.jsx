@@ -58,17 +58,17 @@ export default function InvestigatorNotes({ applicationId }) {
   };
 
   return (
-    <div className="rounded-xl border border-surface-border bg-surface-card/80 p-6 backdrop-blur-sm space-y-4">
-      <div className="flex items-center justify-between pb-3 border-b border-surface-border">
+    <div className="rounded-2xl border border-coffee-200 bg-white p-6 shadow-sm space-y-4">
+      <div className="flex items-center justify-between pb-3 border-b border-coffee-100">
         <div className="flex items-center gap-2">
-          <FileEdit className="h-4 w-4 text-cyan-400" />
-          <h2 className="text-sm font-semibold text-white tracking-wide">
+          <FileEdit className="h-4 w-4 text-coffee-700" />
+          <h2 className="text-sm font-semibold text-espresso tracking-wide">
             Investigator Notes
           </h2>
         </div>
         {savedSuccess && (
-          <span className="text-xs font-mono text-emerald-400 flex items-center gap-1 bg-emerald-950/60 px-2 py-0.5 rounded border border-emerald-500/30">
-            <Check className="h-3 w-3" />
+          <span className="text-xs font-mono text-emerald-800 flex items-center gap-1 bg-emerald-50 px-2 py-0.5 rounded-lg border border-emerald-200">
+            <Check className="h-3 w-3 text-emerald-700" />
             Note saved
           </span>
         )}
@@ -84,19 +84,19 @@ export default function InvestigatorNotes({ applicationId }) {
             localStorage.setItem(storageKey, e.target.value);
           }}
           placeholder="Add supervisory notes, bank statement cross-check notes, or fraud findings..."
-          className="w-full rounded-lg border border-surface-border bg-midnight-950 p-3 text-xs text-white placeholder-slate-500 font-mono focus:border-cyan-400 focus:outline-none focus:ring-1 focus:ring-cyan-400 leading-relaxed"
+          className="w-full rounded-xl border border-coffee-200 bg-white p-3 text-xs text-espresso placeholder-stone-400 font-mono focus:border-coffee-500 focus:outline-none focus:ring-1 focus:ring-coffee-500 leading-relaxed shadow-2xs"
         />
 
         <div className="flex items-center justify-between">
-          <span className="text-[11px] text-slate-500 font-mono">
+          <span className="text-[11px] text-stone-500 font-mono">
             Private underwriter log • Protected from applicant
           </span>
           <button
             onClick={handleSave}
             disabled={isSaving || !note.trim()}
-            className="inline-flex items-center gap-1.5 rounded-lg border border-cyan-500/40 bg-cyan-950/40 px-3 py-1.5 text-xs font-mono text-cyan-300 hover:bg-cyan-950/70 hover:border-cyan-400 transition-colors disabled:opacity-40"
+            className="inline-flex items-center gap-1.5 rounded-xl bg-coffee-600 hover:bg-coffee-700 px-3 py-1.5 text-xs font-mono text-white transition-colors disabled:opacity-40 shadow-xs"
           >
-            {isSaving ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Save className="h-3.5 w-3.5 text-cyan-400" />}
+            {isSaving ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Save className="h-3.5 w-3.5" />}
             <span>Record Note</span>
           </button>
         </div>
@@ -104,27 +104,27 @@ export default function InvestigatorNotes({ applicationId }) {
 
       {/* Notes history stream */}
       {notesHistory.length > 0 && (
-        <div className="pt-2 border-t border-surface-border space-y-2">
-          <div className="text-[10px] font-mono uppercase text-slate-400 tracking-wider">
+        <div className="pt-2 border-t border-coffee-100 space-y-2">
+          <div className="text-[10px] font-mono uppercase text-stone-500 font-semibold tracking-wider">
             Audit Note Trail ({notesHistory.length})
           </div>
           <div className="space-y-2 max-h-48 overflow-y-auto pr-1">
             {notesHistory.map((item, idx) => (
               <div
                 key={item.note_id || idx}
-                className="p-2.5 rounded-lg bg-midnight-950/70 border border-slate-800/80 text-xs space-y-1"
+                className="p-3 rounded-xl bg-warm-50/70 border border-coffee-200 text-xs space-y-1 shadow-2xs"
               >
-                <div className="flex items-center justify-between text-[10px] font-mono text-slate-400">
-                  <span className="text-cyan-300 flex items-center gap-1">
-                    <User className="w-3 h-3" />
+                <div className="flex items-center justify-between text-[10px] font-mono text-stone-500">
+                  <span className="text-coffee-800 font-semibold flex items-center gap-1">
+                    <User className="w-3 h-3 text-coffee-600" />
                     {item.author_name || 'Underwriter'}
                   </span>
-                  <span className="flex items-center gap-1 text-slate-500">
+                  <span className="flex items-center gap-1 text-stone-400">
                     <Clock className="w-3 h-3" />
                     {item.created_at ? item.created_at.slice(0, 16).replace('T', ' ') : 'Just now'}
                   </span>
                 </div>
-                <p className="text-slate-300 font-sans text-[11px] leading-relaxed">
+                <p className="text-stone-700 font-sans text-[11px] leading-relaxed">
                   {item.note_text}
                 </p>
               </div>

@@ -52,6 +52,7 @@ from app.services.user_verifier import user_verifier
 from app.services.document_comparison import document_comparison_service
 from app.services.kyc_service import kyc_service
 from app.fraud_graph.graph_engine import fraud_graph_engine
+from app.services.strict_document_validator import strict_document_validator
 
 # In-memory storage for prototype loan applications and attachments
 APPLICATIONS_STORE: Dict[str, Dict[str, Any]] = {}
@@ -231,6 +232,41 @@ DEMO_LOAN_PRODUCTS: List[LoanProduct] = [
             "Confirmed admission in recognized educational institution or course",
             "Minimum 10+2 qualification",
             "Applicant or earning co-applicant required"
+        ],
+        demo_only=True,
+        active=True
+    ),
+    LoanProduct(
+        id="drone-commercial-loan",
+        name="Drone Commercial & Enterprise Loan",
+        category="Commercial Drone",
+        description="Financing for commercial UAVs, DGCA-registered agricultural sprayers, aerial surveying payloads, and enterprise drone fleets.",
+        min_amount=100000,
+        max_amount=2000000,
+        min_duration_months=12,
+        max_duration_months=60,
+        min_interest_rate=11.5,
+        max_interest_rate=16.5,
+        processing_fee_percentage=1.5,
+        processing_fee_description="1.5% processing fee on sanctioned amount",
+        purpose_options=[
+            "DGCA Approved Drone Purchase",
+            "Agricultural Spraying & Precision Farming UAV",
+            "Aerial Surveying, Mapping & LiDAR Payload",
+            "Drone Repair, Fleet Maintenance & Ground Control Station",
+            "Enterprise Drone Service Expansion"
+        ],
+        required_documents=[
+            {"type": "Identity Proof", "required": True, "note": "Aadhaar / Passport (pre-verified)"},
+            {"type": "Bank Statement", "required": True, "note": "Last 6 months active bank account statement (PDF)"},
+            {"type": "DGCA Drone Registration / UIN", "required": True, "note": "DGCA Digital Sky UIN / DAN Certificate or Proforma Invoice"},
+            {"type": "Drone Insurance", "required": True, "note": "Drone Third-Party / Hull Insurance policy or quote"}
+        ],
+        eligibility_criteria=[
+            "Indian citizen or registered entity aged 21 to 60 years",
+            "Valid DGCA Remote Pilot Certificate or certified drone operator",
+            "Active bank account with regular cashflow (₹40,000+ monthly)",
+            "Commercial drone model compliant with DGCA Digital Sky requirements"
         ],
         demo_only=True,
         active=True
@@ -970,6 +1006,13 @@ class LoanService:
                 return "MATCH", "Document matches Business proof / registration format."
             return "REVIEW", "Prototype note: File requires MSME registry verification."
 
+        elif any(k in doc_type_lower for k in ["drone", "uin", "aviation", "dgca", "insurance"]):
+            indicators = ["drone", "uav", "uas", "dgca", "digital sky", "uin", "dan", "remote pilot", "serial", "aviation", "flight", "insurance"]
+            matches = sum(1 for ind in indicators if ind in text_lower)
+            if matches >= 1:
+                return "MATCH", "Document matches DGCA Drone Registration or Aviation documentation."
+            return "REVIEW", "Contains aviation indicators; pending underwriter certificate cross-check."
+
         return "MATCH", "Document format acceptable for designated type."
 
     def add_document(
@@ -980,10 +1023,19 @@ class LoanService:
         filename: str,
         content: bytes
     ) -> LoanApplicationDocument:
-        """Saves and inspects an application document."""
+        """Saves and inspects an application document with strict security and category validation."""
         app = APPLICATIONS_STORE.get(application_id)
         if not app or app.get("user_id") != user_id:
             raise PermissionError("Application not found or unauthorized access.")
+
+        # Strict security, magic bytes, extension, and category content validation
+        strict_sec = strict_document_validator.validate_file_security_and_type(
+            filename=filename,
+            content=content,
+            expected_category=document_type
+        )
+        if not strict_sec["valid"]:
+            raise ValueError(strict_sec["error"])
 
         # Optical quality inspection
         quality = user_verifier.evaluate_document_quality(content, filename)

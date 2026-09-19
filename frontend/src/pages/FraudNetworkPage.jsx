@@ -10,15 +10,15 @@ export default function FraudNetworkPage() {
       {/* Header */}
       <div className="flex flex-wrap items-center justify-between gap-4">
         <div>
-          <div className="flex items-center gap-2 text-xs font-mono text-cyan-400">
+          <div className="flex items-center gap-2 text-xs font-mono text-coffee-600">
             <span>GRAPH INTELLIGENCE</span>
-            <span>/</span>
-            <span className="text-slate-400">ENTITY RESOLUTION</span>
+            <span className="text-stone-400">/</span>
+            <span className="text-stone-500">ENTITY RESOLUTION</span>
           </div>
-          <h1 className="text-2xl font-bold tracking-tight text-white mt-1">
+          <h1 className="text-2xl font-bold tracking-tight text-espresso mt-1">
             Fraud Syndicate Network Analysis
           </h1>
-          <p className="text-xs text-slate-400 mt-0.5">
+          <p className="text-xs text-stone-500 mt-0.5">
             Identify multi-application collusions, shared device fingerprints, and mule bank clusters
           </p>
         </div>
@@ -42,22 +42,22 @@ export default function FraudNetworkPage() {
 
       {/* Entity Breakdown Stats */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 font-mono text-xs">
-        <div className="rounded-xl border border-surface-border bg-surface-card p-4">
-          <div className="text-slate-400 uppercase text-[10px]">Identified Syndicate Nodes</div>
-          <div className="text-xl font-bold text-red-400 mt-1">19 Correlated Entities</div>
-          <div className="text-slate-500 mt-1">Device IMEI reused across 4 states</div>
+        <div className="rounded-xl border border-coffee-200 bg-white p-4 shadow-sm">
+          <div className="text-stone-500 uppercase text-[10px]">Identified Syndicate Nodes</div>
+          <div className="text-xl font-bold text-red-700 mt-1">19 Correlated Entities</div>
+          <div className="text-stone-600 mt-1">Device IMEI reused across 4 states</div>
         </div>
 
-        <div className="rounded-xl border border-surface-border bg-surface-card p-4">
-          <div className="text-slate-400 uppercase text-[10px]">Total Syndicate Loan Exposure</div>
-          <div className="text-xl font-bold text-amber-400 mt-1">$485,000 Requested</div>
-          <div className="text-slate-500 mt-1">Intercepted before disbursement</div>
+        <div className="rounded-xl border border-coffee-200 bg-white p-4 shadow-sm">
+          <div className="text-stone-500 uppercase text-[10px]">Total Syndicate Loan Exposure</div>
+          <div className="text-xl font-bold text-amber-700 mt-1">₹48,50,000 Requested</div>
+          <div className="text-stone-600 mt-1">Intercepted before disbursement</div>
         </div>
 
-        <div className="rounded-xl border border-surface-border bg-surface-card p-4">
-          <div className="text-slate-400 uppercase text-[10px]">Cluster Confidence Score</div>
-          <div className="text-xl font-bold text-cyan-400 mt-1">98.7% Precision</div>
-          <div className="text-slate-500 mt-1">Deterministic identity overlap</div>
+        <div className="rounded-xl border border-coffee-200 bg-white p-4 shadow-sm">
+          <div className="text-stone-500 uppercase text-[10px]">Cluster Confidence Score</div>
+          <div className="text-xl font-bold text-coffee-700 mt-1">98.7% Precision</div>
+          <div className="text-stone-600 mt-1">Deterministic identity overlap</div>
         </div>
       </div>
     </div>

@@ -193,11 +193,11 @@ export default function DocumentsPage() {
     <div className="space-y-6">
       {/* Toast Notification */}
       {toastMessage && (
-        <div className="fixed bottom-6 right-6 z-50 flex items-center gap-3 rounded-lg border border-cyan-500/40 bg-midnight-950/95 px-4 py-3 text-xs font-mono text-cyan-200 shadow-2xl backdrop-blur animate-fadeIn">
+        <div className="fixed bottom-6 right-6 z-50 flex items-center gap-3 rounded-xl border border-coffee-200 bg-white px-4 py-3 text-xs font-mono text-espresso shadow-2xl animate-fadeIn">
           <span>{toastMessage}</span>
           <button
             onClick={() => setToastMessage('')}
-            className="text-cyan-400 hover:text-white"
+            className="text-stone-400 hover:text-espresso"
             aria-label="Dismiss toast"
           >
             <X className="h-3.5 w-3.5" />
@@ -218,31 +218,31 @@ export default function DocumentsPage() {
       {/* Page Header */}
       <div className="flex flex-wrap items-center justify-between gap-4">
         <div>
-          <div className="flex items-center gap-2 text-xs font-mono text-cyan-400">
+          <div className="flex items-center gap-2 text-xs font-mono text-coffee-700">
             <span>INTELLIGENCE MODULE</span>
             <span>/</span>
-            <span className="text-slate-400">ZERO-TRUST DOCUMENT FORENSICS</span>
+            <span className="text-stone-500">ZERO-TRUST DOCUMENT FORENSICS</span>
           </div>
           <div className="flex items-center gap-3 mt-1">
-            <h1 className="text-2xl font-bold tracking-tight text-white">
+            <h1 className="text-2xl font-bold tracking-tight text-espresso">
               Document Forensics
             </h1>
-            <span className="text-[10px] font-mono px-2.5 py-0.5 rounded bg-cyan-950 text-cyan-300 border border-cyan-500/40 font-semibold tracking-wider">
+            <span className="text-[10px] font-mono px-2.5 py-0.5 rounded-lg bg-warm-100 text-coffee-800 border border-coffee-200 font-semibold tracking-wider">
               AI ANALYSIS ENGINE
             </span>
           </div>
-          <p className="text-xs text-slate-400 mt-0.5">
+          <p className="text-xs text-stone-500 mt-0.5">
             Analyze digital evidence for potential manipulation, structural anomalies, and integrity signals.
           </p>
         </div>
 
         {/* Application Selector */}
         <div className="flex items-center gap-2 font-mono text-xs">
-          <span className="text-slate-400">Focus Application:</span>
+          <span className="text-stone-500">Focus Application:</span>
           <select
             value={selectedAppId}
             onChange={(e) => setSelectedAppId(e.target.value)}
-            className="rounded-lg border border-surface-border bg-midnight-950 px-3 py-1.5 text-white font-semibold focus:border-cyan-400 focus:outline-none"
+            className="rounded-xl border border-coffee-200 bg-white px-3 py-1.5 text-espresso font-semibold focus:border-coffee-500 focus:outline-none shadow-xs"
           >
             <option value="APP-1003">APP-1003 — Rahul Verma (₹45,000)</option>
             <option value="APP-1001">APP-1001 — Arjun Mehta (₹15,000)</option>
@@ -255,78 +255,78 @@ export default function DocumentsPage() {
 
       {/* STEP 1 GATE: Applicant Visual Biometric Verification Status Bar */}
       {isDeclined ? (
-        <div className="rounded-xl border border-red-500/50 bg-red-950/40 p-5 backdrop-blur flex items-center justify-between gap-4">
+        <div className="rounded-2xl border border-rose-200 bg-rose-50 p-5 flex items-center justify-between gap-4 shadow-xs">
           <div className="flex items-center gap-3">
-            <div className="h-10 w-10 rounded-xl bg-red-900/60 border border-red-500 flex items-center justify-center text-red-400 shrink-0">
+            <div className="h-10 w-10 rounded-xl bg-rose-100 border border-rose-200 flex items-center justify-center text-rose-700 shrink-0">
               <ShieldAlert className="h-6 w-6" />
             </div>
             <div>
-              <span className="text-sm font-bold text-red-300 block font-mono">
+              <span className="text-sm font-bold text-rose-800 block font-mono">
                 LOAN APPLICATION DECLINED: APPLICANT BIOMETRIC MISMATCH
               </span>
-              <span className="text-xs text-slate-300">
-                Live webcam capture failed facial identity cross-reference with applicant registered PAN/Aadhaar profile for <strong className="text-white">{selectedApp?.applicant}</strong>. Document processing locked.
+              <span className="text-xs text-rose-900">
+                Live webcam capture failed facial identity cross-reference with applicant registered PAN/Aadhaar profile for <strong className="text-espresso font-bold">{selectedApp?.applicant}</strong>. Document processing locked.
               </span>
             </div>
           </div>
           <button
             onClick={() => setDeclinedApplications(prev => prev.filter(id => id !== selectedAppId))}
-            className="text-xs font-mono text-cyan-400 hover:underline shrink-0"
+            className="text-xs font-mono text-coffee-700 hover:text-coffee-900 font-semibold underline shrink-0"
           >
             Reset Applicant Verification
           </button>
         </div>
       ) : !currentVerification.verified ? (
-        <div className="rounded-xl border border-amber-500/40 bg-amber-950/20 p-5 backdrop-blur flex flex-wrap items-center justify-between gap-4">
+        <div className="rounded-2xl border border-amber-200 bg-amber-50 p-5 flex flex-wrap items-center justify-between gap-4 shadow-xs">
           <div className="flex items-center gap-3">
-            <div className="h-10 w-10 rounded-xl bg-amber-950/60 border border-amber-500/40 flex items-center justify-center text-amber-400 shrink-0">
+            <div className="h-10 w-10 rounded-xl bg-amber-100 border border-amber-200 flex items-center justify-center text-amber-800 shrink-0">
               <Camera className="h-5 w-5" />
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <span className="text-sm font-bold text-amber-300 font-mono">
+                <span className="text-sm font-bold text-amber-900 font-mono">
                   Step 1 Required: Applicant Biometric Face Verification
                 </span>
-                <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-amber-950 text-amber-300 border border-amber-500/40">
+                <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-amber-100 text-amber-800 border border-amber-200 font-semibold">
                   APPLICANT ONBOARDING GATE
                 </span>
               </div>
-              <p className="text-xs text-slate-300 mt-0.5">
-                The loan applicant (<span className="text-white font-semibold">{selectedApp?.applicant}</span>) must complete live webcam biometric verification before lending documents are unlocked for forensic underwriting.
+              <p className="text-xs text-amber-900 mt-0.5">
+                The loan applicant (<span className="text-espresso font-bold">{selectedApp?.applicant}</span>) must complete live webcam biometric verification before lending documents are unlocked for forensic underwriting.
               </p>
             </div>
           </div>
 
           <button
             onClick={() => setIsVerificationModalOpen(true)}
-            className="inline-flex items-center gap-2 rounded-lg bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 px-4 py-2 text-xs font-mono font-bold text-midnight-950 shadow-[0_0_15px_rgba(0,240,255,0.3)] transition-all"
+            className="inline-flex items-center gap-2 rounded-xl bg-coffee-600 hover:bg-coffee-700 px-4 py-2 text-xs font-mono font-bold text-white shadow-sm transition-all"
           >
             <Camera className="h-4 w-4" />
             <span>Launch Applicant Camera Verification</span>
           </button>
         </div>
       ) : (
-        <div className="rounded-xl border border-emerald-500/40 bg-emerald-950/20 p-4 backdrop-blur flex flex-wrap items-center justify-between gap-3 text-xs font-mono">
+        <div className="rounded-2xl border border-emerald-200 bg-emerald-50 p-4 flex flex-wrap items-center justify-between gap-3 text-xs font-mono shadow-xs">
           <div className="flex items-center gap-2.5">
-            <CheckCircle2 className="h-5 w-5 text-emerald-400 shrink-0" />
+            <CheckCircle2 className="h-5 w-5 text-emerald-700 shrink-0" />
             <div>
-              <span className="text-emerald-300 font-bold block">
+              <span className="text-emerald-800 font-bold block">
                 Applicant Biometric Face Verification Passed ({currentVerification.confidence || 99.8}%)
               </span>
-              <span className="text-slate-400 text-[11px] flex items-center gap-1.5 mt-0.5">
-                <Hash className="h-3 w-3 text-cyan-400" />
+              <span className="text-stone-500 text-[11px] flex items-center gap-1.5 mt-0.5">
+                <Hash className="h-3 w-3 text-coffee-600" />
                 <span>Applicant SHA-256 Frame Digest: {currentVerification.hash ? `${currentVerification.hash.slice(0, 16)}...${currentVerification.hash.slice(-16)}` : 'e3b0c442...b855'}</span>
               </span>
             </div>
           </div>
 
           <div className="flex items-center gap-2">
-            <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-950 text-emerald-300 border border-emerald-500/40 font-semibold">
+            <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 border border-emerald-200 font-semibold">
               APPLICANT VERIFIED • EVIDENCE UNLOCKED
             </span>
             <button
               onClick={() => setIsVerificationModalOpen(true)}
-              className="text-[11px] text-cyan-400 hover:underline"
+              className="text-[11px] text-coffee-700 hover:text-coffee-900 font-semibold underline"
             >
               Re-scan Applicant Camera
             </button>
@@ -342,26 +342,26 @@ export default function DocumentsPage() {
       />
 
       {/* Document List Selection Bar */}
-      <div className="rounded-xl border border-surface-border bg-surface-card/80 p-4 backdrop-blur flex flex-wrap items-center justify-between gap-3 text-xs font-mono">
+      <div className="rounded-2xl border border-coffee-200 bg-white p-4 flex flex-wrap items-center justify-between gap-3 text-xs font-mono shadow-sm">
         <div className="flex items-center gap-2">
-          <span className="text-slate-400">Active Document:</span>
+          <span className="text-stone-500">Active Document:</span>
           <div className="flex items-center gap-1.5">
             <button
               onClick={() => setActiveDocType('bank_statement')}
-              className={`px-3 py-1.5 rounded-lg border transition-all ${
+              className={`px-3 py-1.5 rounded-xl border transition-all ${
                 activeDocType === 'bank_statement'
-                  ? 'bg-cyan-500/20 text-cyan-300 border-cyan-500/40 font-bold'
-                  : 'bg-midnight-950 text-slate-400 border-surface-border hover:text-white'
+                  ? 'bg-coffee-600 text-white border-coffee-600 font-bold shadow-xs'
+                  : 'bg-warm-50 text-stone-600 border-coffee-200 hover:bg-white'
               }`}
             >
               Bank Statement ({selectedAppId === 'APP-1003' ? '87% Risk' : '12% Risk'})
             </button>
             <button
               onClick={() => setActiveDocType('gst_filing')}
-              className={`px-3 py-1.5 rounded-lg border transition-all ${
+              className={`px-3 py-1.5 rounded-xl border transition-all ${
                 activeDocType === 'gst_filing'
-                  ? 'bg-cyan-500/20 text-cyan-300 border-cyan-500/40 font-bold'
-                  : 'bg-midnight-950 text-slate-400 border-surface-border hover:text-white'
+                  ? 'bg-coffee-600 text-white border-coffee-600 font-bold shadow-xs'
+                  : 'bg-warm-50 text-stone-600 border-coffee-200 hover:bg-white'
               }`}
             >
               GST Return (GSTR-3B)
@@ -371,7 +371,7 @@ export default function DocumentsPage() {
 
         <button
           onClick={() => navigate(`/applications/${selectedAppId}`)}
-          className="text-xs text-cyan-400 hover:underline inline-flex items-center gap-1"
+          className="text-xs text-coffee-700 hover:text-coffee-900 font-semibold inline-flex items-center gap-1"
         >
           <span>Return to Application Dossier</span>
           <ArrowRight className="h-3 w-3" />
@@ -393,13 +393,13 @@ export default function DocumentsPage() {
         {/* Right: Forensic Risk Card & Findings */}
         <div className="xl:col-span-5 space-y-6">
           {/* Forensic Risk Card */}
-          <div className="rounded-xl border border-surface-border bg-surface-card/80 p-5 backdrop-blur flex flex-col items-center justify-between">
-            <div className="w-full flex items-center justify-between pb-3 border-b border-surface-border">
+          <div className="rounded-2xl border border-coffee-200 bg-white p-5 shadow-sm flex flex-col items-center justify-between">
+            <div className="w-full flex items-center justify-between pb-3 border-b border-coffee-100">
               <div>
-                <h3 className="text-sm font-semibold text-white tracking-wide">
+                <h3 className="text-sm font-semibold text-espresso tracking-wide">
                   DOCUMENT RISK INDEX
                 </h3>
-                <p className="text-[11px] text-slate-400">
+                <p className="text-[11px] text-stone-500">
                   AI-assisted forensic assessment
                 </p>
               </div>
@@ -419,7 +419,7 @@ export default function DocumentsPage() {
               />
             </div>
 
-            <p className="text-[10px] font-mono text-slate-400 text-center border-t border-slate-800/80 pt-3">
+            <p className="text-[10px] font-mono text-stone-500 text-center border-t border-coffee-100 pt-3">
               Score is based on prototype forensic signals and should be reviewed alongside the original evidence.
             </p>
           </div>

@@ -6,6 +6,7 @@
  * - Financial inputs & masked bank account
  * - Uploaded documents & quality results
  * - Blocking errors / validation messages
+ * Styled in White & Coffee Brown fintech design system.
  */
 
 import React from 'react';
@@ -39,11 +40,11 @@ export default function ApplicationReview({
     <div className="space-y-6">
       
       {/* 1. Selected Loan Summary Card */}
-      <div className="rounded-2xl border border-surface-border bg-surface-card p-5 space-y-4">
-        <div className="flex items-center justify-between pb-3 border-b border-surface-border">
+      <div className="rounded-2xl border border-coffee-200 bg-white p-6 shadow-card space-y-4">
+        <div className="flex items-center justify-between pb-3 border-b border-coffee-100">
           <div className="flex items-center gap-2">
-            <CreditCard className="h-4 w-4 text-cyan-400" />
-            <h4 className="text-xs font-bold text-white uppercase tracking-wider font-mono">
+            <CreditCard className="h-4 w-4 text-coffee-600" />
+            <h4 className="text-xs font-bold text-coffee-950 uppercase tracking-wider font-mono">
               1. Selected Loan Terms
             </h4>
           </div>
@@ -51,82 +52,82 @@ export default function ApplicationReview({
             <button
               type="button"
               onClick={() => onEditStep(2)}
-              className="text-xs font-mono text-cyan-400 hover:underline"
+              className="text-xs font-bold text-coffee-700 hover:text-coffee-950 hover:underline cursor-pointer"
             >
-              Edit Loan
+              Edit Terms
             </button>
           )}
         </div>
 
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs">
-          <div className="p-3 rounded-xl border border-surface-border bg-midnight-950">
-            <span className="text-[10px] font-mono uppercase text-slate-400 block mb-1">Product</span>
-            <span className="font-semibold text-white">{application.loan_product_name}</span>
+          <div className="p-3.5 rounded-xl border border-coffee-200 bg-coffee-50/50">
+            <span className="text-[10px] font-mono uppercase text-coffee-600 block mb-1 font-medium">Product</span>
+            <span className="font-bold text-coffee-950">{application.loan_product_name}</span>
           </div>
-          <div className="p-3 rounded-xl border border-surface-border bg-midnight-950">
-            <span className="text-[10px] font-mono uppercase text-slate-400 block mb-1">Requested Amount</span>
-            <span className="font-bold text-cyan-300 font-mono">₹{application.requested_amount?.toLocaleString('en-IN')}</span>
+          <div className="p-3.5 rounded-xl border border-coffee-200 bg-coffee-50/50">
+            <span className="text-[10px] font-mono uppercase text-coffee-600 block mb-1 font-medium">Requested Amount</span>
+            <span className="font-bold text-coffee-950 font-mono">₹{application.requested_amount?.toLocaleString('en-IN')}</span>
           </div>
-          <div className="p-3 rounded-xl border border-surface-border bg-midnight-950">
-            <span className="text-[10px] font-mono uppercase text-slate-400 block mb-1">Duration</span>
-            <span className="font-semibold text-white font-mono">{application.requested_duration_months} Months</span>
+          <div className="p-3.5 rounded-xl border border-coffee-200 bg-coffee-50/50">
+            <span className="text-[10px] font-mono uppercase text-coffee-600 block mb-1 font-medium">Duration</span>
+            <span className="font-bold text-coffee-950 font-mono">{application.requested_duration_months} Months</span>
           </div>
-          <div className="p-3 rounded-xl border border-surface-border bg-midnight-950">
-            <span className="text-[10px] font-mono uppercase text-slate-400 block mb-1">Estimated EMI</span>
-            <span className="font-bold text-white font-mono">₹{application.estimated_emi?.toLocaleString('en-IN')} / mo</span>
+          <div className="p-3.5 rounded-xl border border-coffee-200 bg-coffee-50/50">
+            <span className="text-[10px] font-mono uppercase text-coffee-600 block mb-1 font-medium">Estimated EMI</span>
+            <span className="font-bold text-coffee-800 font-mono">₹{application.estimated_emi?.toLocaleString('en-IN')} / mo</span>
           </div>
         </div>
 
-        <div className="p-3 rounded-xl border border-surface-border bg-midnight-950 text-xs">
-          <span className="text-[10px] font-mono uppercase text-slate-400 block mb-1">Loan Purpose</span>
-          <span className="text-slate-200">{application.loan_purpose}</span>
+        <div className="p-3.5 rounded-xl border border-coffee-200 bg-coffee-50/50 text-xs">
+          <span className="text-[10px] font-mono uppercase text-coffee-600 block mb-1 font-medium">Loan Purpose</span>
+          <span className="text-coffee-950 font-medium">{application.loan_purpose}</span>
         </div>
       </div>
 
       {/* 2. Verified Applicant Identity Card (Locked) */}
-      <div className="rounded-2xl border border-surface-border bg-surface-card p-5 space-y-4">
-        <div className="flex items-center justify-between pb-3 border-b border-surface-border">
+      <div className="rounded-2xl border border-coffee-200 bg-white p-6 shadow-card space-y-4">
+        <div className="flex items-center justify-between pb-3 border-b border-coffee-100">
           <div className="flex items-center gap-2">
-            <User className="h-4 w-4 text-cyan-400" />
-            <h4 className="text-xs font-bold text-white uppercase tracking-wider font-mono">
+            <User className="h-4 w-4 text-coffee-600" />
+            <h4 className="text-xs font-bold text-coffee-950 uppercase tracking-wider font-mono">
               2. Verified Applicant Details
             </h4>
           </div>
-          <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-950 text-emerald-300 border border-emerald-500/30 flex items-center gap-1">
+          <span className="text-[10px] font-mono px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200 flex items-center gap-1 font-bold">
             <Lock className="h-3 w-3" /> Locked & Verified
           </span>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
-          <div className="p-3 rounded-xl border border-surface-border bg-midnight-950">
-            <span className="text-[10px] font-mono uppercase text-slate-400 block mb-1">Full Legal Name</span>
-            <span className="font-semibold text-white">{verified.full_name}</span>
+          <div className="p-3.5 rounded-xl border border-coffee-200 bg-coffee-50/50">
+            <span className="text-[10px] font-mono uppercase text-coffee-600 block mb-1 font-medium">Full Legal Name</span>
+            <span className="font-bold text-coffee-950">{verified.full_name}</span>
           </div>
-          <div className="p-3 rounded-xl border border-surface-border bg-midnight-950">
-            <span className="text-[10px] font-mono uppercase text-slate-400 block mb-1">Date of Birth</span>
-            <span className="text-slate-200">{verified.date_of_birth}</span>
+          <div className="p-3.5 rounded-xl border border-coffee-200 bg-coffee-50/50">
+            <span className="text-[10px] font-mono uppercase text-coffee-600 block mb-1 font-medium">Date of Birth</span>
+            <span className="text-coffee-950 font-medium">{verified.date_of_birth}</span>
           </div>
-          <div className="p-3 rounded-xl border border-surface-border bg-midnight-950">
-            <span className="text-[10px] font-mono uppercase text-slate-400 block mb-1">Contact</span>
-            <span className="text-slate-200">{verified.mobile}</span>
+          <div className="p-3.5 rounded-xl border border-coffee-200 bg-coffee-50/50">
+            <span className="text-[10px] font-mono uppercase text-coffee-600 block mb-1 font-medium">Contact</span>
+            <span className="text-coffee-950 font-medium">{verified.mobile}</span>
           </div>
-          <div className="p-3 rounded-xl border border-surface-border bg-midnight-950">
-            <span className="text-[10px] font-mono uppercase text-slate-400 block mb-1">Aadhaar (Masked)</span>
-            <span className="font-mono text-cyan-300 font-semibold">{verified.aadhaar_masked || 'XXXX XXXX 4821'}</span>
+          <div className="p-3.5 rounded-xl border border-coffee-200 bg-coffee-50/50">
+            <span className="text-[10px] font-mono uppercase text-coffee-600 block mb-1 font-medium">Aadhaar (Masked)</span>
+            <span className="font-mono text-coffee-900 font-bold">{verified.aadhaar_masked || 'XXXX XXXX 4821'}</span>
           </div>
-          <div className="p-3 rounded-xl border border-surface-border bg-midnight-950">
-            <span className="text-[10px] font-mono uppercase text-slate-400 block mb-1">PAN (Masked)</span>
-            <span className="font-mono text-cyan-300 font-semibold">{verified.pan_masked || 'AB•••••4821'}</span>
+          <div className="p-3.5 rounded-xl border border-coffee-200 bg-coffee-50/50">
+            <span className="text-[10px] font-mono uppercase text-coffee-600 block mb-1 font-medium">PAN (Masked)</span>
+            <span className="font-mono text-coffee-900 font-bold">{verified.pan_masked || 'AB•••••4821'}</span>
           </div>
-          <div className="p-3 rounded-xl border border-surface-border bg-midnight-950">
-            <span className="text-[10px] font-mono uppercase text-slate-400 block mb-1">Address</span>
-            <span className="text-slate-200 truncate block">{verified.address}, {verified.city}</span>
+          <div className="p-3.5 rounded-xl border border-coffee-200 bg-coffee-50/50">
+            <span className="text-[10px] font-mono uppercase text-coffee-600 block mb-1 font-medium">Address</span>
+            <span className="text-coffee-950 truncate block font-medium">{verified.address}, {verified.city}</span>
           </div>
         </div>
 
-        <div className="text-[11px] text-slate-400 flex items-center justify-between">
-          <span>Need to correct your identity details?</span>
-          <Link to="/profile" className="text-cyan-400 hover:underline inline-flex items-center gap-1 font-mono">
+        <div className="text-[11px] text-coffee-600 flex items-center justify-between">
+          <span>Need to update identity details?</span>
+          <Link to="/profile" className="text-coffee-800 hover:text-coffee-950 font-bold hover:underline inline-flex items-center gap-1">
             <span>Update in Profile</span>
             <ExternalLink className="h-3 w-3" />
           </Link>
@@ -134,11 +135,11 @@ export default function ApplicationReview({
       </div>
 
       {/* 3. Financial & Bank Details Card */}
-      <div className="rounded-2xl border border-surface-border bg-surface-card p-5 space-y-4">
-        <div className="flex items-center justify-between pb-3 border-b border-surface-border">
+      <div className="rounded-2xl border border-coffee-200 bg-white p-6 shadow-card space-y-4">
+        <div className="flex items-center justify-between pb-3 border-b border-coffee-100">
           <div className="flex items-center gap-2">
-            <Briefcase className="h-4 w-4 text-cyan-400" />
-            <h4 className="text-xs font-bold text-white uppercase tracking-wider font-mono">
+            <Briefcase className="h-4 w-4 text-coffee-600" />
+            <h4 className="text-xs font-bold text-coffee-950 uppercase tracking-wider font-mono">
               3. Employment & Bank Information
             </h4>
           </div>
@@ -146,7 +147,7 @@ export default function ApplicationReview({
             <button
               type="button"
               onClick={() => onEditStep(3)}
-              className="text-xs font-mono text-cyan-400 hover:underline"
+              className="text-xs font-bold text-coffee-700 hover:text-coffee-950 hover:underline cursor-pointer"
             >
               Edit Financials
             </button>
@@ -154,35 +155,35 @@ export default function ApplicationReview({
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
-          <div className="p-3 rounded-xl border border-surface-border bg-midnight-950">
-            <span className="text-[10px] font-mono uppercase text-slate-400 block mb-1">Employer / Business</span>
-            <span className="font-semibold text-white">{financial.employer_or_business_name || 'Self-Employed / Salaried'}</span>
+          <div className="p-3.5 rounded-xl border border-coffee-200 bg-coffee-50/50">
+            <span className="text-[10px] font-mono uppercase text-coffee-600 block mb-1 font-medium">Employer / Business</span>
+            <span className="font-bold text-coffee-950">{financial.employer_or_business_name || 'Self-Employed / Salaried'}</span>
           </div>
-          <div className="p-3 rounded-xl border border-surface-border bg-midnight-950">
-            <span className="text-[10px] font-mono uppercase text-slate-400 block mb-1">Monthly Net Income</span>
-            <span className="font-bold text-white">₹{financial.monthly_income || '75,000'}</span>
+          <div className="p-3.5 rounded-xl border border-coffee-200 bg-coffee-50/50">
+            <span className="text-[10px] font-mono uppercase text-coffee-600 block mb-1 font-medium">Monthly Net Income</span>
+            <span className="font-bold text-coffee-950">₹{financial.monthly_income || '75,000'}</span>
           </div>
-          <div className="p-3 rounded-xl border border-surface-border bg-midnight-950">
-            <span className="text-[10px] font-mono uppercase text-slate-400 block mb-1">Disbursement Bank</span>
-            <span className="font-semibold text-white">{financial.payout_bank_name || 'HDFC Bank'}</span>
+          <div className="p-3.5 rounded-xl border border-coffee-200 bg-coffee-50/50">
+            <span className="text-[10px] font-mono uppercase text-coffee-600 block mb-1 font-medium">Disbursement Bank</span>
+            <span className="font-bold text-coffee-950">{financial.payout_bank_name || 'HDFC Bank'}</span>
           </div>
-          <div className="p-3 rounded-xl border border-surface-border bg-midnight-950 sm:col-span-2">
-            <span className="text-[10px] font-mono uppercase text-slate-400 block mb-1">Disbursement Account (Masked)</span>
-            <span className="font-mono text-cyan-300 font-semibold">{financial.payout_account_masked || 'XXXX XXXX 4821'}</span>
+          <div className="p-3.5 rounded-xl border border-coffee-200 bg-coffee-50/50 sm:col-span-2">
+            <span className="text-[10px] font-mono uppercase text-coffee-600 block mb-1 font-medium">Disbursement Account (Masked)</span>
+            <span className="font-mono text-coffee-900 font-bold">{financial.payout_account_masked || 'XXXX XXXX 4821'}</span>
           </div>
-          <div className="p-3 rounded-xl border border-surface-border bg-midnight-950">
-            <span className="text-[10px] font-mono uppercase text-slate-400 block mb-1">IFSC Code</span>
-            <span className="font-mono text-slate-200">{financial.payout_ifsc_code || 'HDFC0001234'}</span>
+          <div className="p-3.5 rounded-xl border border-coffee-200 bg-coffee-50/50">
+            <span className="text-[10px] font-mono uppercase text-coffee-600 block mb-1 font-medium">IFSC Code</span>
+            <span className="font-mono text-coffee-950 font-bold">{financial.payout_ifsc_code || 'HDFC0001234'}</span>
           </div>
         </div>
       </div>
 
       {/* 4. Documents & Quality Verification Card */}
-      <div className="rounded-2xl border border-surface-border bg-surface-card p-5 space-y-4">
-        <div className="flex items-center justify-between pb-3 border-b border-surface-border">
+      <div className="rounded-2xl border border-coffee-200 bg-white p-6 shadow-card space-y-4">
+        <div className="flex items-center justify-between pb-3 border-b border-coffee-100">
           <div className="flex items-center gap-2">
-            <FileText className="h-4 w-4 text-cyan-400" />
-            <h4 className="text-xs font-bold text-white uppercase tracking-wider font-mono">
+            <FileText className="h-4 w-4 text-coffee-600" />
+            <h4 className="text-xs font-bold text-coffee-950 uppercase tracking-wider font-mono">
               4. Attached Supporting Documents ({documents.length})
             </h4>
           </div>
@@ -190,7 +191,7 @@ export default function ApplicationReview({
             <button
               type="button"
               onClick={() => onEditStep(4)}
-              className="text-xs font-mono text-cyan-400 hover:underline"
+              className="text-xs font-bold text-coffee-700 hover:text-coffee-950 hover:underline cursor-pointer"
             >
               Manage Documents
             </button>
@@ -203,32 +204,32 @@ export default function ApplicationReview({
             return (
               <div
                 key={doc.document_id}
-                className="p-3.5 rounded-xl border border-surface-border bg-midnight-950 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs"
+                className="p-4 rounded-xl border border-coffee-200 bg-coffee-50/40 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs"
               >
-                <div className="flex items-center gap-2.5">
-                  <CheckCircle2 className="h-4 w-4 text-emerald-400 shrink-0" />
+                <div className="flex items-center gap-3">
+                  <CheckCircle2 className="h-4 w-4 text-emerald-600 shrink-0" />
                   <div>
                     <div className="flex items-center gap-2">
-                      <span className="font-semibold text-white">{doc.document_type}</span>
-                      <span className="text-[10px] font-mono text-cyan-400">
-                        • {doc.quality_status === 'GOOD' ? 'Quality OK' : doc.quality_status}
+                      <span className="font-bold text-coffee-950">{doc.document_type}</span>
+                      <span className="text-[10px] font-mono text-coffee-600 font-semibold">
+                        • {doc.quality_status === 'GOOD' ? 'Quality Verified' : doc.quality_status}
                       </span>
                     </div>
-                    <span className="text-[11px] text-slate-400 block mt-0.5">{doc.filename}</span>
+                    <span className="text-[11px] text-coffee-600 block mt-0.5">{doc.filename}</span>
                   </div>
                 </div>
 
                 <div className="flex items-center gap-2">
-                  <span className={`text-[10px] font-mono px-2 py-0.5 rounded border font-semibold ${
+                  <span className={`text-[10px] font-mono px-2.5 py-0.5 rounded-full border font-bold ${
                     compStatus === 'MATCH'
-                      ? 'bg-emerald-950 text-emerald-300 border-emerald-500/40'
+                      ? 'bg-emerald-50 text-emerald-800 border-emerald-200'
                       : compStatus === 'REVIEW'
-                      ? 'bg-amber-950 text-amber-300 border-amber-500/40'
-                      : 'bg-red-950 text-red-300 border-red-500/40'
+                      ? 'bg-amber-50 text-amber-800 border-amber-200'
+                      : 'bg-rose-50 text-rose-800 border-rose-200'
                   }`}>
                     {compStatus === 'MATCH' ? '✓ MATCH' : compStatus === 'REVIEW' ? 'REVIEW' : 'MISMATCH'}
                   </span>
-                  <span className="text-[10px] font-mono px-2 py-0.5 rounded border bg-midnight-900 border-surface-border text-slate-400">
+                  <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-white border border-coffee-200 text-coffee-700 font-medium">
                     Uploaded
                   </span>
                 </div>
@@ -240,12 +241,12 @@ export default function ApplicationReview({
 
       {/* 5. Blocking Errors Notice (if any) */}
       {errors && errors.length > 0 && (
-        <div className="p-4 rounded-2xl border border-red-500/40 bg-red-950/40 text-xs text-red-200 space-y-2">
-          <div className="flex items-center gap-2 font-semibold text-red-300">
-            <AlertCircle className="h-4 w-4 text-red-400 shrink-0" />
+        <div className="p-4 rounded-2xl border border-rose-200 bg-rose-50 text-xs text-rose-900 space-y-2">
+          <div className="flex items-center gap-2 font-bold text-rose-950">
+            <AlertCircle className="h-4 w-4 text-rose-600 shrink-0" />
             <span>Please correct the highlighted items before submitting your application:</span>
           </div>
-          <ul className="list-disc pl-7 space-y-1 text-[11px] text-slate-300">
+          <ul className="list-disc pl-7 space-y-1 text-[11px] text-rose-800 font-medium">
             {errors.map((err, idx) => (
               <li key={idx}>{err}</li>
             ))}

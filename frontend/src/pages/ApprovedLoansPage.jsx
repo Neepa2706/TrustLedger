@@ -92,7 +92,7 @@ export default function ApprovedLoansPage() {
 
   const chartData = [
     { name: 'Repaid', value: summary.total_repaid, color: '#10b981' },
-    { name: 'Outstanding', value: summary.outstanding, color: '#06b6d4' },
+    { name: 'Outstanding', value: summary.outstanding, color: '#6F4E37' },
     { name: 'Overdue', value: summary.overdue_amount, color: '#ef4444' }
   ];
 
@@ -109,22 +109,22 @@ export default function ApprovedLoansPage() {
       {/* Page Header */}
       <div className="flex flex-wrap items-center justify-between gap-4">
         <div>
-          <div className="flex items-center gap-2 text-xs font-mono text-cyan-400">
+          <div className="flex items-center gap-2 text-xs font-mono text-coffee-600">
             <span>PORTFOLIO MONITORING</span>
-            <span>/</span>
-            <span className="text-slate-400">SERVICING & REPAYMENTS</span>
+            <span className="text-stone-400">/</span>
+            <span className="text-stone-500">SERVICING & REPAYMENTS</span>
           </div>
-          <h1 className="text-2xl font-bold tracking-tight text-white mt-1">
+          <h1 className="text-2xl font-bold tracking-tight text-espresso mt-1">
             Approved Loans & Payment Monitoring
           </h1>
-          <p className="text-xs text-slate-400 mt-0.5">
+          <p className="text-xs text-stone-500 mt-0.5">
             Real-time telemetry tracking disbursed capital, scheduled EMIs, and repayment health
           </p>
         </div>
 
         <div className="flex items-center gap-2.5">
-          <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-lg border border-emerald-500/30 bg-emerald-950/40 text-emerald-400 text-xs font-mono">
-            <ShieldCheck className="h-4 w-4" />
+          <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-lg border border-emerald-200 bg-emerald-50 text-emerald-800 text-xs font-mono font-medium">
+            <ShieldCheck className="h-4 w-4 text-emerald-600" />
             <span>PORTFOLIO LEDGER SYNCED</span>
           </div>
           <Button
@@ -139,67 +139,67 @@ export default function ApprovedLoansPage() {
 
       {/* Section 28: Payment Monitoring Summary Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 font-mono text-xs">
-        <div className="rounded-xl border border-surface-border bg-surface-card p-4">
-          <div className="flex items-center justify-between text-slate-400 text-[10px] uppercase">
+        <div className="rounded-xl border border-coffee-200 bg-white p-4 shadow-sm">
+          <div className="flex items-center justify-between text-stone-500 text-[10px] uppercase">
             <span>Total Disbursed</span>
-            <DollarSign className="h-4 w-4 text-cyan-400" />
+            <DollarSign className="h-4 w-4 text-coffee-600" />
           </div>
-          <div className="text-2xl font-bold text-white mt-2 font-mono">
+          <div className="text-2xl font-bold text-espresso mt-2 font-mono">
             ₹{summary.total_disbursed.toLocaleString('en-IN')}
           </div>
-          <div className="text-[10px] text-slate-500 mt-1">
+          <div className="text-[10px] text-stone-500 mt-1">
             {summary.active_loans_count} active facilities sanctioned
           </div>
         </div>
 
-        <div className="rounded-xl border border-emerald-500/30 bg-surface-card p-4">
-          <div className="flex items-center justify-between text-slate-400 text-[10px] uppercase">
+        <div className="rounded-xl border border-emerald-200 bg-white p-4 shadow-sm">
+          <div className="flex items-center justify-between text-stone-500 text-[10px] uppercase">
             <span>Total Repaid</span>
-            <TrendingUp className="h-4 w-4 text-emerald-400" />
+            <TrendingUp className="h-4 w-4 text-emerald-600" />
           </div>
-          <div className="text-2xl font-bold text-emerald-400 mt-2 font-mono">
+          <div className="text-2xl font-bold text-emerald-700 mt-2 font-mono">
             ₹{summary.total_repaid.toLocaleString('en-IN')}
           </div>
-          <div className="text-[10px] text-emerald-500/80 mt-1">
+          <div className="text-[10px] text-emerald-700 mt-1">
             {Math.round((summary.total_repaid / summary.total_disbursed) * 100)}% recovery to date
           </div>
         </div>
 
-        <div className="rounded-xl border border-surface-border bg-surface-card p-4">
-          <div className="flex items-center justify-between text-slate-400 text-[10px] uppercase">
+        <div className="rounded-xl border border-coffee-200 bg-white p-4 shadow-sm">
+          <div className="flex items-center justify-between text-stone-500 text-[10px] uppercase">
             <span>Outstanding</span>
-            <CreditCard className="h-4 w-4 text-sky-400" />
+            <CreditCard className="h-4 w-4 text-coffee-600" />
           </div>
-          <div className="text-2xl font-bold text-sky-300 mt-2 font-mono">
+          <div className="text-2xl font-bold text-coffee-800 mt-2 font-mono">
             ₹{summary.outstanding.toLocaleString('en-IN')}
           </div>
-          <div className="text-[10px] text-slate-500 mt-1">
-            Active portfolio principle balance
+          <div className="text-[10px] text-stone-500 mt-1">
+            Active portfolio principal balance
           </div>
         </div>
 
-        <div className="rounded-xl border border-surface-border bg-surface-card p-4">
-          <div className="flex items-center justify-between text-slate-400 text-[10px] uppercase">
+        <div className="rounded-xl border border-coffee-200 bg-white p-4 shadow-sm">
+          <div className="flex items-center justify-between text-stone-500 text-[10px] uppercase">
             <span>Next Payment</span>
-            <Calendar className="h-4 w-4 text-amber-400" />
+            <Calendar className="h-4 w-4 text-amber-600" />
           </div>
-          <div className="text-2xl font-bold text-amber-300 mt-2 font-mono">
+          <div className="text-2xl font-bold text-amber-800 mt-2 font-mono">
             ₹{summary.next_payment_amount.toLocaleString('en-IN')}
           </div>
-          <div className="text-[10px] text-amber-500/80 mt-1">
+          <div className="text-[10px] text-stone-500 mt-1">
             Due: {summary.next_payment_date}
           </div>
         </div>
 
-        <div className="rounded-xl border border-red-500/30 bg-red-950/20 p-4">
-          <div className="flex items-center justify-between text-slate-400 text-[10px] uppercase">
+        <div className="rounded-xl border border-red-200 bg-red-50/50 p-4 shadow-sm">
+          <div className="flex items-center justify-between text-stone-500 text-[10px] uppercase">
             <span>Overdue Amount</span>
-            <AlertCircle className="h-4 w-4 text-red-400" />
+            <AlertCircle className="h-4 w-4 text-red-600" />
           </div>
-          <div className="text-2xl font-bold text-red-400 mt-2 font-mono">
+          <div className="text-2xl font-bold text-red-700 mt-2 font-mono">
             ₹{summary.overdue_amount.toLocaleString('en-IN')}
           </div>
-          <div className="text-[10px] text-red-300/80 mt-1">
+          <div className="text-[10px] text-red-700 mt-1">
             {summary.overdue_count} accounts past grace period
           </div>
         </div>
@@ -208,36 +208,36 @@ export default function ApprovedLoansPage() {
       {/* Visual Analytics Charts */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         {/* Monthly Collections Trend Chart */}
-        <div className="lg:col-span-8 rounded-xl border border-surface-border bg-surface-card p-5">
-          <div className="flex items-center justify-between pb-3 border-b border-surface-border">
+        <div className="lg:col-span-8 rounded-xl border border-coffee-200 bg-white p-5 shadow-sm">
+          <div className="flex items-center justify-between pb-3 border-b border-coffee-200">
             <div>
-              <h3 className="text-sm font-semibold text-white">Monthly Servicing Collections</h3>
-              <p className="text-xs text-slate-400 mt-0.5">Target vs actual capital collected across approved loans</p>
+              <h3 className="text-sm font-semibold text-espresso">Monthly Servicing Collections</h3>
+              <p className="text-xs text-stone-500 mt-0.5">Target vs actual capital collected across approved loans</p>
             </div>
-            <span className="text-xs font-mono text-cyan-400">H2-2026</span>
+            <span className="text-xs font-mono font-medium text-coffee-700">H2-2026</span>
           </div>
 
           <div className="h-64 mt-4">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={monthlyCollections}>
-                <XAxis dataKey="month" stroke="#64748b" fontSize={11} />
-                <YAxis stroke="#64748b" fontSize={11} tickFormatter={(v) => `₹${v / 1000}k`} />
+                <XAxis dataKey="month" stroke="#786B63" fontSize={11} />
+                <YAxis stroke="#786B63" fontSize={11} tickFormatter={(v) => `₹${v / 1000}k`} />
                 <Tooltip
-                  contentStyle={{ backgroundColor: '#090d16', borderColor: '#1e293b', fontSize: '11px', fontFamily: 'monospace' }}
+                  contentStyle={{ backgroundColor: '#FAF8F5', borderColor: '#E8DFD1', color: '#1F1610', fontSize: '11px', fontFamily: 'monospace', borderRadius: '8px' }}
                   formatter={(val) => `₹${val.toLocaleString('en-IN')}`}
                 />
-                <Bar dataKey="target" fill="#334155" name="Expected Target" radius={[4, 4, 0, 0]} />
-                <Bar dataKey="collected" fill="#00f0ff" name="Collected" radius={[4, 4, 0, 0]} />
+                <Bar dataKey="target" fill="#D4C5B9" name="Expected Target" radius={[4, 4, 0, 0]} />
+                <Bar dataKey="collected" fill="#6F4E37" name="Collected" radius={[4, 4, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
           </div>
         </div>
 
         {/* Portfolio Balance Split */}
-        <div className="lg:col-span-4 rounded-xl border border-surface-border bg-surface-card p-5 flex flex-col justify-between">
-          <div className="pb-3 border-b border-surface-border">
-            <h3 className="text-sm font-semibold text-white">Portfolio Exposure Ratio</h3>
-            <p className="text-xs text-slate-400 mt-0.5">Amortized split of current portfolio</p>
+        <div className="lg:col-span-4 rounded-xl border border-coffee-200 bg-white p-5 shadow-sm flex flex-col justify-between">
+          <div className="pb-3 border-b border-coffee-200">
+            <h3 className="text-sm font-semibold text-espresso">Portfolio Exposure Ratio</h3>
+            <p className="text-xs text-stone-500 mt-0.5">Amortized split of current portfolio</p>
           </div>
 
           <div className="h-44 flex items-center justify-center">
@@ -257,21 +257,21 @@ export default function ApprovedLoansPage() {
                   ))}
                 </Pie>
                 <Tooltip
-                  contentStyle={{ backgroundColor: '#090d16', borderColor: '#1e293b', fontSize: '11px', fontFamily: 'monospace' }}
+                  contentStyle={{ backgroundColor: '#FAF8F5', borderColor: '#E8DFD1', color: '#1F1610', fontSize: '11px', fontFamily: 'monospace', borderRadius: '8px' }}
                   formatter={(val) => `₹${val.toLocaleString('en-IN')}`}
                 />
               </PieChart>
             </ResponsiveContainer>
           </div>
 
-          <div className="space-y-1.5 font-mono text-xs pt-3 border-t border-surface-border">
+          <div className="space-y-1.5 font-mono text-xs pt-3 border-t border-coffee-200">
             {chartData.map((item) => (
-              <div key={item.name} className="flex items-center justify-between text-slate-300">
+              <div key={item.name} className="flex items-center justify-between text-stone-700">
                 <div className="flex items-center gap-2">
                   <span className="h-2.5 w-2.5 rounded-full" style={{ backgroundColor: item.color }} />
                   <span>{item.name}</span>
                 </div>
-                <span className="font-bold">₹{item.value.toLocaleString('en-IN')}</span>
+                <span className="font-bold text-espresso">₹{item.value.toLocaleString('en-IN')}</span>
               </div>
             ))}
           </div>
@@ -279,30 +279,30 @@ export default function ApprovedLoansPage() {
       </div>
 
       {/* Filter & Search Bar */}
-      <div className="rounded-xl border border-surface-border bg-surface-card p-4 flex flex-wrap items-center justify-between gap-4">
+      <div className="rounded-xl border border-coffee-200 bg-white p-4 shadow-sm flex flex-wrap items-center justify-between gap-4">
         <div className="flex items-center gap-2 flex-1 max-w-md">
           <div className="relative w-full">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-500" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-stone-400" />
             <input
               type="text"
               placeholder="Search by loan ID, borrower, application, or loan type..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full rounded-lg border border-surface-border bg-midnight-950 py-2 pl-9 pr-4 text-xs text-white placeholder-slate-500 focus:border-cyan-400 focus:outline-none font-mono"
+              className="w-full rounded-lg border border-coffee-200 bg-warm-50 py-2 pl-9 pr-4 text-xs text-espresso placeholder-stone-400 focus:border-coffee-500 focus:outline-none font-mono"
             />
           </div>
         </div>
 
         <div className="flex items-center gap-2">
-          <span className="text-xs text-slate-400 font-mono">Status:</span>
+          <span className="text-xs text-stone-500 font-mono">Status:</span>
           {['ALL', 'CURRENT', 'OVERDUE'].map((st) => (
             <button
               key={st}
               onClick={() => setStatusFilter(st)}
               className={`px-3 py-1.5 rounded-lg text-xs font-mono transition-all ${
                 statusFilter === st
-                  ? 'bg-cyan-500/20 text-cyan-300 border border-cyan-500/40'
-                  : 'bg-midnight-950 text-slate-400 border border-surface-border hover:text-white'
+                  ? 'bg-coffee-600 text-white font-semibold shadow-sm'
+                  : 'bg-warm-50 text-stone-600 border border-coffee-200 hover:text-espresso hover:bg-warm-100'
               }`}
             >
               {st}
@@ -312,15 +312,15 @@ export default function ApprovedLoansPage() {
       </div>
 
       {/* Section 27: Approved Loans Table */}
-      <div className="rounded-xl border border-surface-border bg-surface-card overflow-hidden">
-        <div className="px-5 py-3.5 border-b border-surface-border flex items-center justify-between">
-          <h3 className="text-sm font-semibold text-white">Disbursed Facilities Ledger ({filteredLoans.length})</h3>
-          <span className="text-xs text-slate-400 font-mono">Real-time payment telemetry</span>
+      <div className="rounded-xl border border-coffee-200 bg-white overflow-hidden shadow-sm">
+        <div className="px-5 py-3.5 border-b border-coffee-200 flex items-center justify-between">
+          <h3 className="text-sm font-semibold text-espresso">Disbursed Facilities Ledger ({filteredLoans.length})</h3>
+          <span className="text-xs text-stone-500 font-mono">Real-time payment telemetry</span>
         </div>
 
         <div className="overflow-x-auto">
           <table className="w-full text-left text-xs font-mono">
-            <thead className="bg-midnight-950 text-slate-400 uppercase text-[10px] border-b border-surface-border">
+            <thead className="bg-warm-50 text-stone-600 uppercase text-[10px] border-b border-coffee-200">
               <tr>
                 <th className="px-4 py-3">Loan ID / App ID</th>
                 <th className="px-4 py-3">Borrower</th>
@@ -334,10 +334,10 @@ export default function ApprovedLoansPage() {
                 <th className="px-4 py-3 text-right">Action</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-surface-border">
+            <tbody className="divide-y divide-coffee-200">
               {filteredLoans.length === 0 ? (
                 <tr>
-                  <td colSpan="10" className="px-4 py-8 text-center text-slate-500">
+                  <td colSpan="10" className="px-4 py-8 text-center text-stone-500">
                     No approved loans match current filter parameters.
                   </td>
                 </tr>
@@ -345,52 +345,52 @@ export default function ApprovedLoansPage() {
                 filteredLoans.map((l) => (
                   <tr
                     key={l.id}
-                    className="hover:bg-midnight-900/60 transition-colors"
+                    className="hover:bg-warm-50/60 transition-colors"
                   >
-                    <td className="px-4 py-3 font-bold text-white">
+                    <td className="px-4 py-3 font-bold text-espresso">
                       <div>{l.id}</div>
-                      <div className="text-[10px] text-cyan-400/80 mt-0.5">{l.application_id}</div>
+                      <div className="text-[10px] text-coffee-700 font-medium mt-0.5">{l.application_id}</div>
                     </td>
-                    <td className="px-4 py-3 font-sans font-medium text-slate-200">
+                    <td className="px-4 py-3 font-sans font-medium text-stone-800">
                       {l.borrower_name}
                     </td>
-                    <td className="px-4 py-3 text-slate-300">
+                    <td className="px-4 py-3 text-stone-600">
                       {l.loan_type}
                     </td>
-                    <td className="px-4 py-3 font-bold text-white">
+                    <td className="px-4 py-3 font-bold text-espresso">
                       ₹{l.approved_amount.toLocaleString('en-IN')}
                     </td>
-                    <td className="px-4 py-3 text-slate-300">
+                    <td className="px-4 py-3 text-stone-600">
                       {l.tenure_months} mos @ {l.interest_rate}%
                     </td>
-                    <td className="px-4 py-3 text-cyan-300 font-bold">
+                    <td className="px-4 py-3 text-coffee-800 font-bold">
                       ₹{l.emi.toLocaleString('en-IN')}/mo
                     </td>
                     <td className="px-4 py-3 w-48">
-                      <div className="flex justify-between text-[10px] text-slate-400 mb-1">
+                      <div className="flex justify-between text-[10px] text-stone-500 mb-1">
                         <span>₹{l.total_paid.toLocaleString('en-IN')}</span>
                         <span>{l.payment_progress_percentage}%</span>
                       </div>
-                      <div className="w-full bg-midnight-950 rounded-full h-1.5 border border-slate-700/60 overflow-hidden">
+                      <div className="w-full bg-stone-200 rounded-full h-1.5 overflow-hidden">
                         <div
                           className={`h-full rounded-full ${
-                            l.payment_status === 'OVERDUE' ? 'bg-red-500' : 'bg-gradient-to-r from-cyan-400 to-emerald-400'
+                            l.payment_status === 'OVERDUE' ? 'bg-red-500' : 'bg-coffee-600'
                           }`}
                           style={{ width: `${Math.min(100, l.payment_progress_percentage)}%` }}
                         />
                       </div>
                     </td>
-                    <td className="px-4 py-3 text-slate-300">
+                    <td className="px-4 py-3 text-stone-600">
                       {l.next_payment_due_date}
                     </td>
                     <td className="px-4 py-3">
                       <span
                         className={`inline-flex items-center px-2 py-0.5 rounded text-[10px] font-semibold ${
                           l.payment_status === 'CURRENT'
-                            ? 'bg-emerald-950 text-emerald-300 border border-emerald-500/40'
+                            ? 'bg-emerald-50 text-emerald-800 border border-emerald-200'
                             : l.payment_status === 'OVERDUE'
-                            ? 'bg-red-950 text-red-300 border border-red-500/40'
-                            : 'bg-amber-950 text-amber-300 border border-amber-500/40'
+                            ? 'bg-red-50 text-red-800 border border-red-200'
+                            : 'bg-amber-50 text-amber-800 border border-amber-200'
                         }`}
                       >
                         {l.payment_status}
@@ -399,7 +399,7 @@ export default function ApprovedLoansPage() {
                     <td className="px-4 py-3 text-right">
                       <button
                         onClick={() => navigate(`/applications/${l.application_id}`)}
-                        className="inline-flex items-center gap-1 text-cyan-400 hover:text-cyan-300 transition-colors"
+                        className="inline-flex items-center gap-1 text-coffee-700 hover:text-coffee-800 font-medium transition-colors"
                         title="View Original Dossier"
                       >
                         <span>Dossier</span>

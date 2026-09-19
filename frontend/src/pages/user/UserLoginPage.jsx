@@ -1,7 +1,7 @@
 /**
  * TrustLedger User LoginPage (/login)
  * Clean, mobile-friendly customer login page for Indian borrowers.
- * Headline: "Apply with confidence."
+ * Styled in White & Coffee Brown fintech design system.
  * Supabase Auth Google OAuth + Email/Password + Demo Mode.
  */
 
@@ -26,12 +26,13 @@ import { useUserAuth } from '../../context/UserAuthContext';
 export default function UserLoginPage() {
   const navigate = useNavigate();
   const location = useLocation();
-  const { login, loginWithGoogle, loading, authError, clearError, isDemo, profile } = useUserAuth();
+  const { login, loginWithGoogle, loading, authError, clearError, isDemo, profile, user } = useUserAuth();
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [forgotPasswordOpen, setForgotPasswordOpen] = useState(false);
+  const [localError, setLocalError] = useState('');
   const searchParams = new URLSearchParams(location.search);
   const queryRedirect = searchParams.get('redirect');
   const targetRedirect = queryRedirect || location.state?.from?.pathname || '/loans';
@@ -62,10 +63,10 @@ export default function UserLoginPage() {
     setLocalError('');
     clearError();
     try {
-      await login('applicant.demo@trustledger.in', 'DemoPassword123!');
+      await login('arjun.kumar@example.com', 'DemoPass123!');
       navigate(targetRedirect, { replace: true });
     } catch (err) {
-      setLocalError(err.message || 'Demo sign-in failed.');
+      setLocalError(err.message || 'Demo login failed.');
     }
   };
 
@@ -74,43 +75,38 @@ export default function UserLoginPage() {
     clearError();
     try {
       await loginWithGoogle();
-      navigate(targetRedirect, { replace: true });
     } catch (err) {
-      setLocalError('Google sign-in could not be completed. Please try again.');
+      setLocalError(err.message || 'Google sign-in failed.');
     }
   };
 
   return (
-    <div className="min-h-screen w-full bg-midnight-950 text-slate-100 flex flex-col justify-between overflow-x-hidden relative selection:bg-cyan-500 selection:text-midnight-950">
+    <div className="min-h-screen w-full bg-surface-base text-coffee-950 flex flex-col justify-between overflow-x-hidden relative selection:bg-coffee-600 selection:text-white">
       
-      {/* Background Ambient Glows */}
-      <div className="absolute top-0 left-1/3 w-96 h-96 bg-cyan-500/10 rounded-full blur-3xl pointer-events-none -translate-x-1/2 -translate-y-1/2" />
-      <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-blue-600/10 rounded-full blur-3xl pointer-events-none translate-x-1/2 translate-y-1/2" />
-
       {/* Main Container */}
       <div className="flex-1 flex flex-col lg:flex-row w-full max-w-7xl mx-auto items-stretch p-4 sm:p-6 lg:p-10">
         
         {/* =========================================================================
             LEFT PANEL: BORROWER TRUST & VALUE PROPOSITION
             ========================================================================= */}
-        <div className="order-2 lg:order-1 lg:w-[54%] p-6 sm:p-10 flex flex-col justify-between border-t lg:border-t-0 lg:border-r border-surface-border/80">
+        <div className="order-2 lg:order-1 lg:w-[54%] p-6 sm:p-10 flex flex-col justify-between border-t lg:border-t-0 lg:border-r border-coffee-200">
           <div>
             <div className="mb-8">
               <TrustLedgerLogo size="lg" />
-              <div className="text-xs font-mono text-cyan-400/90 mt-2 tracking-wide">
+              <div className="text-xs font-semibold text-coffee-700 mt-2 tracking-wide">
                 Secure digital lending, verified from the start.
               </div>
             </div>
 
             <div className="max-w-xl">
-              <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight text-white leading-tight">
+              <h1 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight text-coffee-950 leading-tight">
                 Apply with{' '}
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-sky-300 to-blue-500">
+                <span className="text-coffee-600">
                   confidence.
                 </span>
               </h1>
 
-              <p className="mt-4 text-xs sm:text-sm text-slate-300 leading-relaxed">
+              <p className="mt-4 text-xs sm:text-sm text-coffee-700 leading-relaxed font-normal">
                 Secure your identity, verify your documents, and manage your digital loan journey in one place.
               </p>
             </div>
@@ -122,24 +118,24 @@ export default function UserLoginPage() {
 
             {/* Value Highlights */}
             <div className="mt-8 space-y-3">
-              <div className="flex items-center gap-3 p-3 rounded-xl border border-surface-border bg-midnight-900/60 text-xs text-slate-300">
-                <CheckCircle2 className="h-4 w-4 text-cyan-400 shrink-0" />
-                <span>Instant document-based identity verification</span>
+              <div className="flex items-center gap-3 p-3.5 rounded-2xl border border-coffee-200 bg-white text-xs text-coffee-900 shadow-sm">
+                <CheckCircle2 className="h-4 w-4 text-coffee-600 shrink-0" />
+                <span className="font-medium">Instant document-based identity verification</span>
               </div>
-              <div className="flex items-center gap-3 p-3 rounded-xl border border-surface-border bg-midnight-900/60 text-xs text-slate-300">
-                <CheckCircle2 className="h-4 w-4 text-cyan-400 shrink-0" />
-                <span>Camera photograph biometric protection (no fraud impersonation)</span>
+              <div className="flex items-center gap-3 p-3.5 rounded-2xl border border-coffee-200 bg-white text-xs text-coffee-900 shadow-sm">
+                <CheckCircle2 className="h-4 w-4 text-coffee-600 shrink-0" />
+                <span className="font-medium">Camera photograph biometric protection (no fraud impersonation)</span>
               </div>
-              <div className="flex items-center gap-3 p-3 rounded-xl border border-surface-border bg-midnight-900/60 text-xs text-slate-300">
-                <CheckCircle2 className="h-4 w-4 text-cyan-400 shrink-0" />
-                <span>Personal loan applications tracked under your verified account</span>
+              <div className="flex items-center gap-3 p-3.5 rounded-2xl border border-coffee-200 bg-white text-xs text-coffee-900 shadow-sm">
+                <CheckCircle2 className="h-4 w-4 text-coffee-600 shrink-0" />
+                <span className="font-medium">Personal loan applications tracked under your verified account</span>
               </div>
             </div>
           </div>
 
           {/* Left Footnote */}
-          <div className="pt-6 mt-6 border-t border-surface-border/50 text-[11px] font-mono text-slate-400 flex items-center gap-2">
-            <ShieldCheck className="h-3.5 w-3.5 text-emerald-400" />
+          <div className="pt-6 mt-6 border-t border-coffee-200 text-[11px] text-coffee-600 flex items-center gap-2">
+            <ShieldCheck className="h-4 w-4 text-emerald-700" />
             <span>Bank-grade encryption • Sensitive numbers automatically masked</span>
           </div>
         </div>
@@ -149,43 +145,40 @@ export default function UserLoginPage() {
             ========================================================================= */}
         <div className="order-1 lg:order-2 lg:w-[46%] p-4 sm:p-8 lg:p-10 flex flex-col justify-center items-center">
           
-          <div className="w-full max-w-md rounded-2xl border border-surface-border bg-surface-card/95 p-6 sm:p-8 shadow-2xl backdrop-blur-xl relative">
+          <div className="w-full max-w-md rounded-2xl border border-coffee-200 bg-white p-6 sm:p-8 shadow-card relative">
             
-            {/* Top highlight bar */}
-            <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-cyan-400 to-transparent rounded-t-2xl" />
-
             {/* Header */}
             <div className="mb-6">
               <div className="flex items-center justify-between">
-                <span className="text-xs font-mono uppercase tracking-wider text-cyan-400 font-semibold">
+                <span className="text-xs font-mono uppercase tracking-wider text-coffee-600 font-bold">
                   Loan Applicant Portal
                 </span>
                 {isDemo && (
-                  <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-cyan-950 text-cyan-300 border border-cyan-500/30">
+                  <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-amber-50 text-amber-800 border border-amber-200 font-bold">
                     DEMO MODE
                   </span>
                 )}
               </div>
-              <h2 className="text-xl font-bold tracking-tight text-white mt-1">
+              <h2 className="text-xl font-bold tracking-tight text-coffee-950 mt-1">
                 Sign in to your Applicant Account
               </h2>
-              <p className="text-xs text-slate-400 mt-1">
+              <p className="text-xs text-coffee-600 mt-1">
                 Access your verified identity, explore loan offers, and track applications
               </p>
             </div>
 
             {/* Target Destination Direct Navigation Banner */}
             {queryRedirect && (
-              <div className="mb-4 p-3 rounded-xl border border-cyan-500/40 bg-cyan-950/40 text-xs text-cyan-200 flex items-center justify-between gap-3">
+              <div className="mb-4 p-3.5 rounded-xl border border-coffee-200 bg-coffee-50 text-xs text-coffee-950 flex items-center justify-between gap-3">
                 <div className="space-y-0.5">
-                  <div className="font-mono text-[10px] text-cyan-400 uppercase font-bold">Target Destination</div>
-                  <div className="text-white font-semibold">
+                  <div className="font-mono text-[10px] text-coffee-600 uppercase font-bold">Target Destination</div>
+                  <div className="text-coffee-950 font-bold">
                     {queryRedirect.includes('personal') ? 'Personal Loan Details' : 'Loan Details'}
                   </div>
                 </div>
                 <Link
                   to={queryRedirect}
-                  className="px-3 py-1.5 rounded-lg bg-cyan-500 hover:bg-cyan-400 text-midnight-950 text-xs font-bold shrink-0 transition shadow-[0_0_12px_rgba(0,240,255,0.3)]"
+                  className="px-3.5 py-1.5 rounded-xl bg-coffee-600 hover:bg-coffee-700 text-white text-xs font-bold shrink-0 transition shadow-sm"
                 >
                   View Loan Details →
                 </Link>
@@ -194,18 +187,18 @@ export default function UserLoginPage() {
 
             {/* Already Signed In Status */}
             {user && (
-              <div className="mb-4 p-3.5 rounded-xl border border-emerald-500/40 bg-emerald-950/30 text-xs space-y-2">
+              <div className="mb-4 p-4 rounded-xl border border-emerald-200 bg-emerald-50 text-xs space-y-2">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
-                    <CheckCircle2 className="w-4 h-4 text-emerald-400" />
-                    <span className="text-emerald-300 font-bold">Signed in as {user.fullName || user.email}</span>
+                    <CheckCircle2 className="w-4 h-4 text-emerald-700" />
+                    <span className="text-emerald-950 font-bold">Signed in as {user.fullName || user.email}</span>
                   </div>
-                  <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-900/60 text-emerald-300">ACTIVE</span>
+                  <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-white text-emerald-800 border border-emerald-200 font-bold">ACTIVE</span>
                 </div>
                 <div className="flex items-center gap-2 pt-1">
                   <Link
                     to={targetRedirect}
-                    className="flex-1 text-center py-2 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs transition"
+                    className="flex-1 text-center py-2 rounded-xl bg-coffee-600 hover:bg-coffee-700 text-white font-bold text-xs transition shadow-sm"
                   >
                     Continue to Loan Details →
                   </Link>
@@ -215,7 +208,7 @@ export default function UserLoginPage() {
                       localStorage.removeItem('trustledger_borrower_session');
                       window.location.reload();
                     }}
-                    className="px-3 py-2 rounded-lg border border-surface-border text-slate-400 hover:text-white text-xs"
+                    className="px-3 py-2 rounded-xl border border-coffee-200 bg-white text-coffee-700 hover:text-coffee-950 text-xs font-semibold"
                   >
                     Sign Out
                   </button>
@@ -227,12 +220,12 @@ export default function UserLoginPage() {
             {(localError || authError) && (
               <div
                 role="alert"
-                className="mb-5 flex items-start gap-2.5 rounded-lg border border-red-500/40 bg-red-950/40 p-3 text-xs text-red-200 animate-fadeIn"
+                className="mb-5 flex items-start gap-2.5 rounded-xl border border-rose-200 bg-rose-50 p-3.5 text-xs text-rose-900 animate-fadeIn"
               >
-                <AlertCircle className="h-4 w-4 text-red-400 shrink-0 mt-0.5" />
+                <AlertCircle className="h-4 w-4 text-rose-600 shrink-0 mt-0.5" />
                 <div className="flex-1">
-                  <div className="font-semibold text-red-300">Unable to sign in</div>
-                  <div className="mt-0.5 text-slate-300">{localError || authError}</div>
+                  <div className="font-bold text-rose-950">Unable to sign in</div>
+                  <div className="mt-0.5 text-rose-800">{localError || authError}</div>
                 </div>
                 <button
                   type="button"
@@ -240,7 +233,7 @@ export default function UserLoginPage() {
                     setLocalError('');
                     clearError();
                   }}
-                  className="text-red-400 hover:text-white"
+                  className="text-rose-600 hover:text-rose-900"
                 >
                   <X className="h-3.5 w-3.5" />
                 </button>
@@ -252,9 +245,9 @@ export default function UserLoginPage() {
               type="button"
               onClick={handleDemoLogin}
               disabled={loading}
-              className="w-full mb-3 flex items-center justify-center gap-2 rounded-lg bg-cyan-950/80 hover:bg-cyan-900/90 border border-cyan-500/50 px-4 py-2.5 text-xs font-semibold text-cyan-300 transition-all shadow-[0_0_15px_rgba(0,240,255,0.15)] hover:shadow-[0_0_20px_rgba(0,240,255,0.3)]"
+              className="w-full mb-3 flex items-center justify-center gap-2 rounded-xl bg-coffee-50 hover:bg-coffee-100 border border-coffee-200 px-4 py-2.5 text-xs font-bold text-coffee-950 transition-all shadow-sm cursor-pointer"
             >
-              <Sparkles className="h-4 w-4 text-cyan-400" />
+              <Sparkles className="h-4 w-4 text-coffee-600" />
               <span>⚡ 1-Click Demo Applicant Sign In</span>
             </button>
 
@@ -263,7 +256,7 @@ export default function UserLoginPage() {
               type="button"
               onClick={handleGoogleSignIn}
               disabled={loading}
-              className="w-full flex items-center justify-center gap-3 rounded-lg border border-surface-border bg-midnight-950 hover:bg-midnight-900 px-4 py-2.5 text-xs font-medium text-white transition-all shadow-sm focus:outline-none focus:ring-1 focus:ring-cyan-400"
+              className="w-full flex items-center justify-center gap-3 rounded-xl border border-coffee-200 bg-white hover:bg-coffee-50 px-4 py-2.5 text-xs font-semibold text-coffee-950 transition-all shadow-sm focus:outline-none focus:ring-1 focus:ring-coffee-500 cursor-pointer"
             >
               <svg className="h-4 w-4" viewBox="0 0 24 24">
                 <path
@@ -289,10 +282,10 @@ export default function UserLoginPage() {
             {/* Divider */}
             <div className="relative my-4">
               <div className="absolute inset-0 flex items-center">
-                <div className="w-full border-t border-surface-border" />
+                <div className="w-full border-t border-coffee-100" />
               </div>
               <div className="relative flex justify-center text-[10px] uppercase font-mono">
-                <span className="bg-surface-card px-2 text-slate-400">
+                <span className="bg-white px-2 text-coffee-500 font-semibold">
                   Or sign in with email
                 </span>
               </div>
@@ -301,7 +294,7 @@ export default function UserLoginPage() {
             {/* Form */}
             <form onSubmit={handleSignIn} className="space-y-4" noValidate>
               <div>
-                <label className="block text-xs font-mono uppercase tracking-wider text-slate-300 mb-1.5">
+                <label className="block text-xs font-bold text-coffee-950 mb-1.5">
                   Email Address
                 </label>
                 <input
@@ -309,12 +302,12 @@ export default function UserLoginPage() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="applicant@example.com"
-                  className="w-full rounded-lg border border-surface-border bg-midnight-950 px-3.5 py-2.5 text-xs text-white placeholder-slate-500 font-sans focus:border-cyan-400 focus:outline-none"
+                  className="w-full rounded-xl border border-coffee-200 bg-coffee-50/40 px-3.5 py-2.5 text-xs text-coffee-950 placeholder-coffee-400 font-sans focus:border-coffee-600 focus:outline-none focus:ring-1 focus:ring-coffee-500"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-mono uppercase tracking-wider text-slate-300 mb-1.5">
+                <label className="block text-xs font-bold text-coffee-950 mb-1.5">
                   Password
                 </label>
                 <div className="relative">
@@ -323,12 +316,12 @@ export default function UserLoginPage() {
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     placeholder="Enter your password"
-                    className="w-full rounded-lg border border-surface-border bg-midnight-950 pl-3.5 pr-10 py-2.5 text-xs text-white placeholder-slate-500 font-sans focus:border-cyan-400 focus:outline-none"
+                    className="w-full rounded-xl border border-coffee-200 bg-coffee-50/40 pl-3.5 pr-10 py-2.5 text-xs text-coffee-950 placeholder-coffee-400 font-sans focus:border-coffee-600 focus:outline-none focus:ring-1 focus:ring-coffee-500"
                   />
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-2.5 top-1/2 -translate-y-1/2 p-1 text-slate-400 hover:text-cyan-300"
+                    className="absolute right-3 top-1/2 -translate-y-1/2 p-1 text-coffee-500 hover:text-coffee-900"
                   >
                     {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                   </button>
@@ -338,8 +331,8 @@ export default function UserLoginPage() {
               <div className="flex items-center justify-end">
                 <button
                   type="button"
-                  onClick={() => setForgotPasswordOpen(true)}
-                  className="text-xs font-mono text-cyan-400 hover:text-cyan-300 hover:underline"
+                  onClick={() => setForgotPasswordOpen(false)}
+                  className="text-xs font-medium text-coffee-700 hover:text-coffee-950 hover:underline cursor-pointer"
                 >
                   Forgot password?
                 </button>
@@ -348,7 +341,7 @@ export default function UserLoginPage() {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full mt-2 flex items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 px-4 py-2.5 text-xs font-semibold uppercase tracking-wider text-midnight-950 shadow-[0_0_20px_rgba(0,240,255,0.25)] transition-all disabled:opacity-60"
+                className="w-full mt-2 flex items-center justify-center gap-2 rounded-xl bg-coffee-600 hover:bg-coffee-700 px-4 py-2.5 text-xs font-bold uppercase tracking-wider text-white shadow-sm transition-all disabled:opacity-60 cursor-pointer"
               >
                 {loading ? (
                   <>
@@ -364,29 +357,11 @@ export default function UserLoginPage() {
               </button>
             </form>
 
-            {/* Forgot password feedback */}
-            {forgotPasswordOpen && (
-              <div className="mt-4 p-3 rounded-lg border border-cyan-500/30 bg-cyan-950/40 text-xs text-cyan-200 flex items-start justify-between gap-2 animate-fadeIn">
-                <div>
-                  <span className="font-semibold block text-cyan-300">Password Reset</span>
-                  <span className="text-[11px] text-slate-300 mt-0.5 block">
-                    Password reset link will be sent to your registered email via Supabase Auth.
-                  </span>
-                </div>
-                <button
-                  onClick={() => setForgotPasswordOpen(false)}
-                  className="text-cyan-400 hover:text-white"
-                >
-                  <X className="h-3.5 w-3.5" />
-                </button>
-              </div>
-            )}
-
             {/* Register Link */}
-            <div className="mt-5 text-center border-t border-surface-border/70 pt-4">
-              <span className="text-xs text-slate-400">
+            <div className="mt-5 text-center border-t border-coffee-100 pt-4">
+              <span className="text-xs text-coffee-600">
                 New applicant?{' '}
-                <Link to="/register" className="text-cyan-400 hover:underline font-semibold">
+                <Link to="/register" className="text-coffee-800 hover:text-coffee-950 font-bold hover:underline">
                   Create your personal account →
                 </Link>
               </span>
@@ -396,7 +371,7 @@ export default function UserLoginPage() {
             <div className="mt-3 text-center">
               <Link
                 to="/loans"
-                className="inline-flex items-center gap-1.5 text-xs font-medium text-slate-400 hover:text-cyan-300 py-1"
+                className="inline-flex items-center gap-1.5 text-xs font-semibold text-coffee-600 hover:text-coffee-950 py-1"
               >
                 <span>Browse available loans without signing in →</span>
               </Link>
@@ -407,7 +382,7 @@ export default function UserLoginPage() {
 
       </div>
 
-      <footer className="w-full border-t border-surface-border/50 py-3 px-6 text-center text-[11px] font-mono text-slate-500">
+      <footer className="w-full border-t border-coffee-200 py-4 px-6 text-center text-[11px] font-medium text-coffee-600 bg-white">
         TrustLedger © 2026 • Secure digital lending, verified from the start
       </footer>
     </div>

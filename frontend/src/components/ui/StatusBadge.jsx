@@ -5,80 +5,86 @@ const statusConfig = {
   SAFE: {
     label: 'VERIFIED SAFE',
     icon: ShieldCheck,
-    classes: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30',
-    dot: 'bg-emerald-400'
+    classes: 'bg-emerald-50 text-emerald-800 border-emerald-200',
+    dot: 'bg-emerald-600'
   },
   VERIFIED: {
     label: 'VERIFIED',
     icon: ShieldCheck,
-    classes: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30',
-    dot: 'bg-emerald-400'
+    classes: 'bg-emerald-50 text-emerald-800 border-emerald-200',
+    dot: 'bg-emerald-600'
   },
   WARNING: {
     label: 'SUSPICIOUS',
     icon: AlertTriangle,
-    classes: 'bg-amber-500/10 text-amber-400 border-amber-500/30',
-    dot: 'bg-amber-400'
+    classes: 'bg-amber-50 text-amber-800 border-amber-200',
+    dot: 'bg-amber-600'
   },
   SUSPICIOUS: {
     label: 'SUSPICIOUS',
     icon: AlertTriangle,
-    classes: 'bg-amber-500/10 text-amber-400 border-amber-500/30',
-    dot: 'bg-amber-400'
+    classes: 'bg-amber-50 text-amber-800 border-amber-200',
+    dot: 'bg-amber-600'
   },
   CRITICAL: {
     label: 'HIGH RISK',
     icon: ShieldAlert,
-    classes: 'bg-red-500/10 text-red-400 border-red-500/30',
-    dot: 'bg-red-400'
+    classes: 'bg-rose-50 text-rose-800 border-rose-200',
+    dot: 'bg-rose-600'
   },
   FLAGGED: {
     label: 'FLAGGED FRAUD',
     icon: ShieldAlert,
-    classes: 'bg-red-500/10 text-red-400 border-red-500/30',
-    dot: 'bg-red-400'
+    classes: 'bg-rose-50 text-rose-800 border-rose-200',
+    dot: 'bg-rose-600'
   },
   TAMPERED: {
     label: 'TAMPER DETECTED',
     icon: FileX2,
-    classes: 'bg-red-500/10 text-red-400 border-red-500/30',
-    dot: 'bg-red-400'
+    classes: 'bg-rose-50 text-rose-800 border-rose-200',
+    dot: 'bg-rose-600'
   },
   'UNDER REVIEW': {
     label: 'UNDER REVIEW',
     icon: Clock,
-    classes: 'bg-cyan-500/10 text-cyan-300 border-cyan-500/30',
-    dot: 'bg-cyan-400'
+    classes: 'bg-coffee-50 text-coffee-800 border-coffee-200',
+    dot: 'bg-coffee-600'
+  },
+  UNDER_REVIEW: {
+    label: 'UNDER REVIEW',
+    icon: Clock,
+    classes: 'bg-coffee-50 text-coffee-800 border-coffee-200',
+    dot: 'bg-coffee-600'
   },
   SUBMITTED: {
     label: 'SUBMITTED',
     icon: Clock,
-    classes: 'bg-cyan-500/10 text-cyan-300 border-cyan-500/30',
-    dot: 'bg-cyan-400'
+    classes: 'bg-coffee-50 text-coffee-800 border-coffee-200',
+    dot: 'bg-coffee-600'
   },
   APPROVED: {
     label: 'APPROVED',
     icon: ShieldCheck,
-    classes: 'bg-emerald-500/15 text-emerald-400 border-emerald-500/40',
-    dot: 'bg-emerald-400'
+    classes: 'bg-emerald-50 text-emerald-800 border-emerald-200',
+    dot: 'bg-emerald-600'
   },
   ACTION_REQUIRED: {
     label: 'ACTION REQUIRED',
     icon: AlertTriangle,
-    classes: 'bg-amber-500/15 text-amber-300 border-amber-500/40',
-    dot: 'bg-amber-400'
+    classes: 'bg-amber-50 text-amber-800 border-amber-200',
+    dot: 'bg-amber-600'
   },
   REJECTED: {
     label: 'REJECTED',
     icon: ShieldAlert,
-    classes: 'bg-rose-500/15 text-rose-400 border-rose-500/40',
-    dot: 'bg-rose-400'
+    classes: 'bg-rose-50 text-rose-800 border-rose-200',
+    dot: 'bg-rose-600'
   },
   PENDING: {
     label: 'PENDING CHECK',
     icon: Clock,
-    classes: 'bg-slate-500/10 text-slate-300 border-slate-500/30',
-    dot: 'bg-slate-400'
+    classes: 'bg-stone-50 text-stone-700 border-stone-200',
+    dot: 'bg-stone-500'
   }
 };
 
@@ -90,12 +96,12 @@ export default function StatusBadge({
   size = 'md',
   className = ''
 }) {
-  const normalizedKey = status.toUpperCase();
-  const config = statusConfig[normalizedKey] || {
+  const normalizedKey = status.toUpperCase().replace(/\s+/g, '_');
+  const config = statusConfig[normalizedKey] || statusConfig[status.toUpperCase()] || {
     label: status,
     icon: Clock,
-    classes: 'bg-slate-500/10 text-slate-300 border-slate-700/50',
-    dot: 'bg-slate-400'
+    classes: 'bg-stone-50 text-stone-700 border-stone-200',
+    dot: 'bg-stone-500'
   };
 
   const IconComponent = config.icon;

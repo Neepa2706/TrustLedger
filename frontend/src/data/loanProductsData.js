@@ -199,6 +199,46 @@ export const DEMO_LOAN_PRODUCTS = [
       'Applicant or earning co-applicant required'
     ],
     demoOnly: true
+  },
+  {
+    id: 'drone-commercial-loan',
+    name: 'Drone Commercial & Enterprise Loan',
+    category: 'Commercial Drone',
+    tagline: 'DGCA-registered UAVs, agriculture sprayers & mapping rigs',
+    description: 'Financing for commercial UAVs, DGCA-registered agricultural sprayers, aerial surveying LiDAR payloads, and enterprise drone fleets with flexible repayment.',
+    minAmount: 100000,
+    maxAmount: 2000000,
+    defaultAmount: 650000,
+    minDurationMonths: 12,
+    maxDurationMonths: 60,
+    defaultDurationMonths: 36,
+    minInterestRate: 11.5,
+    maxInterestRate: 16.5,
+    defaultInterestRate: 13.0,
+    processingFeePercentage: 1.5,
+    processingFeeDescription: '1.5% processing fee on sanctioned amount',
+    iconName: 'Send',
+    badge: 'Enterprise Specialized',
+    purposeOptions: [
+      'DGCA Approved Drone Purchase',
+      'Agricultural Spraying & Precision Farming UAV',
+      'Aerial Surveying, Mapping & LiDAR Payload',
+      'Drone Repair, Fleet Maintenance & Ground Control Station',
+      'Enterprise Drone Service Expansion'
+    ],
+    requiredDocuments: [
+      { type: 'Identity Proof', required: true, note: 'Aadhaar / Passport (pre-verified)' },
+      { type: 'Bank Statement', required: true, note: 'Last 6 months active bank account statement (PDF)' },
+      { type: 'DGCA Drone Registration / UIN', required: true, note: 'DGCA Digital Sky UIN / DAN Certificate or Proforma Invoice' },
+      { type: 'Drone Insurance', required: true, note: 'Drone Third-Party / Hull Insurance policy or quote' }
+    ],
+    eligibilityCriteria: [
+      'Indian citizen or registered entity aged 21 to 60 years',
+      'Valid DGCA Remote Pilot Certificate or certified drone operator',
+      'Active bank account with regular cashflow (₹40,000+ monthly)',
+      'Commercial drone model compliant with DGCA Digital Sky requirements'
+    ],
+    demoOnly: true
   }
 ];
 

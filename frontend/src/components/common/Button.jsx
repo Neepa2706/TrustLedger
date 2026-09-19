@@ -8,19 +8,19 @@ export default function Button({
   className = '',
   ...props
 }) {
-  const baseClasses = 'inline-flex items-center justify-center font-medium rounded-lg transition-all focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-midnight-950 disabled:opacity-50 disabled:pointer-events-none';
+  const baseClasses = 'inline-flex items-center justify-center font-medium rounded-xl transition-all focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-surface-base disabled:opacity-50 disabled:pointer-events-none cursor-pointer';
 
   const sizeClasses = {
-    sm: 'text-xs px-2.5 py-1.5 gap-1.5',
+    sm: 'text-xs px-3 py-1.5 gap-1.5',
     md: 'text-sm px-4 py-2 gap-2',
-    lg: 'text-base px-5 py-2.5 gap-2.5'
+    lg: 'text-base px-6 py-2.5 gap-2.5'
   };
 
   const variantClasses = {
-    primary: 'bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-midnight-950 font-semibold shadow-[0_0_15px_rgba(0,240,255,0.25)] focus:ring-cyan-400',
-    secondary: 'bg-surface-card hover:bg-surface-hover text-slate-200 border border-surface-border hover:border-slate-600 focus:ring-slate-500',
-    danger: 'bg-red-600 hover:bg-red-500 text-white font-semibold shadow-[0_0_15px_rgba(239,68,68,0.25)] focus:ring-red-500',
-    ghost: 'text-slate-400 hover:text-white hover:bg-white/5 focus:ring-slate-500'
+    primary: 'bg-coffee-600 hover:bg-coffee-700 text-white font-semibold shadow-sm hover:shadow active:bg-coffee-800 focus:ring-coffee-500',
+    secondary: 'bg-white hover:bg-coffee-50 text-coffee-950 border border-coffee-200 hover:border-coffee-300 focus:ring-coffee-500 shadow-sm',
+    danger: 'bg-rose-600 hover:bg-rose-700 text-white font-semibold shadow-sm focus:ring-rose-500',
+    ghost: 'text-coffee-700 hover:text-coffee-950 hover:bg-coffee-100/60 focus:ring-coffee-500'
   };
 
   return (

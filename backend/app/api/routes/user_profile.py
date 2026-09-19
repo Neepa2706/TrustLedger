@@ -23,6 +23,7 @@ from app.models.user_profile import (
     VerificationCheckItem
 )
 from app.services.user_verifier import user_verifier
+from app.services.strict_document_validator import strict_document_validator
 
 router = APIRouter(prefix="/auth/profile", tags=["Borrower Profile & Verification"])
 
@@ -212,21 +213,19 @@ async def upload_identity_document(
     """Upload Aadhaar/identity document with automated quality inspection."""
     uid = get_current_user_id(authorization, x_user_id)
     
-    # 1. Validate file extension
-    ext = Path(file.filename or "doc.jpg").suffix.lower()
-    if ext not in [".pdf", ".png", ".jpg", ".jpeg"]:
+    content = await file.read()
+    sec_check = strict_document_validator.validate_file_security_and_type(
+        filename=file.filename or "document.jpg",
+        content=content,
+        expected_category="KYC_IDENTITY"
+    )
+    if not sec_check["valid"]:
         raise HTTPException(
             status_code=400,
-            detail="Unsupported format. Please upload PDF, JPG, or PNG."
+            detail=sec_check["error"]
         )
 
-    # 2. Read bytes & check size (max 10MB)
-    content = await file.read()
-    if len(content) > 10 * 1024 * 1024:
-        raise HTTPException(
-            status_code=400,
-            detail="File is too large. Please upload an image under 10 MB."
-        )
+    ext = Path(file.filename or "doc.jpg").suffix.lower()
 
     # 3. Perform quality inspection
     quality = user_verifier.evaluate_document_quality(content, file.filename or "document")

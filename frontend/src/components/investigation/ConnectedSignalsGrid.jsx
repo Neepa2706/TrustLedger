@@ -19,22 +19,22 @@ export default function ConnectedSignalsGrid({ signals = [] }) {
   };
 
   return (
-    <div className="rounded-xl border border-surface-border bg-surface-card/80 p-6 backdrop-blur-sm">
-      <div className="flex items-center justify-between pb-4 border-b border-surface-border mb-4">
+    <div className="rounded-2xl border border-coffee-200 bg-white p-6 shadow-sm">
+      <div className="flex items-center justify-between pb-4 border-b border-coffee-100 mb-4">
         <div className="flex items-center gap-2">
-          <div className="h-7 w-7 rounded-lg bg-cyan-950/40 border border-cyan-500/30 flex items-center justify-center text-cyan-400">
+          <div className="h-8 w-8 rounded-lg bg-coffee-50 border border-coffee-200 flex items-center justify-center text-coffee-700 shadow-xs">
             <Share2 className="h-4 w-4" />
           </div>
           <div>
-            <h2 className="text-sm font-semibold text-white tracking-wide">
+            <h2 className="text-sm font-semibold text-espresso tracking-wide">
               Connected Digital Signals
             </h2>
-            <p className="text-xs text-slate-400">
+            <p className="text-xs text-stone-500">
               Entity graph collisions across device, telemetry, and payment coordinates
             </p>
           </div>
         </div>
-        <span className="text-xs font-mono text-cyan-400">
+        <span className="text-xs font-mono text-coffee-800 font-medium">
           Synthetic Telemetry
         </span>
       </div>
@@ -47,18 +47,18 @@ export default function ConnectedSignalsGrid({ signals = [] }) {
           return (
             <div
               key={idx}
-              className="rounded-lg border border-surface-border bg-midnight-900/50 p-3.5 font-mono text-xs transition-all hover:border-slate-700"
+              className="rounded-xl border border-coffee-200 bg-warm-50/60 p-3.5 font-mono text-xs transition-all hover:border-coffee-400 hover:bg-white shadow-xs"
             >
-              <div className="flex items-center justify-between text-slate-400 mb-2">
-                <span className="text-[10px] uppercase font-semibold">
+              <div className="flex items-center justify-between text-stone-500 mb-2">
+                <span className="text-[10px] uppercase font-bold tracking-wider">
                   {sig.type}
                 </span>
-                <Icon className="h-3.5 w-3.5 text-cyan-400" />
+                <Icon className="h-3.5 w-3.5 text-coffee-600" />
               </div>
-              <div className="text-white font-bold truncate text-sm">
+              <div className="text-espresso font-bold truncate text-sm">
                 {sig.value}
               </div>
-              <div className="text-[11px] text-amber-400/90 mt-1 font-sans">
+              <div className="text-[11px] text-amber-800 mt-1 font-sans font-medium">
                 {sig.detail}
               </div>
             </div>
@@ -67,10 +67,10 @@ export default function ConnectedSignalsGrid({ signals = [] }) {
       </div>
 
       {/* Mandatory Cautionary Note */}
-      <div className="mt-4 p-3 rounded-lg border border-surface-border bg-midnight-950/80 flex items-start gap-2.5 text-xs text-slate-400">
-        <Info className="h-4 w-4 text-cyan-400 shrink-0 mt-0.5" />
+      <div className="mt-4 p-3.5 rounded-xl border border-coffee-200 bg-coffee-50 flex items-start gap-2.5 text-xs text-coffee-900">
+        <Info className="h-4 w-4 text-coffee-700 shrink-0 mt-0.5" />
         <p className="leading-relaxed text-[11px]">
-          <span className="text-slate-300 font-semibold">Investigative Context: </span>
+          <span className="text-coffee-950 font-bold">Investigative Context: </span>
           Shared digital signals indicate relationships for investigation. A single shared signal does not independently establish fraud.
         </p>
       </div>

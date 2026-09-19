@@ -7,35 +7,70 @@ export default {
   theme: {
     extend: {
       colors: {
-        midnight: {
-          950: '#060913',
-          900: '#0a0f1d',
-          850: '#0e1628',
-          800: '#131f37',
-          750: '#192846',
-          700: '#223356',
+        // Complete Coffee Brown Palette
+        coffee: {
+          50: '#FAF7F2',
+          100: '#F4EFE6',
+          200: '#E8DFD1',
+          300: '#D3C3AD',
+          400: '#A98E71',
+          500: '#846345',
+          600: '#6F4E37', // Brand Primary Accent
+          700: '#5A3D28', // Darker Primary Hover
+          800: '#442D1D',
+          900: '#2E1E13',
+          950: '#1F1610', // Dark Espresso Text
         },
+        // Warm White & Crisp White Surfaces
         surface: {
-          darker: '#090e1a',
-          base: '#0d1527',
-          card: '#121d33',
-          hover: '#172542',
-          border: '#1b2a47',
-          'border-subtle': '#152238',
+          base: '#FAF8F5',       // Warm White page background
+          card: '#FFFFFF',       // Crisp White card
+          hover: '#F7F3EC',      // Subtle warm hover
+          border: '#E8DFD1',     // Soft beige border
+          'border-subtle': '#F0E8DC',
+          darker: '#F4EFE6',     // Muted surface
         },
+        // Espresso Typography
+        espresso: {
+          DEFAULT: '#1F1610',
+          muted: '#635147',
+          subtle: '#8E7B70',
+        },
+        // Legacy midnight mapping to warm espresso/coffee shades for seamless migration
+        midnight: {
+          950: '#1F1610',
+          900: '#2E1E13',
+          850: '#3A2719',
+          800: '#442D1D',
+          750: '#5A3D28',
+          700: '#6F4E37',
+        },
+        // Primary brand accent alias
         cyan: {
-          DEFAULT: '#00f0ff',
-          hover: '#38bdf8',
-          dim: 'rgba(0, 240, 255, 0.15)',
-          glow: 'rgba(0, 240, 255, 0.35)',
+          DEFAULT: '#6F4E37',
+          hover: '#5A3D28',
+          dim: 'rgba(111, 78, 55, 0.10)',
+          glow: 'rgba(111, 78, 55, 0.20)',
+          50: '#FAF7F2',
+          100: '#F4EFE6',
+          200: '#E8DFD1',
+          300: '#D3C3AD',
+          400: '#846345',
+          500: '#6F4E37',
+          600: '#5A3D28',
+          700: '#442D1D',
+          800: '#2E1E13',
+          900: '#1F1610',
+          950: '#150E0A',
         },
+        // Restrained Financial Risk Status Colors
         risk: {
-          safe: '#10b981',
-          'safe-subtle': 'rgba(16, 185, 129, 0.12)',
-          warning: '#f59e0b',
-          'warning-subtle': 'rgba(245, 158, 11, 0.12)',
-          critical: '#ef4444',
-          'critical-subtle': 'rgba(239, 68, 68, 0.12)',
+          safe: '#15803d',           // Green 700
+          'safe-subtle': '#f0fdf4',
+          warning: '#b45309',        // Amber 700
+          'warning-subtle': '#fffbeb',
+          critical: '#b91c1c',       // Red 700
+          'critical-subtle': '#fef2f2',
         }
       },
       fontFamily: {
@@ -43,10 +78,10 @@ export default {
         sans: ['Inter', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
       },
       boxShadow: {
-        'glow-cyan': '0 0 20px -5px rgba(0, 240, 255, 0.3)',
-        'glow-danger': '0 0 20px -5px rgba(239, 68, 68, 0.3)',
-        'glow-safe': '0 0 20px -5px rgba(16, 185, 129, 0.3)',
-        'card': '0 4px 20px -2px rgba(0, 0, 0, 0.5)',
+        'subtle': '0 1px 3px 0 rgba(31, 22, 16, 0.05), 0 1px 2px -1px rgba(31, 22, 16, 0.05)',
+        'card': '0 4px 16px -2px rgba(31, 22, 16, 0.06)',
+        'card-hover': '0 8px 24px -4px rgba(31, 22, 16, 0.10)',
+        'glow-coffee': '0 0 20px -5px rgba(111, 78, 55, 0.25)',
       }
     },
   },

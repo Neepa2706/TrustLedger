@@ -9,8 +9,8 @@ export default function ApplicationSummaryCards({ stats }) {
       value: stats?.total ?? 128,
       subtext: 'Across current review queue',
       icon: FileSpreadsheet,
-      badgeColor: 'border-cyan-500/30 text-cyan-400 bg-cyan-950/40',
-      valueColor: 'text-white'
+      badgeColor: 'border-coffee-200 text-coffee-700 bg-coffee-50',
+      valueColor: 'text-espresso'
     },
     {
       id: 'high-risk',
@@ -18,8 +18,8 @@ export default function ApplicationSummaryCards({ stats }) {
       value: String(stats?.highRisk ?? 6).padStart(2, '0'),
       subtext: 'Requires investigation',
       icon: ShieldAlert,
-      badgeColor: 'border-red-500/40 text-red-400 bg-red-950/40',
-      valueColor: 'text-red-400'
+      badgeColor: 'border-red-200 text-red-700 bg-red-50',
+      valueColor: 'text-red-700'
     },
     {
       id: 'needs-review',
@@ -27,8 +27,8 @@ export default function ApplicationSummaryCards({ stats }) {
       value: stats?.needsReview ?? 17,
       subtext: 'Pending analyst review',
       icon: Clock,
-      badgeColor: 'border-amber-500/40 text-amber-400 bg-amber-950/40',
-      valueColor: 'text-amber-400'
+      badgeColor: 'border-amber-200 text-amber-800 bg-amber-50',
+      valueColor: 'text-amber-800'
     },
     {
       id: 'verified',
@@ -36,8 +36,8 @@ export default function ApplicationSummaryCards({ stats }) {
       value: stats?.verified ?? 105,
       subtext: 'Evidence verified',
       icon: ShieldCheck,
-      badgeColor: 'border-emerald-500/40 text-emerald-400 bg-emerald-950/40',
-      valueColor: 'text-emerald-400'
+      badgeColor: 'border-emerald-200 text-emerald-700 bg-emerald-50',
+      valueColor: 'text-emerald-700'
     }
   ];
 
@@ -48,22 +48,22 @@ export default function ApplicationSummaryCards({ stats }) {
         return (
           <div
             key={card.id}
-            className="relative overflow-hidden rounded-xl border border-surface-border bg-surface-card/80 p-5 backdrop-blur-sm transition-all hover:border-slate-700"
+            className="relative overflow-hidden rounded-2xl border border-coffee-200 bg-white p-5 shadow-card transition-all hover:border-coffee-300"
           >
             <div className="flex items-start justify-between">
               <div>
-                <span className="text-[11px] font-mono uppercase tracking-wider text-slate-400 font-medium">
+                <span className="text-[11px] font-mono uppercase tracking-wider text-stone-500 font-medium">
                   {card.title}
                 </span>
                 <div className={`mt-2 font-mono text-3xl font-bold tracking-tight ${card.valueColor}`}>
                   {card.value}
                 </div>
               </div>
-              <div className={`h-9 w-9 rounded-lg border flex items-center justify-center ${card.badgeColor}`}>
+              <div className={`h-9 w-9 rounded-xl border flex items-center justify-center shadow-xs ${card.badgeColor}`}>
                 <Icon className="h-4 w-4" />
               </div>
             </div>
-            <div className="mt-3 pt-2.5 border-t border-slate-800/80 text-xs text-slate-400">
+            <div className="mt-3 pt-2.5 border-t border-coffee-100 text-xs text-stone-500 font-sans">
               {card.subtext}
             </div>
           </div>

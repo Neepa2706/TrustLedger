@@ -146,11 +146,11 @@ export default function ApplicationsPage() {
     <div className="space-y-6">
       {/* Toast Notification */}
       {toastMessage && (
-        <div className="fixed bottom-6 right-6 z-50 flex items-center gap-3 rounded-lg border border-cyan-500/40 bg-midnight-950/95 px-4 py-3 text-xs font-mono text-cyan-200 shadow-2xl backdrop-blur animate-fadeIn">
+        <div className="fixed bottom-6 right-6 z-50 flex items-center gap-3 rounded-lg border border-coffee-300 bg-espresso text-white px-4 py-3 text-xs font-mono shadow-2xl animate-fadeIn">
           <span>{toastMessage}</span>
           <button
             onClick={() => setToastMessage('')}
-            className="text-cyan-400 hover:text-white"
+            className="text-warm-200 hover:text-white"
             aria-label="Dismiss toast"
           >
             <X className="h-3.5 w-3.5" />
@@ -161,15 +161,15 @@ export default function ApplicationsPage() {
       {/* Page Header */}
       <div className="flex flex-wrap items-center justify-between gap-4">
         <div>
-          <div className="flex items-center gap-2 text-xs font-mono text-cyan-400">
+          <div className="flex items-center gap-2 text-xs font-mono text-coffee-600">
             <span>TRIAGE COMMAND</span>
-            <span>/</span>
-            <span className="text-slate-400">ORIGINATION PIPELINE</span>
+            <span className="text-stone-400">/</span>
+            <span className="text-stone-500">ORIGINATION PIPELINE</span>
           </div>
-          <h1 className="text-2xl font-bold tracking-tight text-white mt-1">
+          <h1 className="text-2xl font-bold tracking-tight text-espresso mt-1">
             Loan Applications
           </h1>
-          <p className="text-xs text-slate-400 mt-0.5">
+          <p className="text-xs text-stone-500 mt-0.5">
             Review lending applications and investigate suspicious digital evidence.
           </p>
         </div>
@@ -177,9 +177,9 @@ export default function ApplicationsPage() {
         <div>
           <button
             onClick={handleExportClick}
-            className="inline-flex items-center gap-2 rounded-lg border border-surface-border bg-surface-card hover:bg-surface-hover hover:border-slate-600 px-4 py-2 text-xs font-mono font-medium text-slate-200 transition-colors shadow-sm"
+            className="inline-flex items-center gap-2 rounded-lg border border-coffee-200 bg-white hover:bg-warm-50 hover:border-coffee-300 px-4 py-2 text-xs font-mono font-medium text-stone-700 transition-colors shadow-sm"
           >
-            <DownloadCloud className="h-4 w-4 text-cyan-400" />
+            <DownloadCloud className="h-4 w-4 text-coffee-600" />
             <span>Export Report</span>
           </button>
         </div>

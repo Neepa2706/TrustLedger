@@ -1,6 +1,7 @@
 /**
  * TrustLedger ApplicationStepper Component
  * Multi-step progress indicator for the 6-stage borrower loan application.
+ * Styled in White & Coffee Brown fintech design system.
  */
 
 import React from 'react';
@@ -21,11 +22,11 @@ export default function ApplicationStepper({ currentStep = 1, onStepClick }) {
       {/* Stepper Bar */}
       <div className="flex items-center justify-between relative">
         {/* Background connector line */}
-        <div className="absolute top-1/2 left-0 right-0 -translate-y-1/2 h-[2px] bg-surface-border z-0" />
+        <div className="absolute top-1/2 left-0 right-0 -translate-y-1/2 h-[2px] bg-coffee-200 z-0" />
 
         {/* Progress active connector line */}
         <div
-          className="absolute top-1/2 left-0 -translate-y-1/2 h-[2px] bg-gradient-to-r from-cyan-400 to-blue-500 z-0 transition-all duration-300"
+          className="absolute top-1/2 left-0 -translate-y-1/2 h-[2px] bg-coffee-600 z-0 transition-all duration-300"
           style={{ width: `${((currentStep - 1) / (steps.length - 1)) * 100}%` }}
         />
 
@@ -42,17 +43,17 @@ export default function ApplicationStepper({ currentStep = 1, onStepClick }) {
                 onClick={() => isAccessible && onStepClick && onStepClick(s.num)}
                 className={`h-9 w-9 rounded-full flex items-center justify-center font-mono text-xs font-bold transition-all ${
                   isDone
-                    ? 'bg-emerald-500 text-midnight-950 shadow-[0_0_12px_rgba(16,185,129,0.4)] cursor-pointer'
+                    ? 'bg-emerald-600 text-white shadow-sm cursor-pointer'
                     : isCurrent
-                    ? 'bg-cyan-400 text-midnight-950 ring-4 ring-cyan-500/20 shadow-[0_0_15px_rgba(0,240,255,0.4)] cursor-default'
-                    : 'bg-midnight-900 border border-surface-border text-slate-500 cursor-not-allowed'
+                    ? 'bg-coffee-600 text-white ring-4 ring-coffee-100 shadow-sm cursor-default'
+                    : 'bg-white border border-coffee-200 text-coffee-400 cursor-not-allowed'
                 }`}
               >
                 {isDone ? <CheckCircle2 className="h-4 w-4" /> : s.num}
               </button>
               <span
-                className={`text-[10px] font-medium mt-1.5 hidden md:block text-center whitespace-nowrap ${
-                  isCurrent ? 'text-cyan-300 font-semibold' : isDone ? 'text-slate-300' : 'text-slate-500'
+                className={`text-[10px] mt-1.5 hidden md:block text-center whitespace-nowrap ${
+                  isCurrent ? 'text-coffee-950 font-bold' : isDone ? 'text-coffee-700 font-medium' : 'text-coffee-400'
                 }`}
               >
                 {s.label}
@@ -62,9 +63,8 @@ export default function ApplicationStepper({ currentStep = 1, onStepClick }) {
         })}
       </div>
 
-      {/* Mobile Step Heading */}
       <div className="md:hidden text-center mt-3">
-        <span className="text-xs font-semibold text-cyan-300 font-mono">
+        <span className="text-xs font-bold text-coffee-800">
           STEP {currentStep} OF {steps.length}: {steps[currentStep - 1].label}
         </span>
       </div>

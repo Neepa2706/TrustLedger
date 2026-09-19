@@ -16,12 +16,12 @@ export default function DocumentQualityStatus({
 }) {
   if (isPreVerified) {
     return (
-      <div className="p-2.5 rounded-lg border border-emerald-500/40 bg-emerald-950/20 text-xs text-emerald-200 flex items-center justify-between">
+      <div className="p-2.5 rounded-lg border border-emerald-200 bg-emerald-50 text-xs text-emerald-800 flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <CheckCircle2 className="h-4 w-4 text-emerald-400 shrink-0" />
-          <span className="font-semibold text-emerald-300">Pre-verified Profile Document</span>
+          <CheckCircle2 className="h-4 w-4 text-emerald-600 shrink-0" />
+          <span className="font-semibold text-emerald-900">Pre-verified Profile Document</span>
         </div>
-        <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-950 text-emerald-300 border border-emerald-500/30">
+        <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-white text-emerald-800 border border-emerald-200 font-medium">
           Linked from Profile
         </span>
       </div>
@@ -33,45 +33,45 @@ export default function DocumentQualityStatus({
   const isGood = qualityStatus === 'GOOD';
 
   return (
-    <div className={`p-3 rounded-lg border text-xs space-y-1.5 ${
+    <div className={`p-3 rounded-lg border text-xs space-y-1.5 shadow-sm ${
       isError
-        ? 'border-red-500/40 bg-red-950/30 text-red-200'
+        ? 'border-red-200 bg-red-50 text-red-800'
         : isWarning
-        ? 'border-amber-500/40 bg-amber-950/30 text-amber-200'
-        : 'border-emerald-500/40 bg-emerald-950/20 text-emerald-200'
+        ? 'border-amber-200 bg-amber-50 text-amber-800'
+        : 'border-emerald-200 bg-emerald-50 text-emerald-800'
     }`}>
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
           {isError ? (
-            <AlertCircle className="h-4 w-4 text-red-400 shrink-0" />
+            <AlertCircle className="h-4 w-4 text-red-600 shrink-0" />
           ) : isWarning ? (
-            <AlertTriangle className="h-4 w-4 text-amber-400 shrink-0" />
+            <AlertTriangle className="h-4 w-4 text-amber-600 shrink-0" />
           ) : (
-            <CheckCircle2 className="h-4 w-4 text-emerald-400 shrink-0" />
+            <CheckCircle2 className="h-4 w-4 text-emerald-600 shrink-0" />
           )}
           <span className="font-semibold">
             {isError ? 'Quality Check Error' : isWarning ? 'Quality Advisory' : 'Quality Check Passed'}
           </span>
         </div>
 
-        <span className={`text-[10px] font-mono px-2 py-0.5 rounded border ${
+        <span className={`text-[10px] font-mono px-2 py-0.5 rounded border font-semibold ${
           isError
-            ? 'bg-red-950 text-red-300 border-red-500/40'
+            ? 'bg-white text-red-700 border-red-200'
             : isWarning
-            ? 'bg-amber-950 text-amber-300 border-amber-500/40'
-            : 'bg-emerald-950 text-emerald-300 border-emerald-500/40'
+            ? 'bg-white text-amber-700 border-amber-200'
+            : 'bg-white text-emerald-700 border-emerald-200'
         }`}>
           {qualityStatus}
         </span>
       </div>
 
-      <p className="text-[11px] text-slate-300 pl-6 leading-relaxed">
+      <p className="text-[11px] text-stone-700 pl-6 leading-relaxed">
         {qualityMessage}
       </p>
 
       {heuristicMessage && (
-        <div className="pl-6 pt-1 border-t border-surface-border/40 text-[10px] font-mono text-slate-400">
-          <span className="text-cyan-300">Type Check: </span>
+        <div className="pl-6 pt-1 border-t border-coffee-200/60 text-[10px] font-mono text-stone-500">
+          <span className="text-coffee-700 font-semibold">Type Check: </span>
           {heuristicMessage}
         </div>
       )}

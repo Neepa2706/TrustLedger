@@ -121,7 +121,6 @@ export default function CameraCaptureModal({ isOpen, onClose, onPhotoConfirmed }
 
       for (let y = 0; y < height; y += 8) {
         for (let x = 0; x < width; x += 8) {
-          // Check if point is inside oval
           const dx = (x - cx) / rx;
           const dy = (y - cy) / ry;
           if (dx * dx + dy * dy <= 1) {
@@ -148,30 +147,19 @@ export default function CameraCaptureModal({ isOpen, onClose, onPhotoConfirmed }
       const avgEdge = edgeCount > 0 ? edgeDiffSum / edgeCount : 20;
 
       const isDark = meanLuminance < 45;
-      const isOverexposed = meanLuminance > 235;
-      const isBlurry = avgEdge < 12;
-
-      let message = 'Face properly positioned';
-      let score = 90;
-
-      if (isDark) {
-        message = 'Lighting is too dark. Please face towards a light source.';
-        score = 55;
-      } else if (isOverexposed) {
-        message = 'Lighting is too harsh. Please avoid direct glare.';
-        score = 60;
-      } else if (isBlurry) {
-        message = 'Please keep the camera steady and take a clearer photograph.';
-        score = 50;
-      }
+      const isBlurry = avgEdge < 8;
 
       return {
         faceDetected: true,
         singleFace: true,
         isBlurry,
-        isDark: isDark || isOverexposed,
-        score,
-        message
+        isDark,
+        score: Math.min(95, Math.max(70, Math.round(meanLuminance * 0.4 + avgEdge * 1.5))),
+        message: isDark
+          ? 'Low lighting detected. Please face a light source.'
+          : isBlurry
+          ? 'Slight blur detected. Hold steady.'
+          : 'Face clearly positioned and lit.'
       };
     } catch {
       return {
@@ -180,7 +168,7 @@ export default function CameraCaptureModal({ isOpen, onClose, onPhotoConfirmed }
         isBlurry: false,
         isDark: false,
         score: 85,
-        message: 'Face verified in frame'
+        message: 'Face clearly positioned.'
       };
     }
   };
@@ -190,24 +178,31 @@ export default function CameraCaptureModal({ isOpen, onClose, onPhotoConfirmed }
     setIsAnalyzing(true);
 
     const video = videoRef.current;
-    const canvas = document.createElement('canvas');
-    canvas.width = video.videoWidth || 640;
-    canvas.height = video.videoHeight || 480;
+    const width = video.videoWidth || 640;
+    const height = video.videoHeight || 480;
+
+    let canvas = canvasRef.current;
+    if (!canvas) {
+      canvas = document.createElement('canvas');
+      canvasRef.current = canvas;
+    }
+    canvas.width = width;
+    canvas.height = height;
+
     const ctx = canvas.getContext('2d');
-
-    // Flip horizontally for natural mirror feel
-    ctx.translate(canvas.width, 0);
+    // Mirror the capture to match user perspective
+    ctx.translate(width, 0);
     ctx.scale(-1, 1);
-    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+    ctx.drawImage(video, 0, 0, width, height);
 
-    const feedback = analyzeFrameQuality(canvas, ctx, canvas.width, canvas.height);
-    setQualityFeedback(feedback);
+    const dataUrl = canvas.toDataURL('image/jpeg', 0.9);
+    const feedback = analyzeFrameQuality(canvas, ctx, width, height);
 
-    const dataUrl = canvas.toDataURL('image/jpeg', 0.92);
     setCapturedDataUrl(dataUrl);
+    setQualityFeedback(feedback);
+    setIsAnalyzing(false);
     stopCameraStream();
     setStep('preview');
-    setIsAnalyzing(false);
   };
 
   const handleRetake = () => {
@@ -218,44 +213,47 @@ export default function CameraCaptureModal({ isOpen, onClose, onPhotoConfirmed }
   const handleConfirm = () => {
     if (!capturedDataUrl) return;
 
-    // Convert dataURL to Blob for upload
-    const byteString = atob(capturedDataUrl.split(',')[1]);
-    const mimeString = capturedDataUrl.split(',')[0].split(':')[1].split(';')[0];
-    const ab = new ArrayBuffer(byteString.length);
-    const ia = new Uint8Array(ab);
-    for (let i = 0; i < byteString.length; i++) {
-      ia[i] = byteString.charCodeAt(i);
+    // Convert dataURL to Blob
+    const arr = capturedDataUrl.split(',');
+    const mime = arr[0].match(/:(.*?);/)[1];
+    const bstr = atob(arr[1]);
+    let n = bstr.length;
+    const u8arr = new Uint8Array(n);
+    while (n--) {
+      u8arr[n] = bstr.charCodeAt(n);
     }
-    const blob = new Blob([ab], { type: mimeString });
+    const blob = new Blob([u8arr], { type: mime });
 
-    onPhotoConfirmed(blob, capturedDataUrl);
+    if (onPhotoConfirmed) {
+      onPhotoConfirmed(capturedDataUrl, blob, qualityFeedback);
+    }
     onClose();
   };
 
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-midnight-950/85 backdrop-blur-md p-4 animate-fadeIn">
-      <div className="w-full max-w-lg rounded-2xl border border-surface-border bg-surface-card p-6 shadow-2xl relative flex flex-col">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-espresso/60 backdrop-blur-sm animate-fadeIn">
+      <div className="relative w-full max-w-lg rounded-2xl border border-coffee-200 bg-white p-5 sm:p-6 shadow-2xl space-y-4">
         
-        {/* Top bar with close button */}
-        <div className="flex items-center justify-between pb-3 border-b border-surface-border/80 mb-4">
-          <div className="flex items-center gap-2">
-            <div className="p-1.5 rounded-lg bg-cyan-950 border border-cyan-500/40 text-cyan-400">
+        {/* Modal Header */}
+        <div className="flex items-center justify-between pb-3 border-b border-coffee-100">
+          <div className="flex items-center gap-2.5">
+            <div className="h-8 w-8 rounded-lg bg-coffee-50 border border-coffee-200 text-coffee-700 flex items-center justify-center shadow-xs">
               <Camera className="h-4 w-4" />
             </div>
             <div>
-              <h3 className="text-sm font-bold text-white">
-                Live Verification Photograph
+              <h3 className="text-sm font-bold text-espresso">
+                Profile Photograph Verification
               </h3>
-              <span className="text-[10px] font-mono text-cyan-400">
+              <span className="text-[10px] font-mono text-coffee-600">
                 Camera capture only • No file upload
               </span>
             </div>
           </div>
           <button
             onClick={onClose}
-            className="p-1 text-slate-400 hover:text-white rounded-lg hover:bg-midnight-900"
+            className="p-1 text-stone-400 hover:text-espresso rounded-lg hover:bg-stone-100 transition"
           >
             <X className="h-4 w-4" />
           </button>
@@ -267,52 +265,52 @@ export default function CameraCaptureModal({ isOpen, onClose, onPhotoConfirmed }
         {step === 'instructions' && (
           <div className="space-y-4">
             <div>
-              <h4 className="text-sm font-semibold text-white">
+              <h4 className="text-sm font-semibold text-espresso">
                 Before you take the photograph
               </h4>
-              <p className="text-xs text-slate-400 mt-1">
+              <p className="text-xs text-stone-600 mt-1">
                 For identity verification, take a new photograph using your device camera.
                 Make sure you meet the following requirements:
               </p>
             </div>
 
             {cameraError && (
-              <div className="p-3 rounded-lg border border-red-500/40 bg-red-950/40 text-xs text-red-200 flex items-start gap-2">
-                <AlertCircle className="h-4 w-4 text-red-400 shrink-0 mt-0.5" />
+              <div className="p-3 rounded-xl border border-red-200 bg-red-50 text-xs text-red-800 flex items-start gap-2">
+                <AlertCircle className="h-4 w-4 text-red-600 shrink-0 mt-0.5" />
                 <div>
-                  <span className="font-semibold block text-red-300">Camera access needed</span>
-                  <p className="text-[11px] text-slate-300 mt-0.5">{cameraError}</p>
+                  <span className="font-semibold block text-red-900">Camera access needed</span>
+                  <p className="text-[11px] text-red-700 mt-0.5">{cameraError}</p>
                 </div>
               </div>
             )}
 
             {/* Clear Rules Checklist */}
-            <div className="rounded-xl border border-surface-border bg-midnight-950 p-3.5 space-y-2 text-xs text-slate-300">
+            <div className="rounded-xl border border-coffee-100 bg-stone-50/80 p-3.5 space-y-2 text-xs text-stone-700">
               <div className="flex items-center gap-2">
-                <CheckCircle2 className="h-3.5 w-3.5 text-emerald-400 shrink-0" />
+                <CheckCircle2 className="h-3.5 w-3.5 text-emerald-600 shrink-0" />
                 <span>Face the camera directly and hold the device at eye level</span>
               </div>
               <div className="flex items-center gap-2">
-                <CheckCircle2 className="h-3.5 w-3.5 text-emerald-400 shrink-0" />
+                <CheckCircle2 className="h-3.5 w-3.5 text-emerald-600 shrink-0" />
                 <span>Keep your full face clearly visible in good lighting</span>
               </div>
               <div className="flex items-center gap-2">
-                <CheckCircle2 className="h-3.5 w-3.5 text-emerald-400 shrink-0" />
+                <CheckCircle2 className="h-3.5 w-3.5 text-emerald-600 shrink-0" />
                 <span>Remove sunglasses, hats, masks, or anything covering your face</span>
               </div>
               <div className="flex items-center gap-2">
-                <CheckCircle2 className="h-3.5 w-3.5 text-emerald-400 shrink-0" />
+                <CheckCircle2 className="h-3.5 w-3.5 text-emerald-600 shrink-0" />
                 <span>Use a plain background if possible and keep camera steady</span>
               </div>
               <div className="flex items-center gap-2">
-                <AlertTriangle className="h-3.5 w-3.5 text-amber-400 shrink-0" />
+                <AlertTriangle className="h-3.5 w-3.5 text-amber-600 shrink-0" />
                 <span>Do not use another person's photograph or a photo of a screen</span>
               </div>
             </div>
 
             {/* Mandatory Single Person Reminder */}
-            <div className="text-[11px] text-slate-400 flex items-center gap-2 px-1">
-              <UserCheck className="h-3.5 w-3.5 text-cyan-400 shrink-0" />
+            <div className="text-[11px] text-stone-600 flex items-center gap-2 px-1">
+              <UserCheck className="h-3.5 w-3.5 text-coffee-700 shrink-0" />
               <span>Only one person should be present in the verification photograph.</span>
             </div>
 
@@ -320,7 +318,7 @@ export default function CameraCaptureModal({ isOpen, onClose, onPhotoConfirmed }
               <button
                 type="button"
                 onClick={startCamera}
-                className="w-full flex items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 px-4 py-2.5 text-xs font-semibold uppercase tracking-wider text-midnight-950 shadow-[0_0_20px_rgba(0,240,255,0.25)] transition-all"
+                className="w-full flex items-center justify-center gap-2 rounded-xl bg-coffee-600 hover:bg-coffee-700 px-4 py-2.5 text-xs font-semibold uppercase tracking-wider text-white shadow-sm transition-all"
               >
                 <Camera className="h-4 w-4" />
                 <span>Open Camera</span>
@@ -334,7 +332,7 @@ export default function CameraCaptureModal({ isOpen, onClose, onPhotoConfirmed }
             ------------------------------------------------------------- */}
         {step === 'camera' && (
           <div className="flex flex-col items-center space-y-3">
-            <div className="relative w-full aspect-[4/3] rounded-xl overflow-hidden bg-black border border-surface-border flex items-center justify-center">
+            <div className="relative w-full aspect-[4/3] rounded-xl overflow-hidden bg-black border border-coffee-200 flex items-center justify-center">
               
               {/* HTML5 Live Video Stream */}
               <video
@@ -347,12 +345,10 @@ export default function CameraCaptureModal({ isOpen, onClose, onPhotoConfirmed }
 
               {/* Face-Positioning Oval Overlay Guide */}
               <div className="absolute inset-0 pointer-events-none flex flex-col items-center justify-center">
-                {/* Visual oval framing */}
-                <div className="w-[60%] h-[78%] rounded-[50%] border-2 border-dashed border-cyan-400/80 shadow-[0_0_25px_rgba(0,240,255,0.35)] flex items-center justify-center transition-all animate-pulse">
-                  <div className="w-[95%] h-[95%] rounded-[50%] border border-cyan-300/40" />
+                <div className="w-[60%] h-[78%] rounded-[50%] border-2 border-dashed border-white/80 shadow-[0_0_20px_rgba(255,255,255,0.4)] flex items-center justify-center transition-all animate-pulse">
+                  <div className="w-[95%] h-[95%] rounded-[50%] border border-white/40" />
                 </div>
-                {/* Guide Label */}
-                <span className="absolute bottom-3 px-3 py-1 rounded-full bg-midnight-950/80 backdrop-blur-sm border border-cyan-500/40 text-[11px] font-mono text-cyan-300">
+                <span className="absolute bottom-3 px-3 py-1 rounded-full bg-espresso/80 backdrop-blur-sm border border-coffee-300 text-[11px] font-mono text-white">
                   Position your face inside the frame
                 </span>
               </div>
@@ -366,7 +362,7 @@ export default function CameraCaptureModal({ isOpen, onClose, onPhotoConfirmed }
                   stopCameraStream();
                   setStep('instructions');
                 }}
-                className="text-xs text-slate-400 hover:text-white px-3 py-1.5"
+                className="text-xs text-stone-600 hover:text-espresso px-3 py-1.5 font-medium"
               >
                 Back to instructions
               </button>
@@ -375,7 +371,7 @@ export default function CameraCaptureModal({ isOpen, onClose, onPhotoConfirmed }
                 type="button"
                 onClick={handleCapture}
                 disabled={isAnalyzing}
-                className="flex items-center gap-2 rounded-lg bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 px-5 py-2.5 text-xs font-semibold uppercase tracking-wider text-midnight-950 shadow-[0_0_20px_rgba(0,240,255,0.3)] transition-all"
+                className="flex items-center gap-2 rounded-xl bg-coffee-600 hover:bg-coffee-700 px-5 py-2.5 text-xs font-semibold uppercase tracking-wider text-white shadow-sm transition-all"
               >
                 <Camera className="h-4 w-4" />
                 <span>Capture Photograph</span>
@@ -389,7 +385,7 @@ export default function CameraCaptureModal({ isOpen, onClose, onPhotoConfirmed }
             ------------------------------------------------------------- */}
         {step === 'preview' && (
           <div className="flex flex-col items-center space-y-3">
-            <div className="relative w-full aspect-[4/3] rounded-xl overflow-hidden bg-black border border-surface-border flex items-center justify-center">
+            <div className="relative w-full aspect-[4/3] rounded-xl overflow-hidden bg-black border border-coffee-200 flex items-center justify-center">
               {capturedDataUrl && (
                 <img
                   src={capturedDataUrl}
@@ -399,28 +395,28 @@ export default function CameraCaptureModal({ isOpen, onClose, onPhotoConfirmed }
               )}
               
               {/* Quality overlay badge */}
-              <div className="absolute top-2 right-2 px-2.5 py-1 rounded-md bg-midnight-950/80 backdrop-blur-sm border border-emerald-500/40 text-[11px] font-mono text-emerald-300 flex items-center gap-1.5">
-                <CheckCircle2 className="h-3.5 w-3.5 text-emerald-400" />
+              <div className="absolute top-2 right-2 px-2.5 py-1 rounded-md bg-white/90 backdrop-blur-sm border border-emerald-200 text-[11px] font-mono text-emerald-800 flex items-center gap-1.5 shadow-xs">
+                <CheckCircle2 className="h-3.5 w-3.5 text-emerald-600" />
                 <span>Live Camera Verified</span>
               </div>
             </div>
 
             {/* Quality Feedback Bar */}
-            <div className={`w-full p-3 rounded-lg border text-xs flex items-start gap-2 ${
+            <div className={`w-full p-3 rounded-xl border text-xs flex items-start gap-2 ${
               qualityFeedback.isBlurry || qualityFeedback.isDark
-                ? 'border-amber-500/40 bg-amber-950/30 text-amber-200'
-                : 'border-emerald-500/40 bg-emerald-950/30 text-emerald-200'
+                ? 'border-amber-200 bg-amber-50 text-amber-900'
+                : 'border-emerald-200 bg-emerald-50 text-emerald-900'
             }`}>
               {qualityFeedback.isBlurry || qualityFeedback.isDark ? (
-                <AlertCircle className="h-4 w-4 text-amber-400 shrink-0 mt-0.5" />
+                <AlertCircle className="h-4 w-4 text-amber-600 shrink-0 mt-0.5" />
               ) : (
-                <CheckCircle2 className="h-4 w-4 text-emerald-400 shrink-0 mt-0.5" />
+                <CheckCircle2 className="h-4 w-4 text-emerald-600 shrink-0 mt-0.5" />
               )}
               <div className="flex-1">
                 <span className="font-semibold block">
                   {qualityFeedback.isBlurry || qualityFeedback.isDark ? 'Quality Advisory' : 'Photo Quality Passed'}
                 </span>
-                <span className="text-[11px] text-slate-300">
+                <span className="text-[11px] text-stone-600">
                   {qualityFeedback.message}
                 </span>
               </div>
@@ -431,16 +427,16 @@ export default function CameraCaptureModal({ isOpen, onClose, onPhotoConfirmed }
               <button
                 type="button"
                 onClick={handleRetake}
-                className="flex-1 flex items-center justify-center gap-2 rounded-lg border border-surface-border bg-midnight-900 hover:bg-midnight-850 px-4 py-2.5 text-xs font-medium text-slate-200 transition-all"
+                className="flex-1 flex items-center justify-center gap-2 rounded-xl border border-coffee-200 bg-white hover:bg-coffee-50 px-4 py-2.5 text-xs font-medium text-stone-700 transition-all shadow-xs"
               >
-                <RefreshCw className="h-3.5 w-3.5 text-slate-400" />
+                <RefreshCw className="h-3.5 w-3.5 text-stone-500" />
                 <span>Retake</span>
               </button>
 
               <button
                 type="button"
                 onClick={handleConfirm}
-                className="flex-1 flex items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 px-4 py-2.5 text-xs font-semibold uppercase tracking-wider text-midnight-950 shadow-[0_0_20px_rgba(16,185,129,0.3)] transition-all"
+                className="flex-1 flex items-center justify-center gap-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 px-4 py-2.5 text-xs font-semibold uppercase tracking-wider text-white shadow-sm transition-all"
               >
                 <CheckCircle2 className="h-4 w-4" />
                 <span>Use This Photo</span>

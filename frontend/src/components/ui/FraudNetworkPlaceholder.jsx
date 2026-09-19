@@ -23,22 +23,22 @@ function EntityNode({ data }) {
   const Icon = iconMap[data.type] || Network;
 
   const borderClasses = data.risk === 'critical'
-    ? 'border-red-500/70 bg-red-950/40 text-red-300 shadow-[0_0_15px_rgba(239,68,68,0.25)]'
+    ? 'border-rose-300 bg-rose-50 text-rose-800 shadow-sm'
     : data.risk === 'warning'
-    ? 'border-amber-500/70 bg-amber-950/40 text-amber-300'
-    : 'border-cyan-500/70 bg-cyan-950/40 text-cyan-300';
+    ? 'border-amber-300 bg-amber-50 text-amber-800 shadow-sm'
+    : 'border-coffee-300 bg-white text-coffee-800 shadow-sm';
 
   return (
-    <div className={`px-3 py-2 rounded-lg border text-xs font-mono shadow-md backdrop-blur-md transition-all ${borderClasses}`}>
-      <Handle type="target" position={Position.Top} className="w-1.5 h-1.5 !bg-cyan-400" />
+    <div className={`px-3 py-2 rounded-xl border text-xs font-mono shadow-sm transition-all ${borderClasses}`}>
+      <Handle type="target" position={Position.Top} className="w-2 h-2 !bg-coffee-600" />
       <div className="flex items-center gap-2">
-        <Icon className="w-3.5 h-3.5 shrink-0" />
-        <span className="font-semibold text-white tracking-wide">{data.label}</span>
+        <Icon className="w-3.5 h-3.5 shrink-0 text-coffee-700" />
+        <span className="font-semibold text-espresso tracking-wide">{data.label}</span>
       </div>
       {data.subtext && (
-        <div className="text-[10px] text-slate-400 mt-1">{data.subtext}</div>
+        <div className="text-[10px] text-stone-500 mt-1">{data.subtext}</div>
       )}
-      <Handle type="source" position={Position.Bottom} className="w-1.5 h-1.5 !bg-cyan-400" />
+      <Handle type="source" position={Position.Bottom} className="w-2 h-2 !bg-coffee-600" />
     </div>
   );
 }
@@ -85,34 +85,34 @@ export default function FraudNetworkPlaceholder({
   ], []);
 
   const initialEdges = useMemo(() => [
-    { id: 'e1', source: 'device-node', target: 'target-loan', animated: true, style: { stroke: '#ef4444', strokeWidth: 2 } },
-    { id: 'e2', source: 'phone-node', target: 'target-loan', animated: false, style: { stroke: '#f59e0b', strokeWidth: 1.5 } },
-    { id: 'e3', source: 'target-loan', target: 'bank-node', animated: true, style: { stroke: '#ef4444', strokeWidth: 2 } },
-    { id: 'e4', source: 'target-loan', target: 'syndicate-node', animated: true, style: { stroke: '#ef4444', strokeWidth: 2.5 } }
+    { id: 'e1', source: 'device-node', target: 'target-loan', animated: true, style: { stroke: '#dc2626', strokeWidth: 2 } },
+    { id: 'e2', source: 'phone-node', target: 'target-loan', animated: false, style: { stroke: '#d97706', strokeWidth: 1.5 } },
+    { id: 'e3', source: 'target-loan', target: 'bank-node', animated: true, style: { stroke: '#dc2626', strokeWidth: 2 } },
+    { id: 'e4', source: 'target-loan', target: 'syndicate-node', animated: true, style: { stroke: '#dc2626', strokeWidth: 2.5 } }
   ], []);
 
   return (
-    <div className={`rounded-xl border border-surface-border bg-surface-card/80 p-5 backdrop-blur-sm ${className}`}>
-      <div className="flex flex-wrap items-center justify-between gap-2 mb-3 pb-3 border-b border-surface-border">
+    <div className={`rounded-2xl border border-coffee-200 bg-white p-5 shadow-sm ${className}`}>
+      <div className="flex flex-wrap items-center justify-between gap-2 mb-3 pb-3 border-b border-coffee-100">
         <div className="flex items-center gap-2.5">
-          <div className="h-8 w-8 rounded-lg bg-red-950/40 border border-red-500/30 flex items-center justify-center text-red-400">
+          <div className="h-8 w-8 rounded-lg bg-rose-50 border border-rose-200 flex items-center justify-center text-rose-700">
             <Share2 className="h-4 w-4" />
           </div>
           <div>
-            <h3 className="text-sm font-semibold text-white tracking-wide">{title}</h3>
-            <p className="text-xs text-slate-400">{subtitle}</p>
+            <h3 className="text-sm font-semibold text-espresso tracking-wide">{title}</h3>
+            <p className="text-xs text-stone-500">{subtitle}</p>
           </div>
         </div>
 
         <div className="flex items-center gap-2">
           <StatusBadge status="CRITICAL" customLabel="SYNDICATE DETECTED" pulse size="sm" />
-          <span className="text-xs font-mono text-slate-400 bg-midnight-900 px-2 py-1 rounded border border-surface-border">
+          <span className="text-xs font-mono text-coffee-800 bg-warm-50 px-2 py-1 rounded border border-coffee-200">
             Nodes: 5 | Links: 4
           </span>
         </div>
       </div>
 
-      <div className="relative rounded-lg overflow-hidden border border-surface-border bg-midnight-950" style={{ height }}>
+      <div className="relative rounded-xl overflow-hidden border border-coffee-200 bg-warm-50/50" style={{ height }}>
         <ReactFlow
           nodes={initialNodes}
           edges={initialEdges}
@@ -120,18 +120,18 @@ export default function FraudNetworkPlaceholder({
           fitView
           attributionPosition="bottom-right"
         >
-          <Background color="#1e293b" gap={18} size={1} />
-          <Controls className="!bg-midnight-900 !border-surface-border !fill-cyan-400 [&>button]:!border-surface-border" />
+          <Background color="#E8DFD1" gap={18} size={1} />
+          <Controls className="!bg-white !border-coffee-200 !fill-coffee-700 [&>button]:!border-coffee-200 [&>button]:!bg-white [&>button:hover]:!bg-warm-100" />
         </ReactFlow>
 
         {/* Floating Graph Legend Overlay */}
-        <div className="absolute top-3 left-3 pointer-events-none rounded border border-surface-border/80 bg-midnight-950/90 px-3 py-2 text-[11px] font-mono text-slate-300 backdrop-blur">
-          <div className="flex items-center gap-2 text-cyan-300 font-semibold mb-1">
-            <Layers className="h-3 w-3" /> GRAPH RESOLUTION MATRIX
+        <div className="absolute top-3 left-3 pointer-events-none rounded-xl border border-coffee-200 bg-white/95 px-3 py-2 text-[11px] font-mono text-espresso shadow-md backdrop-blur">
+          <div className="flex items-center gap-2 text-coffee-800 font-semibold mb-1">
+            <Layers className="h-3 w-3 text-coffee-600" /> GRAPH RESOLUTION MATRIX
           </div>
-          <div className="space-y-0.5 text-slate-400 text-[10px]">
+          <div className="space-y-0.5 text-stone-500 text-[10px]">
             <div>• Red edges: Multi-application collisions (&gt;10 links)</div>
-            <div>• Yellow edges: Disposable/VoIP carrier signals</div>
+            <div>• Amber edges: Disposable/VoIP carrier signals</div>
           </div>
         </div>
       </div>

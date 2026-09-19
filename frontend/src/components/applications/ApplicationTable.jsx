@@ -11,8 +11,8 @@ export default function ApplicationTable({ applications = [], onClearFilters }) 
 
     if (s === 'verified' || s === 'clear') {
       return (
-        <span className="inline-flex items-center gap-1 font-mono text-[11px] text-emerald-400 bg-emerald-950/40 px-2 py-0.5 rounded border border-emerald-500/30">
-          <span className="h-1.5 w-1.5 rounded-full bg-emerald-400"></span>
+        <span className="inline-flex items-center gap-1 font-mono text-[11px] text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200 font-medium">
+          <span className="h-1.5 w-1.5 rounded-full bg-emerald-600"></span>
           {status}
         </span>
       );
@@ -20,8 +20,8 @@ export default function ApplicationTable({ applications = [], onClearFilters }) 
 
     if (s === 'review' || s === 'watch') {
       return (
-        <span className="inline-flex items-center gap-1 font-mono text-[11px] text-amber-400 bg-amber-950/40 px-2 py-0.5 rounded border border-amber-500/30">
-          <span className="h-1.5 w-1.5 rounded-full bg-amber-400"></span>
+        <span className="inline-flex items-center gap-1 font-mono text-[11px] text-amber-800 bg-amber-50 px-2 py-0.5 rounded border border-amber-200 font-medium">
+          <span className="h-1.5 w-1.5 rounded-full bg-amber-600"></span>
           {status}
         </span>
       );
@@ -29,15 +29,15 @@ export default function ApplicationTable({ applications = [], onClearFilters }) 
 
     if (s === 'suspicious' || s === 'connected' || s === 'warning') {
       return (
-        <span className="inline-flex items-center gap-1 font-mono text-[11px] text-red-400 bg-red-950/40 px-2 py-0.5 rounded border border-red-500/30">
-          <span className="h-1.5 w-1.5 rounded-full bg-red-400 animate-pulse"></span>
+        <span className="inline-flex items-center gap-1 font-mono text-[11px] text-red-700 bg-red-50 px-2 py-0.5 rounded border border-red-200 font-medium">
+          <span className="h-1.5 w-1.5 rounded-full bg-red-600 animate-pulse"></span>
           {status}
         </span>
       );
     }
 
     return (
-      <span className="inline-flex items-center gap-1 font-mono text-[11px] text-slate-400 bg-midnight-950 px-2 py-0.5 rounded border border-surface-border">
+      <span className="inline-flex items-center gap-1 font-mono text-[11px] text-stone-600 bg-stone-100 px-2 py-0.5 rounded border border-stone-200">
         {status}
       </span>
     );
@@ -45,27 +45,27 @@ export default function ApplicationTable({ applications = [], onClearFilters }) 
 
   const getRiskColor = (level) => {
     const l = String(level || '').toUpperCase();
-    if (l === 'HIGH') return 'text-red-400 border-red-500/40 bg-red-950/40';
-    if (l === 'MEDIUM') return 'text-amber-400 border-amber-500/40 bg-amber-950/40';
-    return 'text-emerald-400 border-emerald-500/40 bg-emerald-950/40';
+    if (l === 'HIGH') return 'text-red-700 border-red-200 bg-red-50';
+    if (l === 'MEDIUM') return 'text-amber-800 border-amber-200 bg-amber-50';
+    return 'text-emerald-700 border-emerald-200 bg-emerald-50';
   };
 
   if (applications.length === 0) {
     return (
-      <div className="rounded-xl border border-surface-border bg-surface-card/80 p-12 text-center backdrop-blur-sm">
-        <div className="h-12 w-12 rounded-full bg-midnight-950 border border-surface-border flex items-center justify-center mx-auto text-slate-500 mb-3">
+      <div className="rounded-2xl border border-coffee-200 bg-white p-12 text-center shadow-card">
+        <div className="h-12 w-12 rounded-full bg-stone-50 border border-coffee-200 flex items-center justify-center mx-auto text-stone-400 mb-3">
           <FileX2 className="h-6 w-6" />
         </div>
-        <h3 className="text-sm font-semibold text-white">No Matching Applications</h3>
-        <p className="text-xs text-slate-400 mt-1 max-w-sm mx-auto">
+        <h3 className="text-sm font-semibold text-espresso">No Matching Applications</h3>
+        <p className="text-xs text-stone-600 mt-1 max-w-sm mx-auto">
           No loan applications match your current search criteria or filter combinations.
         </p>
         {onClearFilters && (
           <button
             onClick={onClearFilters}
-            className="mt-4 inline-flex items-center gap-1.5 rounded-lg border border-cyan-500/30 bg-cyan-950/30 px-3.5 py-1.5 text-xs font-mono text-cyan-300 hover:bg-cyan-950/60 transition-colors"
+            className="mt-4 inline-flex items-center gap-1.5 rounded-xl border border-coffee-200 bg-coffee-50 px-3.5 py-1.5 text-xs font-mono text-coffee-800 hover:bg-coffee-100 transition-colors shadow-xs"
           >
-            <RotateCcw className="h-3.5 w-3.5 text-cyan-400" />
+            <RotateCcw className="h-3.5 w-3.5 text-coffee-700" />
             <span>Reset All Filters</span>
           </button>
         )}
@@ -74,11 +74,11 @@ export default function ApplicationTable({ applications = [], onClearFilters }) 
   }
 
   return (
-    <div className="rounded-xl border border-surface-border bg-surface-card/80 backdrop-blur-sm overflow-hidden shadow-card">
+    <div className="rounded-2xl border border-coffee-200 bg-white overflow-hidden shadow-card">
       <div className="overflow-x-auto">
         <table className="w-full text-left text-xs">
           <thead>
-            <tr className="border-b border-surface-border bg-midnight-950/60 text-[11px] font-mono uppercase text-slate-400">
+            <tr className="border-b border-coffee-100 bg-stone-50/80 text-[11px] font-mono uppercase text-stone-500">
               <th className="py-3 pl-4">Application</th>
               <th className="py-3">Applicant</th>
               <th className="py-3">Submitted</th>
@@ -91,26 +91,26 @@ export default function ApplicationTable({ applications = [], onClearFilters }) 
               <th className="py-3 pr-4 text-right">Action</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-slate-800/60 font-mono">
+          <tbody className="divide-y divide-coffee-100 font-mono">
             {applications.map((app) => (
               <tr
                 key={app.id}
                 onClick={() => navigate(`/applications/${app.id}`)}
-                className="group cursor-pointer hover:bg-cyan-950/15 transition-colors"
+                className="group cursor-pointer hover:bg-stone-50 transition-colors"
               >
                 {/* Application ID */}
-                <td className="py-3.5 pl-4 font-semibold text-cyan-300 group-hover:text-cyan-200">
+                <td className="py-3.5 pl-4 font-semibold text-coffee-700 group-hover:text-coffee-900">
                   {app.id}
                 </td>
 
                 {/* Applicant */}
-                <td className="py-3.5 font-sans font-medium text-white group-hover:text-cyan-100">
+                <td className="py-3.5 font-sans font-medium text-espresso">
                   <div>{app.applicant}</div>
-                  <div className="text-[10px] font-mono text-slate-400 mt-0.5">{app.loanAmount}</div>
+                  <div className="text-[10px] font-mono text-stone-500 mt-0.5">{app.loanAmount}</div>
                 </td>
 
                 {/* Submitted */}
-                <td className="py-3.5 text-slate-400 text-[11px]">
+                <td className="py-3.5 text-stone-500 text-[11px]">
                   {app.submittedAt}
                 </td>
 
@@ -137,10 +137,10 @@ export default function ApplicationTable({ applications = [], onClearFilters }) 
                 {/* Risk */}
                 <td className="py-3.5">
                   <div className="flex items-center gap-1.5">
-                    <span className="font-bold text-white">
+                    <span className="font-bold text-espresso">
                       {app.riskScore}%
                     </span>
-                    <span className={`px-1.5 py-0.2 text-[10px] font-bold rounded border ${getRiskColor(app.riskLevel)}`}>
+                    <span className={`px-1.5 py-0.5 text-[10px] font-bold rounded border ${getRiskColor(app.riskLevel)}`}>
                       {app.riskLevel}
                     </span>
                   </div>
@@ -162,7 +162,7 @@ export default function ApplicationTable({ applications = [], onClearFilters }) 
                       e.stopPropagation();
                       navigate(`/applications/${app.id}`);
                     }}
-                    className="inline-flex items-center gap-1 rounded-md border border-cyan-500/30 bg-cyan-950/30 px-2.5 py-1 text-[11px] font-mono font-medium text-cyan-300 hover:bg-cyan-950/70 hover:border-cyan-400 transition-all"
+                    className="inline-flex items-center gap-1 rounded-lg border border-coffee-200 bg-coffee-50 px-2.5 py-1 text-[11px] font-mono font-medium text-coffee-800 hover:bg-coffee-100 transition-all shadow-xs"
                   >
                     <span>View Investigation</span>
                     <ArrowRight className="h-3 w-3" />

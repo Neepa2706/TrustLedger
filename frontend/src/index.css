@@ -4,41 +4,42 @@
 
 @layer base {
   body {
-    background-color: #060913;
-    color: #e2e8f0;
+    background-color: #FAF8F5;
+    color: #1F1610;
+    font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
   }
 }
 
-/* Custom cyber / fintech grid background */
+/* Elegant Warm White / Coffee financial subtle grid */
 .cyber-grid {
   background-size: 32px 32px;
   background-image: 
-    linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+    linear-gradient(to right, rgba(111, 78, 55, 0.04) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(111, 78, 55, 0.04) 1px, transparent 1px);
 }
 
 .cyber-grid-dense {
   background-size: 16px 16px;
   background-image: 
-    linear-gradient(to right, rgba(0, 240, 255, 0.04) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(0, 240, 255, 0.04) 1px, transparent 1px);
+    linear-gradient(to right, rgba(111, 78, 55, 0.06) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(111, 78, 55, 0.06) 1px, transparent 1px);
 }
 
-/* Custom slim scrollbar */
+/* Custom warm cream scrollbar */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #0a0f1d;
+  background: #FAF8F5;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #1b2a47;
+  background: #D3C3AD;
   border-radius: 3px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #2b3e66;
+  background: #A98E71;
 }

@@ -155,21 +155,7 @@ async def upload_application_document(
     """
     uid = get_current_user_id(authorization, x_user_id)
     
-    # Format and size validation
-    ext = Path(file.filename or "doc.pdf").suffix.lower()
-    if ext not in [".pdf", ".png", ".jpg", ".jpeg"]:
-        raise HTTPException(
-            status_code=400,
-            detail="This document format is not supported. Please upload a PDF, JPG, or PNG file."
-        )
-
     content = await file.read()
-    if len(content) > 10 * 1024 * 1024:
-        raise HTTPException(
-            status_code=400,
-            detail="File size exceeds the 10 MB limit. Please upload a smaller file."
-        )
-
     try:
         return loan_service.add_document(
             application_id=application_id,
@@ -178,6 +164,8 @@ async def upload_application_document(
             filename=file.filename or "document.pdf",
             content=content
         )
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
     except PermissionError:
         raise HTTPException(status_code=403, detail="Unauthorized to upload to this application.")
     except Exception as e:

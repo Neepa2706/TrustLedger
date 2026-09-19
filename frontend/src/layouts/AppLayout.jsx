@@ -7,7 +7,7 @@ export default function AppLayout() {
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
 
   return (
-    <div className="flex h-screen w-full overflow-hidden bg-midnight-950 text-slate-100">
+    <div className="flex h-screen w-full overflow-hidden bg-surface-base text-coffee-950">
       {/* Persistent Sidebar */}
       <Sidebar
         isOpen={isMobileSidebarOpen}

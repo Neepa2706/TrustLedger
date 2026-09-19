@@ -59,8 +59,8 @@ export default function UserProfileViewPage() {
       
       {/* Toast Notification */}
       {toastMessage && (
-        <div className="fixed bottom-6 right-6 z-50 p-4 rounded-xl border border-cyan-500/40 bg-midnight-950/95 text-xs text-cyan-300 shadow-2xl flex items-center gap-2 font-mono backdrop-blur-xl">
-          <CheckCircle2 className="h-4 w-4 text-cyan-400" />
+        <div className="fixed bottom-6 right-6 z-50 p-4 rounded-xl border border-coffee-200 bg-white text-xs text-coffee-900 shadow-2xl flex items-center gap-2 font-mono">
+          <CheckCircle2 className="h-4 w-4 text-emerald-600" />
           <span>{toastMessage}</span>
         </div>
       )}
@@ -69,15 +69,15 @@ export default function UserProfileViewPage() {
       <SingleAccountNotice variant="banner" />
 
       {/* Header Profile Summary Card */}
-      <div className="rounded-2xl border border-surface-border bg-gradient-to-r from-surface-card via-surface-card to-cyan-950/30 p-6 sm:p-8 shadow-xl relative overflow-hidden">
+      <div className="rounded-2xl border border-coffee-200 bg-white p-6 sm:p-8 shadow-card relative overflow-hidden">
         <div className="relative z-10 flex flex-col sm:flex-row items-center sm:items-start gap-6">
           
           {/* Avatar / Camera Photo Placeholder */}
           <div className="relative">
-            <div className="w-24 h-24 rounded-2xl bg-cyan-950/80 border-2 border-cyan-500/40 flex items-center justify-center text-cyan-300 shadow-inner overflow-hidden">
+            <div className="w-24 h-24 rounded-2xl bg-coffee-50 border-2 border-coffee-200 flex items-center justify-center text-coffee-700 shadow-xs overflow-hidden">
               <User className="h-12 w-12" />
             </div>
-            <div className="absolute -bottom-2 -right-2 p-1.5 rounded-lg bg-emerald-950 border border-emerald-500/40 text-emerald-400 shadow">
+            <div className="absolute -bottom-2 -right-2 p-1.5 rounded-lg bg-emerald-50 border border-emerald-200 text-emerald-700 shadow-xs">
               <Camera className="h-3.5 w-3.5" />
             </div>
           </div>
@@ -85,28 +85,28 @@ export default function UserProfileViewPage() {
           {/* Identity & Verification Meta */}
           <div className="flex-1 text-center sm:text-left space-y-1.5">
             <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2">
-              <h1 className="text-2xl font-bold text-white tracking-tight">{fullName}</h1>
-              <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full border border-emerald-500/40 bg-emerald-950/60 text-emerald-300 text-xs font-semibold">
-                <CheckCircle2 className="h-3.5 w-3.5 text-emerald-400" />
+              <h1 className="text-2xl font-bold text-espresso tracking-tight">{fullName}</h1>
+              <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full border border-emerald-200 bg-emerald-50 text-emerald-700 text-xs font-semibold">
+                <CheckCircle2 className="h-3.5 w-3.5 text-emerald-600" />
                 <span>Verified Profile</span>
               </span>
             </div>
 
-            <p className="text-xs text-slate-400">
-              Single-person applicant ID: <span className="font-mono text-cyan-300">{user?.id || 'usr_borrower_001'}</span>
+            <p className="text-xs text-stone-500">
+              Single-person applicant ID: <span className="font-mono text-coffee-700 font-semibold">{user?.id || 'usr_borrower_001'}</span>
             </p>
 
-            <div className="pt-2 flex flex-wrap items-center justify-center sm:justify-start gap-4 text-xs text-slate-300">
-              <span className="flex items-center gap-1.5 text-slate-400">
-                <Mail className="h-3.5 w-3.5 text-cyan-400" />
+            <div className="pt-2 flex flex-wrap items-center justify-center sm:justify-start gap-4 text-xs text-stone-600">
+              <span className="flex items-center gap-1.5 text-stone-600">
+                <Mail className="h-3.5 w-3.5 text-coffee-700" />
                 <span>{email}</span>
               </span>
-              <span className="flex items-center gap-1.5 text-slate-400">
-                <Phone className="h-3.5 w-3.5 text-cyan-400" />
+              <span className="flex items-center gap-1.5 text-stone-600">
+                <Phone className="h-3.5 w-3.5 text-coffee-700" />
                 <span>+91 {mobile}</span>
               </span>
-              <span className="flex items-center gap-1.5 text-slate-400">
-                <MapPin className="h-3.5 w-3.5 text-cyan-400" />
+              <span className="flex items-center gap-1.5 text-stone-600">
+                <MapPin className="h-3.5 w-3.5 text-coffee-700" />
                 <span>{city}, {state}</span>
               </span>
             </div>
@@ -116,9 +116,9 @@ export default function UserProfileViewPage() {
           <div className="shrink-0">
             <button
               onClick={handleEditInfo}
-              className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl border border-surface-border bg-midnight-950/80 hover:bg-slate-900 text-xs font-mono text-slate-300 hover:text-white transition-colors"
+              className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl border border-coffee-200 bg-white hover:bg-coffee-50 text-xs font-mono text-stone-700 hover:text-espresso transition-colors shadow-xs"
             >
-              <Edit3 className="h-3.5 w-3.5 text-cyan-400" />
+              <Edit3 className="h-3.5 w-3.5 text-coffee-700" />
               <span>Request Update</span>
             </button>
           </div>
@@ -129,84 +129,84 @@ export default function UserProfileViewPage() {
       {/* Grid: Identity Details & Residential / Financial Information */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         
-        {/* Card 1: Masked Identity Proofs (Section 9) */}
-        <div className="rounded-2xl border border-surface-border bg-surface-card p-6 space-y-4">
-          <div className="flex items-center justify-between pb-3 border-b border-surface-border">
+        {/* Card 1: Masked Identity Proofs */}
+        <div className="rounded-2xl border border-coffee-200 bg-white p-6 space-y-4 shadow-card">
+          <div className="flex items-center justify-between pb-3 border-b border-coffee-100">
             <div className="flex items-center gap-2">
-              <ShieldCheck className="h-5 w-5 text-cyan-400" />
-              <h2 className="text-sm font-bold text-white">Government Identity Credentials</h2>
+              <ShieldCheck className="h-5 w-5 text-coffee-700" />
+              <h2 className="text-sm font-bold text-espresso">Government Identity Credentials</h2>
             </div>
-            <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-950 text-emerald-300 border border-emerald-500/30">
+            <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-50 text-emerald-700 border border-emerald-200 font-medium">
               SECURELY MASKED
             </span>
           </div>
 
-          <p className="text-xs text-slate-400 leading-relaxed">
+          <p className="text-xs text-stone-600 leading-relaxed">
             In compliance with Indian data protection norms, full Aadhaar and PAN numbers are never stored or displayed in plain text.
           </p>
 
           <div className="space-y-3 pt-1">
-            <div className="p-3.5 rounded-xl border border-surface-border bg-midnight-950 flex items-center justify-between font-mono text-xs">
+            <div className="p-3.5 rounded-xl border border-coffee-100 bg-stone-50/80 flex items-center justify-between font-mono text-xs">
               <div>
-                <span className="text-[10px] uppercase text-slate-400 block">Aadhaar Number</span>
-                <span className="text-white font-bold tracking-wider">{aadhaarMasked}</span>
+                <span className="text-[10px] uppercase text-stone-500 block">Aadhaar Number</span>
+                <span className="text-espresso font-bold tracking-wider">{aadhaarMasked}</span>
               </div>
-              <span className="px-2 py-0.5 rounded bg-cyan-950 text-cyan-300 border border-cyan-500/30 text-[10px]">
+              <span className="px-2 py-0.5 rounded bg-emerald-50 text-emerald-700 border border-emerald-200 text-[10px] font-bold">
                 PASS
               </span>
             </div>
 
-            <div className="p-3.5 rounded-xl border border-surface-border bg-midnight-950 flex items-center justify-between font-mono text-xs">
+            <div className="p-3.5 rounded-xl border border-coffee-100 bg-stone-50/80 flex items-center justify-between font-mono text-xs">
               <div>
-                <span className="text-[10px] uppercase text-slate-400 block">PAN Card Number</span>
-                <span className="text-white font-bold tracking-wider">{panMasked}</span>
+                <span className="text-[10px] uppercase text-stone-500 block">PAN Card Number</span>
+                <span className="text-espresso font-bold tracking-wider">{panMasked}</span>
               </div>
-              <span className="px-2 py-0.5 rounded bg-cyan-950 text-cyan-300 border border-cyan-500/30 text-[10px]">
+              <span className="px-2 py-0.5 rounded bg-emerald-50 text-emerald-700 border border-emerald-200 text-[10px] font-bold">
                 PASS
               </span>
             </div>
 
-            <div className="p-3.5 rounded-xl border border-surface-border bg-midnight-950 flex items-center justify-between font-mono text-xs">
+            <div className="p-3.5 rounded-xl border border-coffee-100 bg-stone-50/80 flex items-center justify-between font-mono text-xs">
               <div>
-                <span className="text-[10px] uppercase text-slate-400 block">Date of Birth (DOB)</span>
-                <span className="text-white">{dob}</span>
+                <span className="text-[10px] uppercase text-stone-500 block">Date of Birth (DOB)</span>
+                <span className="text-espresso font-medium">{dob}</span>
               </div>
-              <span className="text-slate-400 text-[11px]">{gender}</span>
+              <span className="text-stone-500 text-[11px]">{gender}</span>
             </div>
           </div>
         </div>
 
         {/* Card 2: Employment & Income Details */}
-        <div className="rounded-2xl border border-surface-border bg-surface-card p-6 space-y-4">
-          <div className="flex items-center justify-between pb-3 border-b border-surface-border">
+        <div className="rounded-2xl border border-coffee-200 bg-white p-6 space-y-4 shadow-card">
+          <div className="flex items-center justify-between pb-3 border-b border-coffee-100">
             <div className="flex items-center gap-2">
-              <Briefcase className="h-5 w-5 text-cyan-400" />
-              <h2 className="text-sm font-bold text-white">Employment & Financial Profile</h2>
+              <Briefcase className="h-5 w-5 text-coffee-700" />
+              <h2 className="text-sm font-bold text-espresso">Employment & Financial Profile</h2>
             </div>
-            <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-cyan-950 text-cyan-300 border border-cyan-500/30">
+            <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-coffee-50 text-coffee-800 border border-coffee-200 font-medium">
               SELF-DECLARED
             </span>
           </div>
 
           <div className="space-y-3 font-mono text-xs">
-            <div className="flex justify-between p-3 rounded-xl border border-surface-border bg-midnight-950">
-              <span className="text-slate-400">Occupation:</span>
-              <span className="text-white font-semibold">{occupation}</span>
+            <div className="flex justify-between p-3 rounded-xl border border-coffee-100 bg-stone-50/80">
+              <span className="text-stone-500">Occupation:</span>
+              <span className="text-espresso font-semibold">{occupation}</span>
             </div>
 
-            <div className="flex justify-between p-3 rounded-xl border border-surface-border bg-midnight-950">
-              <span className="text-slate-400">Employment Type:</span>
-              <span className="text-white">{employmentType}</span>
+            <div className="flex justify-between p-3 rounded-xl border border-coffee-100 bg-stone-50/80">
+              <span className="text-stone-500">Employment Type:</span>
+              <span className="text-espresso">{employmentType}</span>
             </div>
 
-            <div className="flex justify-between p-3 rounded-xl border border-surface-border bg-midnight-950">
-              <span className="text-slate-400">Monthly Net Income:</span>
-              <span className="text-emerald-400 font-bold">₹{monthlyIncome}</span>
+            <div className="flex justify-between p-3 rounded-xl border border-coffee-100 bg-stone-50/80">
+              <span className="text-stone-500">Monthly Net Income:</span>
+              <span className="text-emerald-700 font-bold">₹{monthlyIncome}</span>
             </div>
 
-            <div className="flex justify-between p-3 rounded-xl border border-surface-border bg-midnight-950">
-              <span className="text-slate-400">Residential PIN:</span>
-              <span className="text-white">{pincode} ({city})</span>
+            <div className="flex justify-between p-3 rounded-xl border border-coffee-100 bg-stone-50/80">
+              <span className="text-stone-500">Residential PIN:</span>
+              <span className="text-espresso">{pincode} ({city})</span>
             </div>
           </div>
         </div>
@@ -214,43 +214,43 @@ export default function UserProfileViewPage() {
       </div>
 
       {/* Card 3: Submitted Profile Documents */}
-      <div className="rounded-2xl border border-surface-border bg-surface-card p-6 space-y-4">
-        <div className="flex items-center justify-between pb-3 border-b border-surface-border">
+      <div className="rounded-2xl border border-coffee-200 bg-white p-6 space-y-4 shadow-card">
+        <div className="flex items-center justify-between pb-3 border-b border-coffee-100">
           <div className="flex items-center gap-2">
-            <FileText className="h-5 w-5 text-cyan-400" />
-            <h2 className="text-sm font-bold text-white">Verified Identity Documents</h2>
+            <FileText className="h-5 w-5 text-coffee-700" />
+            <h2 className="text-sm font-bold text-espresso">Verified Identity Documents</h2>
           </div>
           <Link
             to="/loans"
-            className="text-xs font-mono text-cyan-400 hover:text-cyan-300 hover:underline"
+            className="text-xs font-mono text-coffee-700 hover:text-coffee-900 hover:underline font-medium"
           >
             Apply for new loan →
           </Link>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 font-mono text-xs">
-          <div className="p-3.5 rounded-xl border border-surface-border bg-midnight-950 flex items-center justify-between">
+          <div className="p-3.5 rounded-xl border border-coffee-100 bg-stone-50/80 flex items-center justify-between">
             <div className="flex items-center gap-2.5">
-              <FileText className="h-4 w-4 text-cyan-400" />
+              <FileText className="h-4 w-4 text-coffee-700" />
               <div>
-                <span className="text-white font-semibold block">Aadhaar Card (e-KYC Copy)</span>
-                <span className="text-[10px] text-slate-400">Optical check passed • Document-based</span>
+                <span className="text-espresso font-semibold block">Aadhaar Card (e-KYC Copy)</span>
+                <span className="text-[10px] text-stone-500">Optical check passed • Document-based</span>
               </div>
             </div>
-            <span className="px-2 py-0.5 rounded bg-emerald-950 text-emerald-300 border border-emerald-500/30 text-[10px]">
+            <span className="px-2 py-0.5 rounded bg-emerald-50 text-emerald-700 border border-emerald-200 text-[10px] font-bold">
               VERIFIED
             </span>
           </div>
 
-          <div className="p-3.5 rounded-xl border border-surface-border bg-midnight-950 flex items-center justify-between">
+          <div className="p-3.5 rounded-xl border border-coffee-100 bg-stone-50/80 flex items-center justify-between">
             <div className="flex items-center gap-2.5">
-              <Camera className="h-4 w-4 text-cyan-400" />
+              <Camera className="h-4 w-4 text-coffee-700" />
               <div>
-                <span className="text-white font-semibold block">Camera Liveness Photo</span>
-                <span className="text-[10px] text-slate-400">Direct webcam capture • Sharpness 85+</span>
+                <span className="text-espresso font-semibold block">Camera Liveness Photo</span>
+                <span className="text-[10px] text-stone-500">Direct webcam capture • Sharpness 85+</span>
               </div>
             </div>
-            <span className="px-2 py-0.5 rounded bg-emerald-950 text-emerald-300 border border-emerald-500/30 text-[10px]">
+            <span className="px-2 py-0.5 rounded bg-emerald-50 text-emerald-700 border border-emerald-200 text-[10px] font-bold">
               CAPTURED
             </span>
           </div>

@@ -10,15 +10,15 @@ export default function KycAnalysisPage() {
       {/* Header */}
       <div className="flex flex-wrap items-center justify-between gap-4">
         <div>
-          <div className="flex items-center gap-2 text-xs font-mono text-cyan-400">
+          <div className="flex items-center gap-2 text-xs font-mono text-coffee-600">
             <span>IDENTITY VERIFICATION</span>
-            <span>/</span>
-            <span className="text-slate-400">BIOMETRIC KYC</span>
+            <span className="text-stone-400">/</span>
+            <span className="text-stone-500">BIOMETRIC KYC</span>
           </div>
-          <h1 className="text-2xl font-bold tracking-tight text-white mt-1">
+          <h1 className="text-2xl font-bold tracking-tight text-espresso mt-1">
             Biometric & Identity Cross-Verification
           </h1>
-          <p className="text-xs text-slate-400 mt-0.5">
+          <p className="text-xs text-stone-500 mt-0.5">
             Passive 3D liveness detection, deepfake facial analysis, and synthetic identity reconciliation
           </p>
         </div>
@@ -33,9 +33,9 @@ export default function KycAnalysisPage() {
       {/* KYC Inspector Panels */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         {/* Left: Biometric Confidence Card */}
-        <div className="lg:col-span-5 rounded-xl border border-surface-border bg-surface-card p-6 flex flex-col items-center justify-between">
-          <div className="w-full flex items-center justify-between pb-3 border-b border-surface-border">
-            <h3 className="text-sm font-semibold text-white">Biometric Liveness Verdict</h3>
+        <div className="lg:col-span-5 rounded-xl border border-coffee-200 bg-white p-6 shadow-sm flex flex-col items-center justify-between">
+          <div className="w-full flex items-center justify-between pb-3 border-b border-coffee-200">
+            <h3 className="text-sm font-semibold text-espresso">Biometric Liveness Verdict</h3>
             <StatusBadge status="SAFE" customLabel="PASS (99.8%)" size="sm" />
           </div>
 
@@ -47,48 +47,48 @@ export default function KycAnalysisPage() {
             />
           </div>
 
-          <div className="w-full space-y-2 text-xs font-mono text-slate-300">
-            <div className="flex justify-between p-2 rounded bg-midnight-950 border border-surface-border">
-              <span className="text-slate-400">Facial Texture Depth:</span>
-              <span className="text-emerald-400 font-bold">Natural Skin (3D)</span>
+          <div className="w-full space-y-2 text-xs font-mono text-stone-700">
+            <div className="flex justify-between p-2 rounded bg-warm-50 border border-coffee-200">
+              <span className="text-stone-500">Facial Texture Depth:</span>
+              <span className="text-emerald-700 font-bold">Natural Skin (3D)</span>
             </div>
-            <div className="flex justify-between p-2 rounded bg-midnight-950 border border-surface-border">
-              <span className="text-slate-400">Deepfake Artifact Probability:</span>
-              <span className="text-emerald-400 font-bold">0.02%</span>
+            <div className="flex justify-between p-2 rounded bg-warm-50 border border-coffee-200">
+              <span className="text-stone-500">Deepfake Artifact Probability:</span>
+              <span className="text-emerald-700 font-bold">0.02%</span>
             </div>
           </div>
         </div>
 
         {/* Right: Government ID & Cross-Referenced Database Signals */}
-        <div className="lg:col-span-7 rounded-xl border border-surface-border bg-surface-card p-6 space-y-4 font-mono text-xs">
-          <h3 className="text-sm font-semibold text-white font-sans">Identity Signal Reconciler</h3>
-          <p className="text-slate-400 text-xs font-sans">
+        <div className="lg:col-span-7 rounded-xl border border-coffee-200 bg-white p-6 space-y-4 font-mono text-xs shadow-sm">
+          <h3 className="text-sm font-semibold text-espresso font-sans">Identity Signal Reconciler</h3>
+          <p className="text-stone-500 text-xs font-sans">
             Cross-checking authoritative credit bureaus, death master files, and device identifiers:
           </p>
 
           <div className="space-y-3 pt-2">
-            <div className="flex items-center justify-between p-3 rounded-lg border border-emerald-500/30 bg-emerald-950/20 text-emerald-200">
+            <div className="flex items-center justify-between p-3 rounded-lg border border-emerald-200 bg-emerald-50 text-emerald-800">
               <div className="flex items-center gap-2">
-                <CheckCircle2 className="h-4 w-4 text-emerald-400" />
+                <CheckCircle2 className="h-4 w-4 text-emerald-600" />
                 <span>SSN Issuance Window Match (DOB Consistency)</span>
               </div>
               <span className="font-bold">VERIFIED</span>
             </div>
 
-            <div className="flex items-center justify-between p-3 rounded-lg border border-emerald-500/30 bg-emerald-950/20 text-emerald-200">
+            <div className="flex items-center justify-between p-3 rounded-lg border border-emerald-200 bg-emerald-50 text-emerald-800">
               <div className="flex items-center gap-2">
-                <CheckCircle2 className="h-4 w-4 text-emerald-400" />
+                <CheckCircle2 className="h-4 w-4 text-emerald-600" />
                 <span>SSA Death Master File Check</span>
               </div>
               <span className="font-bold">CLEARED (ACTIVE)</span>
             </div>
 
-            <div className="flex items-center justify-between p-3 rounded-lg border border-surface-border bg-midnight-950 text-slate-300">
+            <div className="flex items-center justify-between p-3 rounded-lg border border-coffee-200 bg-warm-50 text-stone-700">
               <div className="flex items-center gap-2">
-                <Fingerprint className="h-4 w-4 text-cyan-400" />
+                <Fingerprint className="h-4 w-4 text-coffee-600" />
                 <span>Driver License Barcode Holographic Pattern</span>
               </div>
-              <span className="text-cyan-400 font-bold">AAMVA VALIDATED</span>
+              <span className="text-coffee-700 font-bold">AAMVA VALIDATED</span>
             </div>
           </div>
         </div>

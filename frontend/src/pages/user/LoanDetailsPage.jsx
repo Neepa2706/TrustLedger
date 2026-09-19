@@ -2,6 +2,7 @@
  * TrustLedger LoanDetailsPage (/loans/:loanId)
  * Displays in-depth loan product specifications, eligibility rules,
  * document requirements, interactive EMI calculator, and "Apply for this loan" CTA.
+ * Styled in White & Coffee Brown fintech design system.
  */
 
 import React, { useState, useEffect, useCallback } from 'react';
@@ -21,6 +22,7 @@ import {
   Zap,
   Compass,
   GraduationCap,
+  Send,
   Loader2
 } from 'lucide-react';
 import EMICalculator from '../../components/loans/EMICalculator';
@@ -34,7 +36,8 @@ const ICON_MAP = {
   Zap: Zap,
   Briefcase: Briefcase,
   Compass: Compass,
-  GraduationCap: GraduationCap
+  GraduationCap: GraduationCap,
+  Send: Send
 };
 
 export default function LoanDetailsPage() {
@@ -65,15 +68,13 @@ export default function LoanDetailsPage() {
 
   if (!product) {
     return (
-      <div className="rounded-2xl border border-surface-border bg-surface-card p-12 text-center space-y-4">
-        <AlertCircle className="h-12 w-12 text-amber-400 mx-auto" />
-        <h3 className="text-lg font-bold text-white">Loan Product Not Found</h3>
-        <p className="text-xs text-slate-400 max-w-sm mx-auto">
-          The requested loan product could not be located in our catalog.
-        </p>
+      <div className="rounded-2xl border border-coffee-200 bg-white p-12 text-center shadow-card space-y-4">
+        <AlertCircle className="h-12 w-12 text-amber-600 mx-auto" />
+        <h2 className="text-base font-bold text-coffee-950">Loan Product Not Found</h2>
+        <p className="text-xs text-coffee-600">The requested loan product could not be retrieved from the catalog.</p>
         <Link
           to="/loans"
-          className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-cyan-950 border border-cyan-500/40 text-xs font-semibold text-cyan-300"
+          className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-coffee-600 hover:bg-coffee-700 text-xs font-bold text-white shadow-sm transition-colors"
         >
           <ArrowLeft className="h-4 w-4" />
           <span>Back to Loan Marketplace</span>
@@ -129,13 +130,13 @@ export default function LoanDetailsPage() {
     <div className="space-y-8 animate-fadeIn">
       
       {/* Navigation Breadcrumb */}
-      <div className="flex items-center gap-2 text-xs font-mono text-slate-400">
-        <Link to="/loans" className="hover:text-cyan-300 flex items-center gap-1">
+      <div className="flex items-center gap-2 text-xs font-medium text-coffee-600">
+        <Link to="/loans" className="hover:text-coffee-950 flex items-center gap-1 font-semibold">
           <ArrowLeft className="h-3.5 w-3.5" />
           <span>Loan Marketplace</span>
         </Link>
         <span>/</span>
-        <span className="text-cyan-400 font-semibold">{product.name}</span>
+        <span className="text-coffee-950 font-bold">{product.name}</span>
       </div>
 
       {/* Main Two-Column Layout */}
@@ -145,56 +146,56 @@ export default function LoanDetailsPage() {
         <div className="lg:col-span-2 space-y-6">
           
           {/* Header Card */}
-          <div className="rounded-2xl border border-surface-border bg-surface-card p-6 sm:p-8 shadow-xl space-y-4 relative overflow-hidden">
+          <div className="rounded-2xl border border-coffee-200 bg-white p-6 sm:p-8 shadow-card space-y-4 relative overflow-hidden">
             <div className="flex items-start justify-between gap-4">
-              <div className="flex items-center gap-3">
-                <div className="p-3 rounded-2xl bg-cyan-950 border border-cyan-500/40 text-cyan-400">
+              <div className="flex items-center gap-3.5">
+                <div className="p-3 rounded-2xl bg-coffee-50 border border-coffee-200 text-coffee-700">
                   <IconComponent className="h-7 w-7" />
                 </div>
                 <div>
-                  <span className="text-xs font-mono uppercase tracking-wider text-cyan-400 font-semibold">
+                  <span className="text-xs font-mono uppercase tracking-wider text-coffee-600 font-bold">
                     {product.category} Loan
                   </span>
-                  <h1 className="text-2xl sm:text-3xl font-bold text-white mt-0.5">
+                  <h1 className="text-2xl sm:text-3xl font-extrabold text-coffee-950 mt-0.5">
                     {product.name}
                   </h1>
                 </div>
               </div>
 
               {product.badge && (
-                <span className="text-xs font-mono px-3 py-1 rounded-full bg-cyan-950 text-cyan-300 border border-cyan-500/40 font-medium">
+                <span className="text-xs font-mono px-3 py-1 rounded-full bg-coffee-100 text-coffee-800 border border-coffee-200 font-bold">
                   {product.badge}
                 </span>
               )}
             </div>
 
-            <p className="text-xs sm:text-sm text-slate-300 leading-relaxed">
+            <p className="text-xs sm:text-sm text-coffee-700 leading-relaxed font-normal">
               {product.description}
             </p>
 
             {/* Key Terms Matrix */}
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-2">
-              <div className="p-3 rounded-xl border border-surface-border bg-midnight-950">
-                <span className="text-[10px] font-mono uppercase text-slate-400 block mb-1">Loan Range</span>
-                <span className="font-bold text-white font-mono text-xs">
+              <div className="p-3.5 rounded-xl border border-coffee-200 bg-coffee-50/50">
+                <span className="text-[10px] font-mono uppercase text-coffee-600 block mb-1 font-medium">Loan Range</span>
+                <span className="font-bold text-coffee-950 font-mono text-xs">
                   ₹{(product.minAmount ?? product.min_amount ?? 0).toLocaleString('en-IN')} – ₹{(product.maxAmount ?? product.max_amount ?? 0).toLocaleString('en-IN')}
                 </span>
               </div>
-              <div className="p-3 rounded-xl border border-surface-border bg-midnight-950">
-                <span className="text-[10px] font-mono uppercase text-slate-400 block mb-1">Duration</span>
-                <span className="font-bold text-white font-mono text-xs">
-                  {product.minDurationMonths ?? product.min_duration_months ?? 6} – {product.maxDurationMonths ?? product.max_duration_months ?? 36} Months
+              <div className="p-3.5 rounded-xl border border-coffee-200 bg-coffee-50/50">
+                <span className="text-[10px] font-mono uppercase text-coffee-600 block mb-1 font-medium">Duration</span>
+                <span className="font-bold text-coffee-950 font-mono text-xs">
+                  {product.minDurationMonths ?? product.min_duration_months ?? 6} – {product.maxDurationMonths ?? product.max_duration_months ?? 36} Mos
                 </span>
               </div>
-              <div className="p-3 rounded-xl border border-surface-border bg-midnight-950">
-                <span className="text-[10px] font-mono uppercase text-slate-400 block mb-1">Interest Rate</span>
-                <span className="font-bold text-cyan-300 font-mono text-xs">
+              <div className="p-3.5 rounded-xl border border-coffee-200 bg-coffee-50/50">
+                <span className="text-[10px] font-mono uppercase text-coffee-600 block mb-1 font-medium">Interest Rate</span>
+                <span className="font-bold text-coffee-800 font-mono text-xs">
                   {product.minInterestRate ?? product.min_interest_rate ?? 12}% – {product.maxInterestRate ?? product.max_interest_rate ?? 18}% p.a.
                 </span>
               </div>
-              <div className="p-3 rounded-xl border border-surface-border bg-midnight-950">
-                <span className="text-[10px] font-mono uppercase text-slate-400 block mb-1">Processing Fee</span>
-                <span className="font-bold text-slate-200 text-xs">
+              <div className="p-3.5 rounded-xl border border-coffee-200 bg-coffee-50/50">
+                <span className="text-[10px] font-mono uppercase text-coffee-600 block mb-1 font-medium">Processing Fee</span>
+                <span className="font-bold text-coffee-950 text-xs">
                   {product.processingFeePercentage ?? product.processing_fee_percentage ?? 2}%
                 </span>
               </div>
@@ -205,24 +206,24 @@ export default function LoanDetailsPage() {
           <EMICalculator
             initialAmount={product.defaultAmount ?? 100000}
             minAmount={product.minAmount ?? product.min_amount ?? 10000}
-            maxAmount={product.maxAmount ?? product.max_amount ?? 500000}
+            maxAmount={product.maxAmount ?? product.max_amount ?? 2000000}
             initialDuration={product.defaultDurationMonths ?? 24}
             minDuration={product.minDurationMonths ?? product.min_duration_months ?? 6}
-            maxDuration={product.maxDurationMonths ?? product.max_duration_months ?? 36}
+            maxDuration={product.maxDurationMonths ?? product.max_duration_months ?? 60}
             interestRate={product.defaultInterestRate ?? 14}
             onValuesChange={handleEmiValuesChange}
           />
 
           {/* Eligibility Criteria Card */}
-          <div className="rounded-2xl border border-surface-border bg-surface-card p-6 shadow-xl space-y-4">
-            <h3 className="text-sm font-bold text-white flex items-center gap-2">
-              <CheckCircle2 className="h-4 w-4 text-cyan-400" />
+          <div className="rounded-2xl border border-coffee-200 bg-white p-6 shadow-card space-y-4">
+            <h3 className="text-sm font-bold text-coffee-950 flex items-center gap-2">
+              <CheckCircle2 className="h-4 w-4 text-coffee-600" />
               <span>Eligibility Guidelines</span>
             </h3>
             <div className="space-y-2.5">
               {product.eligibilityCriteria?.map((crit, idx) => (
-                <div key={idx} className="flex items-center gap-2.5 text-xs text-slate-300">
-                  <CheckCircle2 className="h-3.5 w-3.5 text-emerald-400 shrink-0" />
+                <div key={idx} className="flex items-center gap-2.5 text-xs text-coffee-800">
+                  <CheckCircle2 className="h-3.5 w-3.5 text-emerald-600 shrink-0" />
                   <span>{crit}</span>
                 </div>
               ))}
@@ -230,23 +231,23 @@ export default function LoanDetailsPage() {
           </div>
 
           {/* Required Documents Checklist Card */}
-          <div className="rounded-2xl border border-surface-border bg-surface-card p-6 shadow-xl space-y-4">
-            <h3 className="text-sm font-bold text-white flex items-center gap-2">
-              <FileText className="h-4 w-4 text-cyan-400" />
+          <div className="rounded-2xl border border-coffee-200 bg-white p-6 shadow-card space-y-4">
+            <h3 className="text-sm font-bold text-coffee-950 flex items-center gap-2">
+              <FileText className="h-4 w-4 text-coffee-600" />
               <span>Required Supporting Documents</span>
             </h3>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               {product.requiredDocuments?.map((doc, idx) => (
-                <div key={idx} className="p-3 rounded-xl border border-surface-border bg-midnight-950 text-xs space-y-1">
+                <div key={idx} className="p-3.5 rounded-xl border border-coffee-200 bg-coffee-50/50 text-xs space-y-1">
                   <div className="flex items-center justify-between">
-                    <span className="font-semibold text-white">{doc.type}</span>
+                    <span className="font-bold text-coffee-950">{doc.type}</span>
                     {doc.required && (
-                      <span className="text-[10px] font-mono px-1.5 py-0.2 rounded bg-amber-950 text-amber-300 border border-amber-500/30">
+                      <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-amber-50 text-amber-800 border border-amber-200">
                         Required
                       </span>
                     )}
                   </div>
-                  <p className="text-[11px] text-slate-400 leading-relaxed">{doc.note}</p>
+                  <p className="text-[11px] text-coffee-600 leading-relaxed">{doc.note}</p>
                 </div>
               ))}
             </div>
@@ -257,35 +258,35 @@ export default function LoanDetailsPage() {
         {/* Right 1 Col: Apply CTA Box & Sticky Overview */}
         <div className="space-y-6 lg:sticky lg:top-24">
           
-          <div className="rounded-2xl border border-cyan-500/40 bg-surface-card p-6 shadow-2xl space-y-5">
+          <div className="rounded-2xl border border-coffee-200 bg-white p-6 shadow-card space-y-5">
             <div>
-              <span className="text-[10px] font-mono uppercase tracking-wider text-cyan-400 font-semibold block mb-1">
+              <span className="text-[10px] font-mono uppercase tracking-wider text-coffee-600 font-bold block mb-1">
                 Loan Application Step
               </span>
-              <h3 className="text-lg font-bold text-white">
+              <h3 className="text-lg font-bold text-coffee-950">
                 Apply for {product.name}
               </h3>
-              <p className="text-xs text-slate-400 mt-1">
+              <p className="text-xs text-coffee-600 mt-1">
                 Your verified identity details will be pre-filled to save you time.
               </p>
             </div>
 
             {/* Verification Status Notice */}
-            <div className={`p-3 rounded-xl border text-xs flex items-start gap-2.5 ${
+            <div className={`p-3.5 rounded-xl border text-xs flex items-start gap-2.5 ${
               isProfileVerified
-                ? 'border-emerald-500/40 bg-emerald-950/20 text-emerald-200'
-                : 'border-amber-500/40 bg-amber-950/20 text-amber-200'
+                ? 'border-emerald-200 bg-emerald-50 text-emerald-900'
+                : 'border-amber-200 bg-amber-50 text-amber-900'
             }`}>
               {isProfileVerified ? (
-                <CheckCircle2 className="h-4 w-4 text-emerald-400 shrink-0 mt-0.5" />
+                <CheckCircle2 className="h-4 w-4 text-emerald-600 shrink-0 mt-0.5" />
               ) : (
-                <AlertCircle className="h-4 w-4 text-amber-400 shrink-0 mt-0.5" />
+                <AlertCircle className="h-4 w-4 text-amber-600 shrink-0 mt-0.5" />
               )}
               <div>
-                <span className="font-semibold block">
+                <span className="font-bold block">
                   {isProfileVerified ? 'Profile Verified' : 'Verification Required'}
                 </span>
-                <span className="text-[11px] text-slate-300 mt-0.5 block">
+                <span className="text-[11px] text-coffee-700 mt-0.5 block">
                   {isProfileVerified
                     ? 'Your identity is verified. You are ready to apply.'
                     : 'Please complete profile setup before starting a loan application.'}
@@ -295,18 +296,18 @@ export default function LoanDetailsPage() {
 
             {/* Estimated EMI Summary for selected parameters */}
             {emiValues && (
-              <div className="p-3.5 rounded-xl border border-surface-border bg-midnight-950 space-y-2 text-xs">
-                <div className="flex justify-between text-slate-400">
+              <div className="p-3.5 rounded-xl border border-coffee-200 bg-coffee-50/50 space-y-2 text-xs">
+                <div className="flex justify-between text-coffee-700">
                   <span>Selected Amount:</span>
-                  <span className="text-white font-mono font-semibold">₹{emiValues.amount.toLocaleString('en-IN')}</span>
+                  <span className="text-coffee-950 font-mono font-bold">₹{emiValues.amount.toLocaleString('en-IN')}</span>
                 </div>
-                <div className="flex justify-between text-slate-400">
+                <div className="flex justify-between text-coffee-700">
                   <span>Tenure:</span>
-                  <span className="text-white font-mono font-semibold">{emiValues.duration} Months</span>
+                  <span className="text-coffee-950 font-mono font-bold">{emiValues.duration} Months</span>
                 </div>
-                <div className="flex justify-between text-slate-400 pt-1 border-t border-surface-border">
-                  <span className="font-semibold text-slate-200">Estimated EMI:</span>
-                  <span className="text-cyan-400 font-mono font-bold text-sm">₹{emiValues.emi.toLocaleString('en-IN')} / mo</span>
+                <div className="flex justify-between text-coffee-700 pt-1.5 border-t border-coffee-200">
+                  <span className="font-bold text-coffee-950">Estimated EMI:</span>
+                  <span className="text-coffee-900 font-mono font-extrabold text-sm">₹{emiValues.emi.toLocaleString('en-IN')} / mo</span>
                 </div>
               </div>
             )}
@@ -316,7 +317,7 @@ export default function LoanDetailsPage() {
               type="button"
               disabled={creatingApp}
               onClick={handleApplyClick}
-              className="w-full flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 px-6 py-3.5 text-xs font-semibold uppercase tracking-wider text-midnight-950 shadow-[0_0_20px_rgba(0,240,255,0.3)] transition-all disabled:opacity-60"
+              className="w-full flex items-center justify-center gap-2 rounded-xl bg-coffee-600 hover:bg-coffee-700 px-6 py-3.5 text-xs font-bold uppercase tracking-wider text-white shadow-sm transition-all disabled:opacity-60 cursor-pointer"
             >
               {creatingApp ? (
                 <>
@@ -334,7 +335,7 @@ export default function LoanDetailsPage() {
             <div className="text-center">
               <Link
                 to="/loans"
-                className="text-xs text-slate-400 hover:text-white"
+                className="text-xs text-coffee-600 hover:text-coffee-950 font-semibold"
               >
                 ← Browse other loan options
               </Link>

@@ -17,7 +17,7 @@ export default function MiniTrendChart({
         <AreaChart data={data} margin={{ top: 2, right: 2, left: 2, bottom: 2 }}>
           <defs>
             <linearGradient id={gradientId} x1="0" y1="0" x2="0" y2="1">
-              <stop offset="5%" stopColor={color} stopOpacity={0.4} />
+              <stop offset="5%" stopColor={color} stopOpacity={0.35} />
               <stop offset="95%" stopColor={color} stopOpacity={0.0} />
             </linearGradient>
           </defs>
@@ -26,7 +26,7 @@ export default function MiniTrendChart({
               content={({ active, payload }) => {
                 if (active && payload && payload.length) {
                   return (
-                    <div className="rounded border border-surface-border bg-midnight-900/90 px-2 py-1 text-[11px] font-mono text-cyan-300 shadow">
+                    <div className="rounded-lg border border-coffee-200 bg-white px-2.5 py-1 text-[11px] font-mono text-espresso shadow-md">
                       {payload[0].value}
                     </div>
                   );

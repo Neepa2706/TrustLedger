@@ -9,12 +9,12 @@ export default function Card({
   bodyClassName = ''
 }) {
   return (
-    <div className={`rounded-xl border border-surface-border bg-surface-card/80 p-5 backdrop-blur-sm ${className}`}>
+    <div className={`rounded-2xl border border-coffee-200 bg-white p-6 shadow-card transition-all ${className}`}>
       {(title || action) && (
-        <div className="flex items-center justify-between pb-3 mb-4 border-b border-surface-border">
+        <div className="flex items-center justify-between pb-3.5 mb-4 border-b border-coffee-100">
           <div>
-            {title && <h3 className="text-sm font-semibold text-white tracking-wide">{title}</h3>}
-            {subtitle && <p className="text-xs text-slate-400 mt-0.5">{subtitle}</p>}
+            {title && <h3 className="text-sm font-bold text-coffee-950 tracking-wide">{title}</h3>}
+            {subtitle && <p className="text-xs text-coffee-600 mt-0.5">{subtitle}</p>}
           </div>
           {action && <div>{action}</div>}
         </div>

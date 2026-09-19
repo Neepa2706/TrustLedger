@@ -68,35 +68,35 @@ export default function UserPlaceholderPage({ type = 'loans' }) {
 
   return (
     <div className="max-w-3xl mx-auto py-8 animate-fadeIn space-y-6">
-      <div className="rounded-2xl border border-surface-border bg-surface-card p-8 shadow-xl text-center space-y-6">
+      <div className="rounded-2xl border border-coffee-200 bg-white p-8 shadow-sm text-center space-y-6">
         
-        <div className="mx-auto w-16 h-16 rounded-2xl bg-cyan-950/80 border border-cyan-500/40 flex items-center justify-center text-cyan-400 shadow-inner">
+        <div className="mx-auto w-16 h-16 rounded-2xl bg-warm-100 border border-coffee-200 flex items-center justify-center text-coffee-700 shadow-sm">
           <Icon className="h-8 w-8" />
         </div>
 
         <div className="space-y-2">
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full border border-cyan-500/30 bg-cyan-950/40 text-cyan-300 text-xs font-mono">
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full border border-coffee-200 bg-warm-50 text-coffee-800 text-xs font-mono font-medium">
             <Clock className="h-3 w-3" />
             <span>{item.phase}</span>
           </div>
 
-          <h1 className="text-2xl sm:text-3xl font-bold text-white">
+          <h1 className="text-2xl sm:text-3xl font-bold text-espresso">
             {item.title}
           </h1>
 
-          <p className="text-xs sm:text-sm text-slate-400 max-w-lg mx-auto">
+          <p className="text-xs sm:text-sm text-stone-500 max-w-lg mx-auto">
             {item.subtitle}
           </p>
         </div>
 
-        <div className="max-w-md mx-auto p-4 rounded-xl border border-surface-border bg-midnight-950 text-xs text-slate-300 leading-relaxed">
+        <div className="max-w-md mx-auto p-4 rounded-xl border border-coffee-200 bg-warm-50 text-xs text-stone-700 leading-relaxed">
           {item.description}
         </div>
 
         <div className="pt-2 flex flex-col sm:flex-row items-center justify-center gap-3">
           <Link
             to="/home"
-            className="flex items-center gap-2 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 px-5 py-2.5 text-xs font-semibold uppercase tracking-wider text-midnight-950 shadow-[0_0_20px_rgba(0,240,255,0.25)] transition-all"
+            className="flex items-center gap-2 rounded-xl bg-coffee-600 hover:bg-coffee-700 px-5 py-2.5 text-xs font-semibold uppercase tracking-wider text-white shadow-md transition-all"
           >
             <span>Return to Home</span>
             <ArrowRight className="h-4 w-4" />
@@ -105,7 +105,7 @@ export default function UserPlaceholderPage({ type = 'loans' }) {
           {type !== 'loans' && (
             <Link
               to="/loans"
-              className="px-4 py-2 text-xs font-medium text-slate-400 hover:text-white"
+              className="px-4 py-2 text-xs font-medium text-stone-600 hover:text-espresso"
             >
               Go to Loans
             </Link>
@@ -114,8 +114,8 @@ export default function UserPlaceholderPage({ type = 'loans' }) {
 
       </div>
 
-      <div className="text-center text-[11px] font-mono text-slate-500 flex items-center justify-center gap-2">
-        <ShieldCheck className="h-3.5 w-3.5 text-emerald-400" />
+      <div className="text-center text-[11px] font-mono text-stone-500 flex items-center justify-center gap-2">
+        <ShieldCheck className="h-3.5 w-3.5 text-emerald-600" />
         <span>Cryptographically verified TrustLedger Identity Framework</span>
       </div>
     </div>

@@ -74,8 +74,8 @@ export default function UserPaymentsPage() {
       
       {/* Toast Notification */}
       {toastMessage && (
-        <div className="fixed bottom-6 right-6 z-50 p-4 rounded-xl border border-cyan-500/40 bg-midnight-950/95 text-xs text-cyan-300 shadow-2xl flex items-center gap-2 font-mono backdrop-blur-xl">
-          <CheckCircle2 className="h-4 w-4 text-cyan-400" />
+        <div className="fixed bottom-6 right-6 z-50 p-4 rounded-xl border border-coffee-200 bg-white text-xs text-coffee-900 shadow-2xl flex items-center gap-2 font-mono">
+          <CheckCircle2 className="h-4 w-4 text-emerald-600" />
           <span>{toastMessage}</span>
         </div>
       )}
@@ -83,57 +83,57 @@ export default function UserPaymentsPage() {
       {/* Header Banner */}
       <div className="flex flex-wrap items-center justify-between gap-4">
         <div>
-          <div className="flex items-center gap-2 text-xs font-mono text-cyan-400">
+          <div className="flex items-center gap-2 text-xs font-mono text-coffee-600 font-semibold">
             <span>BORROWER SERVICES</span>
-            <span>/</span>
-            <span className="text-slate-400">LOAN REPAYMENTS</span>
+            <span className="text-coffee-300">/</span>
+            <span className="text-stone-500">LOAN REPAYMENTS</span>
           </div>
-          <h1 className="text-2xl font-bold text-white tracking-tight mt-1">
+          <h1 className="text-2xl font-bold text-espresso tracking-tight mt-1">
             Loan Payments & EMI Progress
           </h1>
-          <p className="text-xs text-slate-400">
+          <p className="text-xs text-stone-600">
             Track your sanctioned digital loan, repayment milestones, and automated payment alerts.
           </p>
         </div>
 
         <button
           onClick={() => setPaymentModalOpen(true)}
-          className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-midnight-950 font-bold text-xs uppercase tracking-wider shadow-[0_0_20px_rgba(0,240,255,0.2)] transition-all"
+          className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-coffee-600 hover:bg-coffee-700 text-white font-bold text-xs uppercase tracking-wider shadow-sm transition-all"
         >
           <CreditCard className="h-4 w-4" />
           <span>Pay Next EMI (₹{loanDetails.monthlyEmi.toLocaleString('en-IN')})</span>
         </button>
       </div>
 
-      {/* Payment Alert Notice (Section 52) */}
-      <div className="p-4 rounded-xl border border-amber-500/40 bg-amber-950/20 flex items-start gap-3 text-amber-200">
-        <AlertCircle className="h-5 w-5 text-amber-400 shrink-0 mt-0.5" />
+      {/* Payment Alert Notice */}
+      <div className="p-4 rounded-xl border border-amber-200 bg-amber-50 flex items-start gap-3 text-amber-900 shadow-xs">
+        <AlertCircle className="h-5 w-5 text-amber-600 shrink-0 mt-0.5" />
         <div className="text-xs space-y-0.5">
-          <span className="font-bold text-amber-300 block">Upcoming Payment Notice</span>
-          <p className="text-slate-300 leading-relaxed">
-            Your next monthly EMI of <strong className="text-white">₹{loanDetails.monthlyEmi.toLocaleString('en-IN')}</strong> is scheduled for <strong className="text-white">{loanDetails.nextDueDate}</strong>. Auto-debit will be initiated from your registered bank account ({loanDetails.payoutBank}).
+          <span className="font-bold text-amber-950 block">Upcoming Payment Notice</span>
+          <p className="text-stone-700 leading-relaxed">
+            Your next monthly EMI of <strong className="text-espresso">₹{loanDetails.monthlyEmi.toLocaleString('en-IN')}</strong> is scheduled for <strong className="text-espresso">{loanDetails.nextDueDate}</strong>. Auto-debit will be initiated from your registered bank account ({loanDetails.payoutBank}).
           </p>
         </div>
       </div>
 
-      {/* Sanctioned Loan Terms Card (Section 22) */}
-      <div className="rounded-2xl border border-surface-border bg-gradient-to-r from-surface-card via-surface-card to-cyan-950/30 p-6 sm:p-8 shadow-xl space-y-6">
-        <div className="flex flex-wrap items-center justify-between gap-4 pb-4 border-b border-surface-border">
+      {/* Sanctioned Loan Terms Card */}
+      <div className="rounded-2xl border border-coffee-200 bg-white p-6 sm:p-8 shadow-card space-y-6">
+        <div className="flex flex-wrap items-center justify-between gap-4 pb-4 border-b border-coffee-100">
           <div>
             <div className="flex items-center gap-2">
-              <h2 className="text-xl font-bold text-white">{loanDetails.productName}</h2>
-              <span className="px-2.5 py-0.5 rounded-full border border-emerald-500/40 bg-emerald-950 text-emerald-300 text-xs font-semibold">
+              <h2 className="text-xl font-bold text-espresso">{loanDetails.productName}</h2>
+              <span className="px-2.5 py-0.5 rounded-full border border-emerald-200 bg-emerald-50 text-emerald-700 text-xs font-semibold">
                 ACTIVE & SANCTIONED
               </span>
             </div>
-            <span className="text-xs font-mono text-slate-400 mt-1 block">
+            <span className="text-xs font-mono text-stone-500 mt-1 block">
               Application ID: {loanDetails.id}
             </span>
           </div>
 
           <div className="text-right">
-            <span className="text-[10px] font-mono text-slate-400 block uppercase">Sanctioned Capital</span>
-            <span className="text-2xl font-black text-cyan-300 font-mono">
+            <span className="text-[10px] font-mono text-stone-500 block uppercase">Sanctioned Capital</span>
+            <span className="text-2xl font-black text-coffee-800 font-mono">
               ₹{loanDetails.sanctionedAmount.toLocaleString('en-IN')}
             </span>
           </div>
@@ -141,39 +141,39 @@ export default function UserPaymentsPage() {
 
         {/* 4 Term Indicators */}
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 font-mono text-xs">
-          <div className="p-3 rounded-xl border border-surface-border bg-midnight-950">
-            <span className="text-slate-400 text-[10px] block uppercase">Monthly EMI</span>
-            <span className="text-white font-bold text-sm">₹{loanDetails.monthlyEmi.toLocaleString('en-IN')}</span>
+          <div className="p-3 rounded-xl border border-coffee-100 bg-stone-50/80">
+            <span className="text-stone-500 text-[10px] block uppercase">Monthly EMI</span>
+            <span className="text-espresso font-bold text-sm">₹{loanDetails.monthlyEmi.toLocaleString('en-IN')}</span>
           </div>
-          <div className="p-3 rounded-xl border border-surface-border bg-midnight-950">
-            <span className="text-slate-400 text-[10px] block uppercase">Tenure</span>
-            <span className="text-white font-bold text-sm">{loanDetails.tenureMonths} Months</span>
+          <div className="p-3 rounded-xl border border-coffee-100 bg-stone-50/80">
+            <span className="text-stone-500 text-[10px] block uppercase">Tenure</span>
+            <span className="text-espresso font-bold text-sm">{loanDetails.tenureMonths} Months</span>
           </div>
-          <div className="p-3 rounded-xl border border-surface-border bg-midnight-950">
-            <span className="text-slate-400 text-[10px] block uppercase">Interest Rate</span>
-            <span className="text-emerald-400 font-bold text-sm">{loanDetails.interestRate}% p.a.</span>
+          <div className="p-3 rounded-xl border border-coffee-100 bg-stone-50/80">
+            <span className="text-stone-500 text-[10px] block uppercase">Interest Rate</span>
+            <span className="text-emerald-700 font-bold text-sm">{loanDetails.interestRate}% p.a.</span>
           </div>
-          <div className="p-3 rounded-xl border border-surface-border bg-midnight-950">
-            <span className="text-slate-400 text-[10px] block uppercase">Linked Bank</span>
-            <span className="text-white font-medium text-xs truncate block">{loanDetails.payoutBank}</span>
+          <div className="p-3 rounded-xl border border-coffee-100 bg-stone-50/80">
+            <span className="text-stone-500 text-[10px] block uppercase">Linked Bank</span>
+            <span className="text-espresso font-medium text-xs truncate block">{loanDetails.payoutBank}</span>
           </div>
         </div>
 
-        {/* Repayment Progress Bar (Section 22 & 52) */}
+        {/* Repayment Progress Bar */}
         <div className="space-y-2 pt-2">
           <div className="flex items-center justify-between text-xs font-mono">
-            <span className="text-slate-300">
-              Repayment Progress: <strong className="text-white">{loanDetails.paidInstallments} of {loanDetails.totalInstallments} EMIs Cleared</strong>
+            <span className="text-stone-700">
+              Repayment Progress: <strong className="text-espresso">{loanDetails.paidInstallments} of {loanDetails.totalInstallments} EMIs Cleared</strong>
             </span>
-            <span className="text-cyan-400 font-bold">{progressPercent}%</span>
+            <span className="text-coffee-700 font-bold">{progressPercent}%</span>
           </div>
-          <div className="w-full h-3 rounded-full bg-midnight-950 border border-surface-border overflow-hidden">
+          <div className="w-full h-3 rounded-full bg-stone-100 border border-coffee-200 overflow-hidden">
             <div
-              className="h-full bg-gradient-to-r from-cyan-500 to-emerald-400 transition-all duration-700 rounded-full"
+              className="h-full bg-coffee-600 transition-all duration-700 rounded-full"
               style={{ width: `${progressPercent}%` }}
             />
           </div>
-          <div className="flex items-center justify-between text-[11px] font-mono text-slate-400 pt-1">
+          <div className="flex items-center justify-between text-[11px] font-mono text-stone-500 pt-1">
             <span>Cleared: ₹{(loanDetails.paidInstallments * loanDetails.monthlyEmi).toLocaleString('en-IN')}</span>
             <span>Outstanding: ₹{((loanDetails.totalInstallments - loanDetails.paidInstallments) * loanDetails.monthlyEmi).toLocaleString('en-IN')}</span>
           </div>
@@ -181,30 +181,30 @@ export default function UserPaymentsPage() {
       </div>
 
       {/* EMI Schedule Table */}
-      <div className="rounded-2xl border border-surface-border bg-surface-card p-6 space-y-4">
-        <div className="flex items-center justify-between pb-3 border-b border-surface-border">
+      <div className="rounded-2xl border border-coffee-200 bg-white p-6 space-y-4 shadow-card">
+        <div className="flex items-center justify-between pb-3 border-b border-coffee-100">
           <div className="flex items-center gap-2">
-            <Calendar className="h-5 w-5 text-cyan-400" />
-            <h3 className="text-sm font-bold text-white">Recent & Upcoming EMI Installments</h3>
+            <Calendar className="h-5 w-5 text-coffee-700" />
+            <h3 className="text-sm font-bold text-espresso">Recent & Upcoming EMI Installments</h3>
           </div>
-          <span className="text-xs font-mono text-slate-400">Showing 4 Months</span>
+          <span className="text-xs font-mono text-stone-500">Showing 4 Months</span>
         </div>
 
         <div className="space-y-2.5 font-mono text-xs">
           {/* Installment 1 - Paid */}
-          <div className="p-3.5 rounded-xl border border-emerald-500/30 bg-emerald-950/20 flex items-center justify-between">
+          <div className="p-3.5 rounded-xl border border-emerald-200 bg-emerald-50/30 flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <CheckCircle2 className="h-4 w-4 text-emerald-400" />
+              <CheckCircle2 className="h-4 w-4 text-emerald-600" />
               <div>
-                <span className="text-white font-semibold block">EMI #1 — August 2026</span>
-                <span className="text-[10px] text-slate-400">Paid via HDFC Autopay on 05 Aug 2026</span>
+                <span className="text-espresso font-semibold block">EMI #1 — August 2026</span>
+                <span className="text-[10px] text-stone-500">Paid via HDFC Autopay on 05 Aug 2026</span>
               </div>
             </div>
             <div className="text-right flex items-center gap-3">
-              <span className="text-white font-bold">₹{loanDetails.monthlyEmi.toLocaleString('en-IN')}</span>
+              <span className="text-espresso font-bold">₹{loanDetails.monthlyEmi.toLocaleString('en-IN')}</span>
               <button
                 onClick={handleDownloadReceipt}
-                className="p-1 rounded hover:bg-slate-800 text-slate-400 hover:text-white"
+                className="p-1 rounded hover:bg-stone-100 text-stone-400 hover:text-espresso"
                 title="Download Receipt"
               >
                 <Download className="h-3.5 w-3.5" />
@@ -213,19 +213,19 @@ export default function UserPaymentsPage() {
           </div>
 
           {/* Installment 2 - Paid */}
-          <div className="p-3.5 rounded-xl border border-emerald-500/30 bg-emerald-950/20 flex items-center justify-between">
+          <div className="p-3.5 rounded-xl border border-emerald-200 bg-emerald-50/30 flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <CheckCircle2 className="h-4 w-4 text-emerald-400" />
+              <CheckCircle2 className="h-4 w-4 text-emerald-600" />
               <div>
-                <span className="text-white font-semibold block">EMI #2 — September 2026</span>
-                <span className="text-[10px] text-slate-400">Paid via UPI on 05 Sep 2026</span>
+                <span className="text-espresso font-semibold block">EMI #2 — September 2026</span>
+                <span className="text-[10px] text-stone-500">Paid via UPI on 05 Sep 2026</span>
               </div>
             </div>
             <div className="text-right flex items-center gap-3">
-              <span className="text-white font-bold">₹{loanDetails.monthlyEmi.toLocaleString('en-IN')}</span>
+              <span className="text-espresso font-bold">₹{loanDetails.monthlyEmi.toLocaleString('en-IN')}</span>
               <button
                 onClick={handleDownloadReceipt}
-                className="p-1 rounded hover:bg-slate-800 text-slate-400 hover:text-white"
+                className="p-1 rounded hover:bg-stone-100 text-stone-400 hover:text-espresso"
                 title="Download Receipt"
               >
                 <Download className="h-3.5 w-3.5" />
@@ -234,17 +234,17 @@ export default function UserPaymentsPage() {
           </div>
 
           {/* Installment 3 - Next Due */}
-          <div className="p-3.5 rounded-xl border border-cyan-500/50 bg-cyan-950/30 flex items-center justify-between">
+          <div className="p-3.5 rounded-xl border border-coffee-200 bg-coffee-50/40 flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <Clock className="h-4 w-4 text-cyan-400 animate-pulse" />
+              <Clock className="h-4 w-4 text-coffee-700 animate-pulse" />
               <div>
-                <span className="text-cyan-300 font-bold block">EMI #{loanDetails.paidInstallments + 1} — Upcoming Due</span>
-                <span className="text-[10px] text-slate-300">Due Date: {loanDetails.nextDueDate}</span>
+                <span className="text-coffee-900 font-bold block">EMI #{loanDetails.paidInstallments + 1} — Upcoming Due</span>
+                <span className="text-[10px] text-stone-600">Due Date: {loanDetails.nextDueDate}</span>
               </div>
             </div>
             <div className="text-right">
-              <span className="text-cyan-300 font-bold">₹{loanDetails.monthlyEmi.toLocaleString('en-IN')}</span>
-              <span className="block text-[10px] text-amber-300 font-bold">DUE SOON</span>
+              <span className="text-coffee-800 font-bold">₹{loanDetails.monthlyEmi.toLocaleString('en-IN')}</span>
+              <span className="block text-[10px] text-amber-800 font-bold">DUE SOON</span>
             </div>
           </div>
         </div>
@@ -252,15 +252,15 @@ export default function UserPaymentsPage() {
 
       {/* Repayment Modal */}
       {paymentModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-midnight-950/80 backdrop-blur-md animate-fadeIn">
-          <div className="w-full max-w-md rounded-2xl border border-surface-border bg-surface-card p-6 shadow-2xl relative space-y-5">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-espresso/60 backdrop-blur-sm animate-fadeIn">
+          <div className="w-full max-w-md rounded-2xl border border-coffee-200 bg-white p-6 shadow-2xl relative space-y-5">
             
             <button
               onClick={() => {
                 setPaymentModalOpen(false);
                 setPaymentSuccess(false);
               }}
-              className="absolute top-4 right-4 text-slate-400 hover:text-white p-1"
+              className="absolute top-4 right-4 text-stone-400 hover:text-espresso p-1 rounded-lg hover:bg-stone-100 transition"
             >
               <X className="h-5 w-5" />
             </button>
@@ -268,36 +268,36 @@ export default function UserPaymentsPage() {
             {!paymentSuccess ? (
               <>
                 <div className="text-center space-y-1">
-                  <div className="w-12 h-12 rounded-xl bg-cyan-950 border border-cyan-500/40 text-cyan-400 flex items-center justify-center mx-auto mb-2">
+                  <div className="w-12 h-12 rounded-xl bg-coffee-50 border border-coffee-200 text-coffee-700 flex items-center justify-center mx-auto mb-2 shadow-xs">
                     <CreditCard className="h-6 w-6" />
                   </div>
-                  <h3 className="text-lg font-bold text-white">Instant EMI Repayment</h3>
-                  <p className="text-xs text-slate-400">
+                  <h3 className="text-lg font-bold text-espresso">Instant EMI Repayment</h3>
+                  <p className="text-xs text-stone-600">
                     Pay EMI #{loanDetails.paidInstallments + 1} for Personal Loan ({loanDetails.id})
                   </p>
                 </div>
 
-                <div className="p-4 rounded-xl border border-surface-border bg-midnight-950 text-center">
-                  <span className="text-xs text-slate-400 block font-mono">Amount Payable</span>
-                  <span className="text-3xl font-black text-cyan-400 font-mono">
+                <div className="p-4 rounded-xl border border-coffee-200 bg-stone-50/80 text-center">
+                  <span className="text-xs text-stone-500 block font-mono">Amount Payable</span>
+                  <span className="text-3xl font-black text-coffee-800 font-mono">
                     ₹{loanDetails.monthlyEmi.toLocaleString('en-IN')}
                   </span>
                 </div>
 
                 {/* Method Selector */}
                 <div className="space-y-2">
-                  <span className="text-xs text-slate-400 font-mono">Select Payment Option:</span>
+                  <span className="text-xs text-stone-700 font-mono font-medium">Select Payment Option:</span>
                   <div className="grid grid-cols-2 gap-2 font-mono text-xs">
                     <button
                       type="button"
                       onClick={() => setSelectedMethod('upi')}
                       className={`p-3 rounded-xl border text-center transition-all ${
                         selectedMethod === 'upi'
-                          ? 'border-cyan-500 bg-cyan-950 text-white'
-                          : 'border-surface-border bg-midnight-950 text-slate-400'
+                          ? 'border-coffee-600 bg-coffee-50 text-coffee-900 font-semibold shadow-xs'
+                          : 'border-coffee-200 bg-white text-stone-600 hover:bg-coffee-50/40'
                       }`}
                     >
-                      <QrCode className="h-4 w-4 mx-auto mb-1 text-cyan-400" />
+                      <QrCode className="h-4 w-4 mx-auto mb-1 text-coffee-700" />
                       <span>Instant UPI / QR</span>
                     </button>
                     <button
@@ -305,11 +305,11 @@ export default function UserPaymentsPage() {
                       onClick={() => setSelectedMethod('netbanking')}
                       className={`p-3 rounded-xl border text-center transition-all ${
                         selectedMethod === 'netbanking'
-                          ? 'border-cyan-500 bg-cyan-950 text-white'
-                          : 'border-surface-border bg-midnight-950 text-slate-400'
+                          ? 'border-coffee-600 bg-coffee-50 text-coffee-900 font-semibold shadow-xs'
+                          : 'border-coffee-200 bg-white text-stone-600 hover:bg-coffee-50/40'
                       }`}
                     >
-                      <Landmark className="h-4 w-4 mx-auto mb-1 text-cyan-400" />
+                      <Landmark className="h-4 w-4 mx-auto mb-1 text-coffee-700" />
                       <span>Net Banking</span>
                     </button>
                   </div>
@@ -318,7 +318,7 @@ export default function UserPaymentsPage() {
                 <button
                   onClick={handlePayEmi}
                   disabled={isProcessing}
-                  className="w-full py-3 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-midnight-950 font-bold text-xs uppercase tracking-wider shadow-lg flex items-center justify-center gap-2 transition-all"
+                  className="w-full py-3 rounded-xl bg-coffee-600 hover:bg-coffee-700 text-white font-bold text-xs uppercase tracking-wider shadow-sm flex items-center justify-center gap-2 transition-all"
                 >
                   {isProcessing ? (
                     <>
@@ -335,17 +335,17 @@ export default function UserPaymentsPage() {
               </>
             ) : (
               <div className="text-center py-4 space-y-4">
-                <div className="w-16 h-16 rounded-full bg-emerald-950/80 border-2 border-emerald-500 text-emerald-400 flex items-center justify-center mx-auto">
+                <div className="w-16 h-16 rounded-full bg-emerald-50 border-2 border-emerald-200 text-emerald-600 flex items-center justify-center mx-auto shadow-xs">
                   <CheckCircle2 className="h-8 w-8" />
                 </div>
                 <div className="space-y-1">
-                  <h3 className="text-xl font-bold text-white">Payment Successful!</h3>
-                  <p className="text-xs text-slate-300">
+                  <h3 className="text-xl font-bold text-espresso">Payment Successful!</h3>
+                  <p className="text-xs text-stone-600">
                     EMI installment of ₹{loanDetails.monthlyEmi.toLocaleString('en-IN')} has been acknowledged and recorded on the ledger.
                   </p>
                 </div>
-                <div className="p-3 rounded-xl border border-surface-border bg-midnight-950 text-xs font-mono text-slate-400">
-                  Transaction Ref: <span className="text-cyan-300 font-semibold">TL-TXN-2026-09A8F</span>
+                <div className="p-3 rounded-xl border border-coffee-200 bg-stone-50/80 text-xs font-mono text-stone-700">
+                  Transaction Ref: <span className="text-coffee-800 font-semibold">TL-TXN-2026-09A8F</span>
                 </div>
                 <button
                   onClick={() => {
@@ -353,7 +353,7 @@ export default function UserPaymentsPage() {
                     setPaymentSuccess(false);
                     handleDownloadReceipt();
                   }}
-                  className="w-full py-2.5 rounded-xl bg-cyan-950 border border-cyan-500/40 text-cyan-300 font-semibold text-xs hover:bg-cyan-900 transition-colors"
+                  className="w-full py-2.5 rounded-xl bg-coffee-50 border border-coffee-200 text-coffee-800 font-semibold text-xs hover:bg-coffee-100 transition-colors"
                 >
                   Download Acknowledgment Receipt
                 </button>

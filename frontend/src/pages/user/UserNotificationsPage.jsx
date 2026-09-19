@@ -92,15 +92,15 @@ export default function UserNotificationsPage() {
       {/* Top Header */}
       <div className="flex flex-wrap items-center justify-between gap-4">
         <div>
-          <div className="flex items-center gap-2 text-xs font-mono text-cyan-400">
+          <div className="flex items-center gap-2 text-xs font-mono text-coffee-600 font-semibold">
             <span>BORROWER SERVICES</span>
-            <span>/</span>
-            <span className="text-slate-400">NOTIFICATIONS & ALERTS</span>
+            <span className="text-coffee-300">/</span>
+            <span className="text-stone-500">NOTIFICATIONS & ALERTS</span>
           </div>
-          <h1 className="text-2xl font-bold text-white tracking-tight mt-1">
+          <h1 className="text-2xl font-bold text-espresso tracking-tight mt-1">
             Notifications & Status Alerts
           </h1>
-          <p className="text-xs text-slate-400">
+          <p className="text-xs text-stone-600">
             Real-time updates regarding your loan applications, underwriter action requests, and security milestones.
           </p>
         </div>
@@ -108,7 +108,7 @@ export default function UserNotificationsPage() {
         {unreadCount > 0 && (
           <button
             onClick={markAllAsRead}
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-surface-border bg-midnight-950 text-xs font-mono text-cyan-300 hover:text-white transition-colors"
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-coffee-200 bg-white text-xs font-mono text-coffee-800 hover:bg-coffee-50 transition-colors shadow-xs"
           >
             <Check className="h-3.5 w-3.5" />
             <span>Mark all as read</span>
@@ -117,33 +117,33 @@ export default function UserNotificationsPage() {
       </div>
 
       {/* Filter Tabs */}
-      <div className="flex items-center gap-2 border-b border-surface-border pb-3 font-mono text-xs">
+      <div className="flex items-center gap-2 border-b border-coffee-100 pb-3 font-mono text-xs">
         <button
           onClick={() => setActiveFilter('ALL')}
-          className={`px-3 py-1.5 rounded-lg transition-colors ${
+          className={`px-3 py-1.5 rounded-xl transition-all ${
             activeFilter === 'ALL'
-              ? 'bg-cyan-500/20 text-cyan-300 border border-cyan-500/40 font-semibold'
-              : 'text-slate-400 hover:text-white'
+              ? 'bg-coffee-600 text-white font-semibold shadow-xs'
+              : 'text-stone-600 hover:text-espresso'
           }`}
         >
           All ({notifications.length})
         </button>
         <button
           onClick={() => setActiveFilter('UNREAD')}
-          className={`px-3 py-1.5 rounded-lg transition-colors ${
+          className={`px-3 py-1.5 rounded-xl transition-all ${
             activeFilter === 'UNREAD'
-              ? 'bg-cyan-500/20 text-cyan-300 border border-cyan-500/40 font-semibold'
-              : 'text-slate-400 hover:text-white'
+              ? 'bg-coffee-600 text-white font-semibold shadow-xs'
+              : 'text-stone-600 hover:text-espresso'
           }`}
         >
           Unread ({unreadCount})
         </button>
         <button
           onClick={() => setActiveFilter('ACTION')}
-          className={`px-3 py-1.5 rounded-lg transition-colors ${
+          className={`px-3 py-1.5 rounded-xl transition-all ${
             activeFilter === 'ACTION'
-              ? 'bg-amber-500/20 text-amber-300 border border-amber-500/40 font-semibold'
-              : 'text-slate-400 hover:text-white'
+              ? 'bg-amber-600 text-white font-semibold shadow-xs'
+              : 'text-stone-600 hover:text-espresso'
           }`}
         >
           Action Required ({notifications.filter(n => n.type === 'action').length})
@@ -153,8 +153,8 @@ export default function UserNotificationsPage() {
       {/* Notifications List */}
       <div className="space-y-3 font-mono text-xs">
         {filteredNotifications.length === 0 ? (
-          <div className="rounded-2xl border border-surface-border bg-surface-card p-12 text-center text-slate-400">
-            <Bell className="h-8 w-8 text-slate-500 mx-auto mb-2" />
+          <div className="rounded-2xl border border-coffee-200 bg-white p-12 text-center text-stone-500 shadow-card">
+            <Bell className="h-8 w-8 text-stone-400 mx-auto mb-2" />
             <p>No notifications matching this filter.</p>
           </div>
         ) : (
@@ -167,24 +167,24 @@ export default function UserNotificationsPage() {
               <div
                 key={n.id}
                 onClick={() => markAsRead(n.id)}
-                className={`p-4 sm:p-5 rounded-2xl border transition-all cursor-pointer ${
+                className={`p-4 sm:p-5 rounded-2xl border transition-all cursor-pointer shadow-card ${
                   n.unread
                     ? isAction
-                      ? 'border-amber-500/50 bg-amber-950/20 shadow-md'
-                      : 'border-cyan-500/40 bg-surface-card/90 shadow-md'
-                    : 'border-surface-border bg-surface-card/50 text-slate-400'
+                      ? 'border-amber-200 bg-amber-50/40'
+                      : 'border-coffee-200 bg-coffee-50/30'
+                    : 'border-coffee-100 bg-white text-stone-600'
                 }`}
               >
                 <div className="flex items-start justify-between gap-3">
                   <div className="flex items-start gap-3">
                     <div className={`p-2 rounded-xl mt-0.5 shrink-0 ${
                       isAction
-                        ? 'bg-amber-950 text-amber-400 border border-amber-500/40'
+                        ? 'bg-amber-50 text-amber-700 border border-amber-200'
                         : isVerif
-                        ? 'bg-emerald-950 text-emerald-400 border border-emerald-500/40'
+                        ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
                         : isSecurity
-                        ? 'bg-blue-950 text-blue-400 border border-blue-500/40'
-                        : 'bg-cyan-950 text-cyan-400 border border-cyan-500/40'
+                        ? 'bg-coffee-50 text-coffee-700 border border-coffee-200'
+                        : 'bg-stone-50 text-stone-600 border border-stone-200'
                     }`}>
                       {isAction ? (
                         <AlertCircle className="h-4 w-4" />
@@ -199,25 +199,25 @@ export default function UserNotificationsPage() {
 
                     <div className="space-y-1">
                       <div className="flex items-center gap-2">
-                        <h3 className={`font-sans font-bold text-sm ${n.unread ? 'text-white' : 'text-slate-300'}`}>
+                        <h3 className={`font-sans font-bold text-sm ${n.unread ? 'text-espresso' : 'text-stone-700'}`}>
                           {n.title}
                         </h3>
                         {n.unread && (
-                          <span className="h-2 w-2 rounded-full bg-cyan-400"></span>
+                          <span className="h-2 w-2 rounded-full bg-coffee-600"></span>
                         )}
                       </div>
 
-                      <p className="font-sans text-xs text-slate-300 leading-relaxed max-w-2xl">
+                      <p className="font-sans text-xs text-stone-600 leading-relaxed max-w-2xl">
                         {n.message}
                       </p>
 
-                      <div className="pt-2 flex items-center gap-4 text-[10px] text-slate-400 font-mono">
+                      <div className="pt-2 flex items-center gap-4 text-[10px] text-stone-500 font-mono">
                         <span>{n.timestamp}</span>
                         {n.actionUrl && (
                           <Link
                             to={n.actionUrl}
                             onClick={(e) => e.stopPropagation()}
-                            className="text-cyan-400 hover:text-cyan-300 hover:underline flex items-center gap-1 font-semibold"
+                            className="text-coffee-700 hover:text-coffee-900 hover:underline flex items-center gap-1 font-semibold"
                           >
                             <span>{n.actionLabel}</span>
                             <ArrowRight className="h-3 w-3" />
@@ -228,7 +228,7 @@ export default function UserNotificationsPage() {
                   </div>
 
                   {n.unread && (
-                    <span className="text-[10px] uppercase px-2 py-0.5 rounded bg-cyan-950 text-cyan-300 border border-cyan-500/30 shrink-0">
+                    <span className="text-[10px] uppercase px-2 py-0.5 rounded bg-coffee-100 text-coffee-800 border border-coffee-200 shrink-0 font-semibold">
                       NEW
                     </span>
                   )}

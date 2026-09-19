@@ -13,48 +13,48 @@ export default function InvestigationHeader({
   const isMediumRisk = application.riskScore > 35 && application.riskScore <= 65;
 
   const riskBadgeClass = isHighRisk
-    ? 'border-red-500/40 bg-red-950/40 text-red-400'
+    ? 'border-rose-300 bg-rose-50 text-rose-800'
     : isMediumRisk
-    ? 'border-amber-500/40 bg-amber-950/40 text-amber-400'
-    : 'border-emerald-500/40 bg-emerald-950/40 text-emerald-400';
+    ? 'border-amber-300 bg-amber-50 text-amber-800'
+    : 'border-emerald-300 bg-emerald-50 text-emerald-800';
 
   return (
-    <div className="flex flex-wrap items-center justify-between gap-4 pb-4 border-b border-surface-border">
+    <div className="flex flex-wrap items-center justify-between gap-4 pb-4 border-b border-coffee-200">
       {/* Left: Back button & Title Metadata */}
       <div>
         <button
           onClick={() => navigate('/applications')}
-          className="inline-flex items-center gap-1.5 text-xs font-mono text-cyan-400 hover:text-cyan-300 transition-colors mb-2"
+          className="inline-flex items-center gap-1.5 text-xs font-mono text-coffee-700 hover:text-coffee-900 font-medium transition-colors mb-2"
         >
           <ArrowLeft className="h-3.5 w-3.5" />
           <span>Back to Applications</span>
         </button>
 
         <div className="flex items-center gap-3">
-          <h1 className="text-2xl font-bold tracking-tight text-white font-mono">
+          <h1 className="text-2xl font-bold tracking-tight text-espresso font-mono">
             {application.id}
           </h1>
-          <span className="text-lg text-slate-300 font-sans font-medium">
+          <span className="text-lg text-stone-700 font-sans font-medium">
             {application.applicant}
           </span>
-          <span className="text-xs font-mono text-slate-400 bg-midnight-950 px-2 py-0.5 rounded border border-surface-border">
+          <span className="text-xs font-mono text-coffee-800 bg-warm-100 px-2 py-0.5 rounded-lg border border-coffee-200 font-medium">
             {application.loanType || 'Digital Loan Origination'}
           </span>
         </div>
 
-        <p className="text-xs text-slate-400 mt-1 font-mono">
-          Submitted {application.submittedAt} • Requested Capital: <span className="text-slate-200 font-semibold">{application.loanAmount}</span>
+        <p className="text-xs text-stone-500 mt-1 font-mono">
+          Submitted {application.submittedAt} • Requested Capital: <span className="text-espresso font-bold">{application.loanAmount}</span>
         </p>
       </div>
 
       {/* Right: Risk Badge & Start Investigation Toggle */}
       <div className="flex items-center gap-3">
         {/* Overall Risk Callout */}
-        <div className={`flex items-center gap-2 rounded-xl border px-3.5 py-2 font-mono ${riskBadgeClass}`}>
+        <div className={`flex items-center gap-2 rounded-xl border px-3.5 py-2 font-mono shadow-xs ${riskBadgeClass}`}>
           {isHighRisk ? (
-            <ShieldAlert className="h-5 w-5 text-red-400" />
+            <ShieldAlert className="h-5 w-5 text-rose-700" />
           ) : (
-            <ShieldCheck className="h-5 w-5 text-emerald-400" />
+            <ShieldCheck className="h-5 w-5 text-emerald-700" />
           )}
           <div>
             <div className="text-sm font-bold leading-none">
@@ -69,20 +69,20 @@ export default function InvestigationHeader({
         {/* Start / Active Investigation Action Button */}
         <button
           onClick={onToggleInvestigate}
-          className={`inline-flex items-center gap-2 rounded-lg px-4 py-2 text-xs font-mono font-semibold transition-all ${
+          className={`inline-flex items-center gap-2 rounded-xl px-4 py-2 text-xs font-mono font-semibold transition-all shadow-sm ${
             isInvestigating
-              ? 'bg-emerald-950/60 text-emerald-300 border border-emerald-500/40 shadow-[0_0_15px_rgba(16,185,129,0.25)]'
-              : 'bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-midnight-950 shadow-[0_0_15px_rgba(0,240,255,0.25)]'
+              ? 'bg-emerald-50 text-emerald-800 border border-emerald-300'
+              : 'bg-coffee-600 hover:bg-coffee-700 text-white'
           }`}
         >
           {isInvestigating ? (
             <>
-              <CheckCircle2 className="h-4 w-4 text-emerald-400" />
+              <CheckCircle2 className="h-4 w-4 text-emerald-700" />
               <span>Investigation Active</span>
             </>
           ) : (
             <>
-              <Play className="h-4 w-4 fill-midnight-950" />
+              <Play className="h-4 w-4 fill-white" />
               <span>Start Investigation</span>
             </>
           )}

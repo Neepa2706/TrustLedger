@@ -1,7 +1,7 @@
 /**
  * TrustLedger LoanEligibilityNotice Component
  * Prominent disclaimer and regulatory notice regarding underwriting terms,
- * non-guarantee disclosures, and verification criteria.
+ * non-guarantee disclosures, and verification criteria in White & Coffee theme.
  */
 
 import React from 'react';
@@ -9,32 +9,34 @@ import { ShieldCheck, Info, CheckCircle2, AlertTriangle } from 'lucide-react';
 
 export default function LoanEligibilityNotice({ className = '' }) {
   return (
-    <div className={`p-4 rounded-2xl border border-surface-border bg-midnight-950/80 space-y-3 ${className}`}>
-      <div className="flex items-center gap-2">
-        <ShieldCheck className="h-4 w-4 text-cyan-400" />
-        <h4 className="text-xs font-bold text-white uppercase tracking-wider font-mono">
+    <div className={`p-5 rounded-2xl border border-coffee-200 bg-white shadow-card space-y-3 ${className}`}>
+      <div className="flex items-center gap-2.5">
+        <div className="p-1.5 rounded-lg bg-coffee-50 border border-coffee-200 text-coffee-700">
+          <ShieldCheck className="h-4 w-4" />
+        </div>
+        <h4 className="text-xs font-bold text-coffee-950 uppercase tracking-wider font-mono">
           Important Eligibility & Underwriting Information
         </h4>
       </div>
 
-      <p className="text-xs text-slate-300 leading-relaxed">
-        Final eligibility, interest rate, loan amount, and approval are subject to lender verification and approval.
-        TrustLedger provides AI-assisted document verification and fraud prevention to streamline your application,
-        but final lending decisions rest exclusively with the licensed financial institution.
+      <p className="text-xs text-coffee-700 leading-relaxed">
+        Final eligibility, interest rate, sanctioned amount, and loan disbursement are subject to lender verification and human underwriter approval.
+        TrustLedger provides AI-assisted document forensics, identity checks, and fraud shielding to accelerate processing,
+        in full compliance with digital lending guidelines.
       </p>
 
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 pt-1 text-[11px] text-slate-400">
-        <div className="flex items-center gap-2 p-2 rounded-lg bg-midnight-900 border border-surface-border">
-          <CheckCircle2 className="h-3.5 w-3.5 text-emerald-400 shrink-0" />
-          <span>Verified profile speed-lane</span>
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 pt-1 text-[11px] text-coffee-800">
+        <div className="flex items-center gap-2 p-2.5 rounded-xl bg-coffee-50 border border-coffee-200">
+          <CheckCircle2 className="h-3.5 w-3.5 text-emerald-700 shrink-0" />
+          <span>Verified profile fast-track</span>
         </div>
-        <div className="flex items-center gap-2 p-2 rounded-lg bg-midnight-900 border border-surface-border">
-          <CheckCircle2 className="h-3.5 w-3.5 text-emerald-400 shrink-0" />
-          <span>Zero upfront hidden costs</span>
+        <div className="flex items-center gap-2 p-2.5 rounded-xl bg-coffee-50 border border-coffee-200">
+          <CheckCircle2 className="h-3.5 w-3.5 text-emerald-700 shrink-0" />
+          <span>Transparent terms & zero hidden fees</span>
         </div>
-        <div className="flex items-center gap-2 p-2 rounded-lg bg-midnight-900 border border-surface-border">
-          <AlertTriangle className="h-3.5 w-3.5 text-amber-400 shrink-0" />
-          <span>No guaranteed approval claims</span>
+        <div className="flex items-center gap-2 p-2.5 rounded-xl bg-coffee-50 border border-coffee-200">
+          <AlertTriangle className="h-3.5 w-3.5 text-amber-700 shrink-0" />
+          <span>Strict fraud detection & SHA-256 audit</span>
         </div>
       </div>
     </div>

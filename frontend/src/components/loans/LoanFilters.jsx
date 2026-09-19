@@ -1,7 +1,7 @@
 /**
  * TrustLedger LoanFilters Component
  * Provides clean search, category tabs, amount & duration filters,
- * and mobile drawer toggle.
+ * and mobile drawer toggle in White & Coffee Brown fintech theme.
  */
 
 import React, { useState } from 'react';
@@ -11,16 +11,21 @@ export default function LoanFilters({
   searchQuery,
   onSearchChange,
   selectedCategory,
-  onCategoryChange,
+  onSelectCategory,
+  onCategoryChange, // alias
   maxAmountFilter,
-  onMaxAmountChange,
+  onAmountFilterChange,
+  onMaxAmountChange, // alias
   sortBy,
   onSortChange,
   totalResults = 0
 }) {
   const [mobileDrawerOpen, setMobileDrawerOpen] = useState(false);
 
-  const categories = ['All', 'Personal', 'Emergency', 'Business', 'Vehicle', 'Education'];
+  const handleCatSelect = onSelectCategory || onCategoryChange || (() => {});
+  const handleAmountChange = onAmountFilterChange || onMaxAmountChange || (() => {});
+
+  const categories = ['All', 'Personal', 'Emergency', 'Business', 'Commercial Drone', 'Vehicle', 'Education'];
 
   return (
     <div className="space-y-4">
@@ -29,18 +34,18 @@ export default function LoanFilters({
         
         {/* Search Input */}
         <div className="relative flex-1 max-w-md">
-          <Search className="h-4 w-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
+          <Search className="h-4 w-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-coffee-500" />
           <input
             type="text"
             value={searchQuery}
             onChange={(e) => onSearchChange(e.target.value)}
-            placeholder="Search loan products (e.g. personal, emergency)..."
-            className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-surface-border bg-midnight-950 text-xs text-white placeholder-slate-500 focus:border-cyan-400 focus:outline-none"
+            placeholder="Search loan products (e.g. personal, drone, emergency)..."
+            className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-coffee-200 bg-white text-xs text-coffee-950 placeholder-coffee-400 focus:border-coffee-600 focus:outline-none focus:ring-1 focus:ring-coffee-500 shadow-sm"
           />
           {searchQuery && (
             <button
               onClick={() => onSearchChange('')}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white"
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-coffee-500 hover:text-coffee-950 cursor-pointer"
             >
               <X className="h-3.5 w-3.5" />
             </button>
@@ -50,17 +55,17 @@ export default function LoanFilters({
         {/* Sort & Mobile Drawer Trigger */}
         <div className="flex items-center gap-2.5">
           {/* Sort Dropdown */}
-          <div className="flex items-center gap-1.5 px-3 py-2 rounded-xl border border-surface-border bg-midnight-950 text-xs text-slate-300">
-            <ArrowUpDown className="h-3.5 w-3.5 text-cyan-400" />
+          <div className="flex items-center gap-1.5 px-3 py-2 rounded-xl border border-coffee-200 bg-white text-xs text-coffee-800 shadow-sm">
+            <ArrowUpDown className="h-3.5 w-3.5 text-coffee-600" />
             <select
               value={sortBy}
               onChange={(e) => onSortChange(e.target.value)}
-              className="bg-transparent text-xs text-white focus:outline-none cursor-pointer"
+              className="bg-transparent text-xs text-coffee-950 focus:outline-none cursor-pointer font-medium"
             >
-              <option value="featured" className="bg-midnight-950 text-white">Featured</option>
-              <option value="amount-desc" className="bg-midnight-950 text-white">Amount: High to Low</option>
-              <option value="amount-asc" className="bg-midnight-950 text-white">Amount: Low to High</option>
-              <option value="rate-asc" className="bg-midnight-950 text-white">Lowest Interest Rate</option>
+              <option value="featured">Featured Options</option>
+              <option value="amount-high">Amount: High to Low</option>
+              <option value="rate-low">Lowest Interest Rate</option>
+              <option value="tenure-long">Longest Duration</option>
             </select>
           </div>
 
@@ -68,9 +73,9 @@ export default function LoanFilters({
           <button
             type="button"
             onClick={() => setMobileDrawerOpen(true)}
-            className="md:hidden flex items-center gap-2 px-3 py-2 rounded-xl border border-cyan-500/40 bg-cyan-950/40 text-xs text-cyan-300"
+            className="md:hidden flex items-center gap-2 px-3.5 py-2 rounded-xl border border-coffee-200 bg-coffee-50 text-xs font-semibold text-coffee-900 cursor-pointer"
           >
-            <SlidersHorizontal className="h-3.5 w-3.5" />
+            <SlidersHorizontal className="h-3.5 w-3.5 text-coffee-600" />
             <span>Filters</span>
           </button>
         </div>
@@ -84,35 +89,31 @@ export default function LoanFilters({
           return (
             <button
               key={cat}
-              onClick={() => onCategoryChange(cat)}
-              className={`px-4 py-2 rounded-xl text-xs font-medium whitespace-nowrap transition-all ${
+              onClick={() => handleCatSelect(cat)}
+              className={`px-4 py-2 rounded-xl text-xs font-bold whitespace-nowrap transition-all cursor-pointer ${
                 isActive
-                  ? 'bg-cyan-950 text-cyan-300 border border-cyan-500/50 shadow-[0_0_12px_rgba(0,240,255,0.2)]'
-                  : 'bg-midnight-950/80 text-slate-400 border border-surface-border hover:text-white hover:border-surface-border/80'
+                  ? 'bg-coffee-600 text-white shadow-sm'
+                  : 'bg-white text-coffee-700 border border-coffee-200 hover:bg-coffee-50 hover:text-coffee-950 shadow-sm'
               }`}
             >
               {cat}
             </button>
           );
         })}
-
-        <div className="ml-auto text-xs font-mono text-slate-400">
-          Showing {totalResults} option{totalResults === 1 ? '' : 's'}
-        </div>
       </div>
 
       {/* Mobile Filters Drawer */}
       {mobileDrawerOpen && (
-        <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-midnight-950/80 backdrop-blur-sm p-4 animate-fadeIn">
-          <div className="w-full max-w-md rounded-2xl border border-surface-border bg-surface-card p-6 shadow-2xl space-y-5">
-            <div className="flex items-center justify-between pb-3 border-b border-surface-border">
+        <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/50 backdrop-blur-sm p-4 animate-fadeIn">
+          <div className="w-full max-w-md rounded-2xl border border-coffee-200 bg-white p-6 shadow-2xl space-y-5">
+            <div className="flex items-center justify-between pb-3 border-b border-coffee-100">
               <div className="flex items-center gap-2">
-                <Filter className="h-4 w-4 text-cyan-400" />
-                <h4 className="text-sm font-bold text-white">Filter Loan Options</h4>
+                <Filter className="h-4 w-4 text-coffee-600" />
+                <h4 className="text-sm font-bold text-coffee-950">Filter Loan Options</h4>
               </div>
               <button
                 onClick={() => setMobileDrawerOpen(false)}
-                className="p-1 text-slate-400 hover:text-white"
+                className="p-1 text-coffee-600 hover:text-coffee-950 cursor-pointer"
               >
                 <X className="h-4 w-4" />
               </button>
@@ -120,18 +121,18 @@ export default function LoanFilters({
 
             {/* Categories */}
             <div>
-              <label className="block text-xs font-mono uppercase text-slate-400 mb-2">
+              <label className="block text-xs font-bold text-coffee-950 mb-2">
                 Loan Category
               </label>
               <div className="grid grid-cols-2 gap-2">
                 {categories.map((cat) => (
                   <button
                     key={cat}
-                    onClick={() => onCategoryChange(cat)}
-                    className={`px-3 py-2 rounded-lg text-xs font-medium text-center border transition-all ${
+                    onClick={() => handleCatSelect(cat)}
+                    className={`px-3 py-2 rounded-xl text-xs font-semibold text-center border transition-all cursor-pointer ${
                       selectedCategory === cat
-                        ? 'bg-cyan-950 text-cyan-300 border-cyan-500/50 font-semibold'
-                        : 'bg-midnight-950 text-slate-400 border-surface-border'
+                        ? 'bg-coffee-600 text-white border-coffee-600 shadow-sm'
+                        : 'bg-white text-coffee-700 border-coffee-200 hover:bg-coffee-50'
                     }`}
                   >
                     {cat}
@@ -143,28 +144,28 @@ export default function LoanFilters({
             {/* Max Amount Slider */}
             <div>
               <div className="flex items-center justify-between mb-1.5 text-xs">
-                <span className="text-slate-400 font-mono uppercase">Max Loan Amount</span>
-                <span className="font-bold text-cyan-400 font-mono">
-                  Up to ₹{maxAmountFilter.toLocaleString('en-IN')}
+                <span className="text-coffee-600 font-medium">Max Loan Amount</span>
+                <span className="font-bold text-coffee-950 font-mono">
+                  Up to ₹{(maxAmountFilter || 2000000).toLocaleString('en-IN')}
                 </span>
               </div>
               <input
                 type="range"
                 min={50000}
-                max={1000000}
-                step={25000}
-                value={maxAmountFilter}
-                onChange={(e) => onMaxAmountChange(Number(e.target.value))}
-                className="w-full accent-cyan-400 cursor-pointer"
+                max={2000000}
+                step={50000}
+                value={maxAmountFilter || 2000000}
+                onChange={(e) => handleAmountChange(Number(e.target.value))}
+                className="w-full accent-coffee-600 cursor-pointer"
               />
             </div>
 
             <button
               type="button"
               onClick={() => setMobileDrawerOpen(false)}
-              className="w-full py-2.5 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 font-semibold text-xs text-midnight-950 uppercase tracking-wider"
+              className="w-full py-2.5 rounded-xl bg-coffee-600 hover:bg-coffee-700 font-bold text-xs text-white uppercase tracking-wider shadow-sm cursor-pointer"
             >
-              Apply Filters ({totalResults} matches)
+              Apply Filters
             </button>
           </div>
         </div>

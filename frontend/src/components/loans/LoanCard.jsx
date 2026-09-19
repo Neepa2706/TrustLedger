@@ -2,6 +2,7 @@
  * TrustLedger LoanCard Component
  * Displays a synthetic loan product card with key terms, tenure,
  * interest rate, and action link. Clearly labeled as Demo Loan Product.
+ * Styled in White & Coffee Brown fintech design system.
  */
 
 import React from 'react';
@@ -16,7 +17,8 @@ import {
   Zap,
   UserCheck,
   Compass,
-  GraduationCap
+  GraduationCap,
+  Send
 } from 'lucide-react';
 
 const ICON_MAP = {
@@ -24,98 +26,99 @@ const ICON_MAP = {
   Zap: Zap,
   Briefcase: Briefcase,
   Compass: Compass,
-  GraduationCap: GraduationCap
+  GraduationCap: GraduationCap,
+  Send: Send
 };
 
 export default function LoanCard({ product, onSelect }) {
   const IconComponent = ICON_MAP[product.iconName] || UserCheck;
 
   return (
-    <div className="rounded-2xl border border-surface-border bg-surface-card hover:border-cyan-500/50 p-6 shadow-xl transition-all duration-200 flex flex-col justify-between group hover:shadow-[0_0_25px_rgba(0,240,255,0.12)] relative">
+    <div className="rounded-2xl border border-coffee-200 bg-white hover:border-coffee-400 p-6 shadow-card hover:shadow-card-hover transition-all duration-200 flex flex-col justify-between group relative">
       
       <div>
         {/* Top Header: Badge & Category */}
         <div className="flex items-center justify-between gap-2 mb-4">
-          <div className="flex items-center gap-2">
-            <div className="p-2 rounded-xl bg-cyan-950 border border-cyan-500/30 text-cyan-400 group-hover:text-cyan-300 transition-colors">
+          <div className="flex items-center gap-2.5">
+            <div className="p-2.5 rounded-xl bg-coffee-50 border border-coffee-200 text-coffee-700 transition-colors">
               <IconComponent className="h-5 w-5" />
             </div>
             <div>
-              <span className="text-[10px] font-mono uppercase tracking-wider text-cyan-400 block font-semibold">
+              <span className="text-[10px] font-mono uppercase tracking-wider text-coffee-600 block font-bold">
                 {product.category}
               </span>
-              <h3 className="text-base font-bold text-white group-hover:text-cyan-300 transition-colors">
+              <h3 className="text-base font-bold text-coffee-950 group-hover:text-coffee-700 transition-colors">
                 {product.name}
               </h3>
             </div>
           </div>
 
           {product.badge && (
-            <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-cyan-950/80 text-cyan-300 border border-cyan-500/40">
+            <span className="text-[10px] font-mono px-2.5 py-0.5 rounded-full bg-coffee-100 text-coffee-800 border border-coffee-200 font-bold">
               {product.badge}
             </span>
           )}
         </div>
 
         {/* Short Tagline / Description */}
-        <p className="text-xs text-slate-300 mb-5 line-clamp-2 leading-relaxed">
+        <p className="text-xs text-coffee-600 mb-5 line-clamp-2 leading-relaxed">
           {product.description}
         </p>
 
         {/* Key Product Terms Grid */}
-        <div className="grid grid-cols-2 gap-3 p-3.5 rounded-xl border border-surface-border bg-midnight-950/80 text-xs mb-5">
+        <div className="grid grid-cols-2 gap-3 p-4 rounded-xl border border-coffee-100 bg-coffee-50/50 text-xs mb-5">
           <div>
-            <span className="text-[10px] font-mono uppercase text-slate-400 block mb-0.5">
+            <span className="text-[10px] font-mono uppercase text-coffee-600 block mb-0.5 font-medium">
               Loan Amount
             </span>
-            <span className="font-bold text-white font-mono">
+            <span className="font-bold text-coffee-950 font-mono">
               ₹{(product.minAmount ?? product.min_amount ?? 0).toLocaleString('en-IN')} – ₹{(product.maxAmount ?? product.max_amount ?? 0).toLocaleString('en-IN')}
             </span>
           </div>
 
           <div>
-            <span className="text-[10px] font-mono uppercase text-slate-400 block mb-0.5">
+            <span className="text-[10px] font-mono uppercase text-coffee-600 block mb-0.5 font-medium">
               Duration
             </span>
-            <span className="font-bold text-white font-mono">
+            <span className="font-bold text-coffee-950 font-mono">
               {product.minDurationMonths ?? product.min_duration_months ?? 6} – {product.maxDurationMonths ?? product.max_duration_months ?? 36} mos
             </span>
           </div>
 
           <div>
-            <span className="text-[10px] font-mono uppercase text-slate-400 block mb-0.5">
+            <span className="text-[10px] font-mono uppercase text-coffee-600 block mb-0.5 font-medium">
               Interest Rate
             </span>
-            <span className="font-bold text-cyan-300 font-mono">
+            <span className="font-bold text-coffee-800 font-mono">
               {product.minInterestRate ?? product.min_interest_rate ?? 12}% – {product.maxInterestRate ?? product.max_interest_rate ?? 18}% p.a.
             </span>
           </div>
 
           <div>
-            <span className="text-[10px] font-mono uppercase text-slate-400 block mb-0.5">
+            <span className="text-[10px] font-mono uppercase text-coffee-600 block mb-0.5 font-medium">
               Processing Fee
             </span>
-            <span className="font-semibold text-slate-200">
+            <span className="font-semibold text-coffee-950">
               Up to {product.processingFeePercentage ?? product.processing_fee_percentage ?? 2}%
             </span>
           </div>
         </div>
 
         {/* Purpose Highlights */}
-        <div className="text-[11px] text-slate-400 mb-4 flex items-center gap-1.5 truncate">
-          <span className="font-medium text-slate-300">Popular for:</span>
+        <div className="text-[11px] text-coffee-600 mb-4 flex items-center gap-1.5 truncate">
+          <span className="font-bold text-coffee-800">Popular for:</span>
           <span>{(product.purposeOptions ?? product.purpose_options ?? []).slice(0, 2).join(', ')}</span>
         </div>
       </div>
 
       {/* Footer Actions & Disclaimers */}
-      <div className="space-y-3 pt-3 border-t border-surface-border/60">
-        <div className="flex items-center justify-between text-[10px] font-mono text-slate-400">
+      <div className="space-y-3 pt-3 border-t border-coffee-100">
+        <div className="flex items-center justify-between text-[10px] font-medium text-coffee-600">
           <span className="flex items-center gap-1">
-            <ShieldCheck className="h-3 w-3 text-emerald-400" />
+            <ShieldCheck className="h-3.5 w-3.5 text-emerald-600" />
             <span>Verified Profile Eligible</span>
           </span>
-          <span className="px-1.5 py-0.2 rounded bg-midnight-900 border border-surface-border text-slate-400">
+          <span className="px-2 py-0.5 rounded bg-coffee-50 border border-coffee-200 text-coffee-700 font-medium">
             Demo Loan
           </span>
         </div>
@@ -123,9 +126,9 @@ export default function LoanCard({ product, onSelect }) {
         <Link
           to={`/loans/${product.id}`}
           onClick={onSelect}
-          className="w-full flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 px-4 py-2.5 text-xs font-semibold uppercase tracking-wider text-midnight-950 shadow-[0_0_15px_rgba(0,240,255,0.2)] transition-all group-hover:shadow-[0_0_20px_rgba(0,240,255,0.35)]"
+          className="w-full flex items-center justify-center gap-2 rounded-xl bg-coffee-600 hover:bg-coffee-700 px-4 py-2.5 text-xs font-bold uppercase tracking-wider text-white shadow-sm transition-all cursor-pointer"
         >
-          <span>View Details</span>
+          <span>View Details & Apply</span>
           <ArrowRight className="h-3.5 w-3.5 group-hover:translate-x-0.5 transition-transform" />
         </Link>
       </div>

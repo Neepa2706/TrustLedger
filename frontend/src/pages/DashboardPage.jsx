@@ -43,26 +43,26 @@ export default function DashboardPage() {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 animate-fadeIn">
       {/* Top Banner / Breadcrumb Action Bar */}
       <div className="flex flex-wrap items-center justify-between gap-4">
         <div>
-          <div className="flex items-center gap-2 text-xs font-mono text-cyan-400">
+          <div className="flex items-center gap-2 text-xs font-mono text-coffee-600 font-semibold">
             <span>FRAUD INTELLIGENCE DASHBOARD</span>
-            <span>/</span>
-            <span className="text-slate-400">COMMAND CONSOLE</span>
+            <span className="text-coffee-300">/</span>
+            <span className="text-stone-500">COMMAND CONSOLE</span>
           </div>
-          <h1 className="text-2xl font-bold tracking-tight text-white mt-1">
+          <h1 className="text-2xl font-bold tracking-tight text-espresso mt-1">
             Underwriter Risk Intelligence Center
           </h1>
-          <p className="text-xs text-slate-400 mt-0.5">
+          <p className="text-xs text-stone-600 mt-0.5">
             AI-assisted risk fusion, entity clustering, and cryptographic evidence verification
           </p>
         </div>
 
         <div className="flex items-center gap-2.5">
-          <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-lg border border-emerald-500/30 bg-emerald-950/40 text-emerald-400 text-xs font-mono">
-            <span className="h-2 w-2 rounded-full bg-emerald-400 animate-pulse"></span>
+          <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-xl border border-emerald-200 bg-emerald-50 text-emerald-700 text-xs font-mono font-medium">
+            <span className="h-2 w-2 rounded-full bg-emerald-600 animate-pulse"></span>
             <span>AI ANALYSIS ENGINE ONLINE</span>
           </div>
 
@@ -89,16 +89,16 @@ export default function DashboardPage() {
       {/* Portfolio Risk Banner + 4 KPI Cards (Section 24) */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
         {/* Portfolio Risk Hero Card */}
-        <div className="sm:col-span-2 lg:col-span-1 rounded-xl border border-amber-500/40 bg-gradient-to-br from-amber-950/40 via-surface-card to-surface-card p-4 flex flex-col justify-between">
+        <div className="sm:col-span-2 lg:col-span-1 rounded-2xl border border-amber-200 bg-amber-50/40 p-4 flex flex-col justify-between shadow-card">
           <div className="flex items-center justify-between">
-            <span className="text-[10px] font-mono uppercase tracking-wider text-slate-400">Portfolio Risk</span>
-            <Gauge className="h-4 w-4 text-amber-400" />
+            <span className="text-[10px] font-mono uppercase tracking-wider text-stone-600 font-semibold">Portfolio Risk</span>
+            <Gauge className="h-4 w-4 text-amber-700" />
           </div>
           <div className="my-2">
-            <div className="text-3xl font-black text-amber-400 font-mono tracking-tight">68%</div>
-            <div className="text-xs font-bold text-amber-300 font-mono tracking-wider mt-0.5">MEDIUM RISK</div>
+            <div className="text-3xl font-black text-amber-800 font-mono tracking-tight">68%</div>
+            <div className="text-xs font-bold text-amber-900 font-mono tracking-wider mt-0.5">MEDIUM RISK</div>
           </div>
-          <div className="text-[10px] text-slate-400 border-t border-surface-border/60 pt-2">
+          <div className="text-[10px] text-stone-500 border-t border-amber-200/60 pt-2 font-mono">
             Balanced underwriting appetite
           </div>
         </div>
@@ -127,11 +127,11 @@ export default function DashboardPage() {
       {/* Row 2: Selected Risk Dial + Risk Distribution Chart + Sparkline */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         {/* Left: Overall Threat Index Ring */}
-        <div className="lg:col-span-4 rounded-xl border border-surface-border bg-surface-card/80 p-5 backdrop-blur-sm flex flex-col justify-between">
-          <div className="flex items-center justify-between pb-3 border-b border-surface-border">
+        <div className="lg:col-span-4 rounded-2xl border border-coffee-200 bg-white p-5 shadow-card flex flex-col justify-between">
+          <div className="flex items-center justify-between pb-3 border-b border-coffee-100">
             <div>
-              <h3 className="text-sm font-semibold text-white tracking-wide">Focused Application Risk</h3>
-              <p className="text-xs text-slate-400">{selectedApp.applicantName} ({selectedApp.id})</p>
+              <h3 className="text-sm font-semibold text-espresso tracking-wide">Focused Application Risk</h3>
+              <p className="text-xs text-stone-500">{selectedApp.applicantName} ({selectedApp.id})</p>
             </div>
             <StatusBadge status={selectedApp.riskLevel === 'HIGH' ? 'CRITICAL' : selectedApp.riskLevel === 'MEDIUM' ? 'WARNING' : 'SAFE'} size="sm" />
           </div>
@@ -145,14 +145,14 @@ export default function DashboardPage() {
             />
           </div>
 
-          <div className="border-t border-surface-border pt-4">
-            <div className="flex items-center justify-between text-xs font-mono text-slate-400 mb-1">
+          <div className="border-t border-coffee-100 pt-4">
+            <div className="flex items-center justify-between text-xs font-mono text-stone-600 mb-1">
               <span>Cohort Risk Momentum:</span>
-              <span className="text-amber-400 font-semibold">Moderate Velocity</span>
+              <span className="text-amber-800 font-semibold">Moderate Velocity</span>
             </div>
             <MiniTrendChart
               data={mockHourlyTrend.map((h) => ({ value: h.fraud }))}
-              color="#f59e0b"
+              color="#b45309"
               height={42}
               showTooltip
             />
@@ -191,26 +191,26 @@ export default function DashboardPage() {
           />
 
           {/* Quick Context Card */}
-          <div className="rounded-xl border border-surface-border bg-surface-card/80 p-5 backdrop-blur-sm text-xs space-y-3 font-mono">
-            <div className="flex items-center justify-between text-white font-semibold">
+          <div className="rounded-2xl border border-coffee-200 bg-white p-5 text-xs space-y-3 font-mono shadow-card">
+            <div className="flex items-center justify-between text-espresso font-semibold pb-2 border-b border-coffee-100">
               <span className="flex items-center gap-1.5">
-                <Layers className="h-4 w-4 text-cyan-400" />
+                <Layers className="h-4 w-4 text-coffee-700" />
                 <span>Active Underwriting Target</span>
               </span>
-              <span className="text-cyan-300">{selectedApp.id}</span>
+              <span className="text-coffee-700 font-bold">{selectedApp.id}</span>
             </div>
-            <div className="space-y-1.5 text-slate-300">
+            <div className="space-y-1.5 text-stone-700">
               <div className="flex justify-between">
-                <span className="text-slate-400">Applicant:</span>
-                <span className="text-white font-medium">{selectedApp.applicantName}</span>
+                <span className="text-stone-500">Applicant:</span>
+                <span className="text-espresso font-medium">{selectedApp.applicantName}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-slate-400">Requested Loan:</span>
-                <span className="text-white font-bold">{selectedApp.loanAmount}</span>
+                <span className="text-stone-500">Requested Loan:</span>
+                <span className="text-espresso font-bold">{selectedApp.loanAmount}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-slate-400">Primary Signal:</span>
-                <span className="text-amber-400 truncate max-w-[200px]" title={selectedApp.primaryVector}>
+                <span className="text-stone-500">Primary Signal:</span>
+                <span className="text-amber-800 truncate max-w-[200px]" title={selectedApp.primaryVector}>
                   {selectedApp.primaryVector}
                 </span>
               </div>
@@ -225,25 +225,25 @@ export default function DashboardPage() {
       </div>
 
       {/* Row 5: Recent Applications Screened Table with Selection */}
-      <div className="rounded-xl border border-surface-border bg-surface-card/80 p-5 backdrop-blur-sm">
-        <div className="flex flex-wrap items-center justify-between gap-3 mb-4 pb-3 border-b border-surface-border">
+      <div className="rounded-2xl border border-coffee-200 bg-white p-5 shadow-card">
+        <div className="flex flex-wrap items-center justify-between gap-3 mb-4 pb-3 border-b border-coffee-100">
           <div>
-            <h3 className="text-sm font-semibold text-white tracking-wide">
+            <h3 className="text-sm font-semibold text-espresso tracking-wide">
               Recent Screened Applications
             </h3>
-            <p className="text-xs text-slate-400 mt-0.5">
+            <p className="text-xs text-stone-500 mt-0.5">
               Click any application record to update the live forensic focus above
             </p>
           </div>
           <div className="flex items-center gap-2">
-            <span className="text-xs font-mono text-slate-400">Active Records: {mockApplications.length}</span>
+            <span className="text-xs font-mono text-stone-500">Active Records: {mockApplications.length}</span>
           </div>
         </div>
 
         <div className="overflow-x-auto">
           <table className="w-full text-left text-xs">
             <thead>
-              <tr className="border-b border-surface-border text-[11px] font-mono uppercase text-slate-400">
+              <tr className="border-b border-coffee-100 text-[11px] font-mono uppercase text-stone-500">
                 <th className="pb-3 pl-2">Application ID</th>
                 <th className="pb-3">Applicant</th>
                 <th className="pb-3">Amount</th>
@@ -253,7 +253,7 @@ export default function DashboardPage() {
                 <th className="pb-3 pr-2 text-right">Action</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-800/60 font-mono">
+            <tbody className="divide-y divide-coffee-100 font-mono">
               {mockApplications.map((app) => {
                 const isSelected = selectedApp.id === app.id;
                 return (
@@ -262,29 +262,29 @@ export default function DashboardPage() {
                     onClick={() => setSelectedApp(app)}
                     className={`cursor-pointer transition-colors ${
                       isSelected
-                        ? 'bg-cyan-500/10 border-l-2 border-l-cyan-400 text-white'
-                        : 'hover:bg-slate-900/60 text-slate-300'
+                        ? 'bg-coffee-50/70 border-l-2 border-l-coffee-600 text-espresso font-medium'
+                        : 'hover:bg-stone-50 text-stone-700'
                     }`}
                   >
-                    <td className="py-3 pl-2 font-semibold text-cyan-300">
+                    <td className="py-3 pl-2 font-semibold text-coffee-800">
                       {app.id}
                     </td>
-                    <td className="py-3 font-sans font-medium text-white">
+                    <td className="py-3 font-sans font-medium text-espresso">
                       {app.applicantName}
                     </td>
-                    <td className="py-3 text-slate-200">
+                    <td className="py-3 text-stone-700">
                       {app.loanAmount}
                     </td>
                     <td className="py-3">
                       <span className={`font-bold ${
                         app.riskScore >= 70
-                          ? 'text-red-400'
+                          ? 'text-red-700'
                           : app.riskScore >= 30
-                          ? 'text-amber-400'
-                          : 'text-emerald-400'
+                          ? 'text-amber-700'
+                          : 'text-emerald-700'
                       }`}>
                         {app.riskScore}%
-                        <span className="text-[10px] text-slate-500 font-normal ml-1">
+                        <span className="text-[10px] text-stone-500 font-normal ml-1">
                           {app.riskLevel}
                         </span>
                       </span>
@@ -302,7 +302,7 @@ export default function DashboardPage() {
                         size="sm"
                       />
                     </td>
-                    <td className="py-3 text-slate-400 max-w-xs truncate" title={app.primaryVector}>
+                    <td className="py-3 text-stone-600 max-w-xs truncate" title={app.primaryVector}>
                       {app.primaryVector}
                     </td>
                     <td className="py-3 pr-2 text-right">
@@ -311,7 +311,7 @@ export default function DashboardPage() {
                           e.stopPropagation();
                           navigate(`/applications/${app.id}`);
                         }}
-                        className="text-xs font-mono text-cyan-400 hover:text-cyan-300 hover:underline inline-flex items-center gap-1"
+                        className="text-xs font-mono text-coffee-700 hover:text-coffee-900 hover:underline inline-flex items-center gap-1 font-semibold"
                       >
                         <span>Investigate</span>
                         <ArrowUpRight className="h-3 w-3" />

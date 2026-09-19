@@ -10,30 +10,30 @@ export default function InvestigationStatusStrip({ application }) {
       value: application.applicationStatus || (isHighRisk ? 'Needs Investigation' : 'Verified'),
       icon: isHighRisk ? AlertCircle : CheckCircle2,
       badge: isHighRisk
-        ? 'border-red-500/30 text-red-300 bg-red-950/30'
-        : 'border-emerald-500/30 text-emerald-300 bg-emerald-950/30'
+        ? 'border-rose-200 text-rose-800 bg-rose-50'
+        : 'border-emerald-200 text-emerald-800 bg-emerald-50'
     },
     {
       label: 'ANALYSIS STATUS',
       value: application.analysisStatus || 'AI Analysis Complete',
       icon: Cpu,
-      badge: 'border-cyan-500/30 text-cyan-300 bg-cyan-950/30'
+      badge: 'border-coffee-200 text-coffee-800 bg-warm-50'
     },
     {
       label: 'EVIDENCE STATUS',
       value: application.integrityStatus === 'Warning' ? 'Integrity Warning' : 'Evidence Sealed',
       icon: Lock,
       badge: application.integrityStatus === 'Warning'
-        ? 'border-red-500/30 text-red-300 bg-red-950/30'
-        : 'border-emerald-500/30 text-emerald-300 bg-emerald-950/30'
+        ? 'border-rose-200 text-rose-800 bg-rose-50'
+        : 'border-emerald-200 text-emerald-800 bg-emerald-50'
     },
     {
       label: 'NETWORK STATUS',
       value: application.networkStatus === 'Connected' ? 'Connected Signals Detected' : 'Perimeter Clear',
       icon: Network,
       badge: application.networkStatus === 'Connected'
-        ? 'border-amber-500/30 text-amber-300 bg-amber-950/30'
-        : 'border-emerald-500/30 text-emerald-300 bg-emerald-950/30'
+        ? 'border-amber-200 text-amber-800 bg-amber-50'
+        : 'border-emerald-200 text-emerald-800 bg-emerald-50'
     }
   ];
 
@@ -44,16 +44,16 @@ export default function InvestigationStatusStrip({ application }) {
         return (
           <div
             key={idx}
-            className={`rounded-xl border p-3 flex items-center gap-3 backdrop-blur-sm ${item.badge}`}
+            className={`rounded-2xl border p-3 flex items-center gap-3 shadow-xs ${item.badge}`}
           >
-            <div className="p-1.5 rounded-lg bg-midnight-950/60 border border-current shrink-0">
+            <div className="p-2 rounded-xl bg-white border border-current shrink-0 shadow-xs">
               <Icon className="h-4 w-4" />
             </div>
             <div className="overflow-hidden">
-              <div className="text-[10px] uppercase text-slate-400 font-medium">
+              <div className="text-[10px] uppercase text-stone-500 font-semibold tracking-wider">
                 {item.label}
               </div>
-              <div className="font-semibold text-white truncate text-xs mt-0.5" title={item.value}>
+              <div className="font-bold text-espresso truncate text-xs mt-0.5" title={item.value}>
                 {item.value}
               </div>
             </div>
