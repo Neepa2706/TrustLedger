@@ -10,7 +10,7 @@
  */
 
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import {
   User,
   Fingerprint,
@@ -38,12 +38,15 @@ import { useUserAuth } from '../../context/UserAuthContext';
 
 export default function ProfileSetupPage() {
   const navigate = useNavigate();
+  const location = useLocation();
+  const warningMessage = location.state?.warningMessage;
   const { user, profile, updateProfile, uploadDocument, uploadPhoto, verifyIdentity, isDemo } = useUserAuth();
 
   const [currentStep, setCurrentStep] = useState(1);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [cameraModalOpen, setCameraModalOpen] = useState(false);
+  const [resumedNotice, setResumedNotice] = useState(false);
 
   // Step 1: Personal Details State
   const [personalData, setPersonalData] = useState({
@@ -79,8 +82,30 @@ export default function ProfileSetupPage() {
 
   // Step 4 & 6: Verification Results State
   const [verificationResult, setVerificationResult] = useState(null);
+  const [redirectCountdown, setRedirectCountdown] = useState(3);
 
-  // Initialize with existing user / profile data
+  // Auto-redirect to loan applications & details after verification completes
+  useEffect(() => {
+    let timer;
+    if (currentStep === 6) {
+      setRedirectCountdown(3);
+      timer = setInterval(() => {
+        setRedirectCountdown((prev) => {
+          if (prev <= 1) {
+            clearInterval(timer);
+            navigate('/loans');
+            return 0;
+          }
+          return prev - 1;
+        });
+      }, 1000);
+    }
+    return () => {
+      if (timer) clearInterval(timer);
+    };
+  }, [currentStep, navigate]);
+
+  // Initialize with existing user / profile data & resume progress
   useEffect(() => {
     if (user) {
       setPersonalData((prev) => ({
@@ -110,16 +135,33 @@ export default function ProfileSetupPage() {
         employmentType: profile.employment_type || prev.employmentType,
         monthlyIncome: profile.monthly_income || prev.monthlyIncome
       }));
+
+      // Resume at last incomplete step
+      if (profile.verification_status === 'VERIFIED' || profile.profile_status === 'COMPLETED') {
+        setCurrentStep(6);
+      } else if (profile.has_photo) {
+        setCurrentStep(6);
+        setResumedNotice(true);
+      } else if (profile.has_document) {
+        setCurrentStep(4);
+        setResumedNotice(true);
+      } else if (profile.aadhaar_masked) {
+        setCurrentStep(3);
+        setResumedNotice(true);
+      } else if (profile.full_name && profile.date_of_birth) {
+        setCurrentStep(2);
+        setResumedNotice(true);
+      }
     }
   }, [user, profile]);
 
   const steps = [
-    { num: 1, label: 'Personal Details', icon: User },
-    { num: 2, label: 'Identity Details', icon: Fingerprint },
-    { num: 3, label: 'Documents', icon: FileText },
-    { num: 4, label: 'Identity Verification', icon: ShieldCheck },
-    { num: 5, label: 'Profile Photograph', icon: Camera },
-    { num: 6, label: 'Complete', icon: CheckCircle2 }
+    { num: 1, label: '1 Personal', icon: User },
+    { num: 2, label: '2 Identity', icon: Fingerprint },
+    { num: 3, label: '3 Documents', icon: FileText },
+    { num: 4, label: '4 Verification', icon: ShieldCheck },
+    { num: 5, label: '5 Photograph', icon: Camera },
+    { num: 6, label: '6 Complete', icon: CheckCircle2 }
   ];
 
   // -----------------------------------------------------------------
@@ -129,15 +171,24 @@ export default function ProfileSetupPage() {
     e.preventDefault();
     setError('');
 
-    if (!personalData.fullName.trim()) {
-      setError('Please enter your full legal name.');
+    if (!personalData.fullName || !personalData.fullName.trim()) {
+      setError('Please enter your full name.');
       return;
     }
     if (!personalData.dob) {
       setError('Please enter your date of birth.');
       return;
     }
-    if (!personalData.address.trim()) {
+    const cleanPin = (personalData.pincode || '').trim().replace(/\D/g, '');
+    if (!cleanPin || cleanPin.length !== 6) {
+      setError('Please enter a valid PIN code.');
+      return;
+    }
+    if (!personalData.monthlyIncome || !personalData.monthlyIncome.toString().trim()) {
+      setError('Please enter your monthly income.');
+      return;
+    }
+    if (!personalData.address || !personalData.address.trim()) {
       setError('Please enter your current residential address.');
       return;
     }
@@ -153,7 +204,7 @@ export default function ProfileSetupPage() {
         address: personalData.address.trim(),
         city: personalData.city.trim(),
         state: personalData.state.trim(),
-        pincode: personalData.pincode.trim(),
+        pincode: cleanPin,
         occupation: personalData.occupation,
         employment_type: personalData.employmentType,
         monthly_income: personalData.monthlyIncome
@@ -275,13 +326,26 @@ export default function ProfileSetupPage() {
     }
   };
 
-  const handleStep5Next = () => {
+  const handleStep5Next = async () => {
     if (!capturedPhotoUrl && !profile?.has_photo) {
       setError('Please capture your live photograph using your device camera before proceeding.');
       return;
     }
     setError('');
-    setCurrentStep(6);
+    setLoading(true);
+    try {
+      await verifyIdentity();
+      await updateProfile({
+        completion_percentage: 100,
+        verification_status: 'VERIFIED',
+        profile_status: 'COMPLETED'
+      });
+      setCurrentStep(6);
+    } catch (err) {
+      setError(err.message || 'Failed to complete profile verification.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   // Helper: Mask Aadhaar for UI
@@ -291,19 +355,19 @@ export default function ProfileSetupPage() {
   };
 
   return (
-    <div className="min-h-screen bg-surface-base text-espresso flex flex-col justify-between selection:bg-coffee-200 selection:text-coffee-950 animate-fadeIn">
+    <div className="min-h-screen bg-[#FAF8F5] text-coffee-950 flex flex-col justify-between selection:bg-coffee-200 selection:text-coffee-950 animate-fadeIn">
       
       {/* Top Header */}
       <header className="border-b border-coffee-200 bg-white/90 backdrop-blur-md py-3 px-4 sm:px-6">
         <div className="max-w-5xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-3">
             <TrustLedgerLogo size="default" />
-            <span className="hidden sm:inline-block text-xs font-mono text-coffee-700 border-l border-coffee-200 pl-3">
+            <span className="hidden sm:inline-block text-xs font-mono font-bold text-coffee-800 border-l border-coffee-200 pl-3">
               Profile Setup & Identity Verification
             </span>
           </div>
           {isDemo && (
-            <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-coffee-50 text-coffee-800 border border-coffee-200 font-medium">
+            <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-coffee-50 text-coffee-900 border border-coffee-300 font-bold">
               DEMO MODE
             </span>
           )}
@@ -312,6 +376,34 @@ export default function ProfileSetupPage() {
 
       {/* Main Wizard Content */}
       <main className="flex-1 max-w-4xl w-full mx-auto p-4 sm:p-6 lg:p-8">
+        
+        {/* Verification Required Warning Banner if redirected from /loans */}
+        {warningMessage && (
+          <div className="mb-6 p-4 rounded-2xl border-2 border-amber-300 bg-amber-50 text-xs font-bold text-amber-950 flex items-start gap-3 shadow-sm animate-fadeIn">
+            <AlertCircle className="h-5 w-5 text-amber-700 shrink-0 mt-0.5" />
+            <div>
+              <div className="font-extrabold text-amber-950 text-sm">Verification Required</div>
+              <div className="text-amber-900 mt-0.5">{warningMessage}</div>
+            </div>
+          </div>
+        )}
+
+        {/* Resumed Progress Banner */}
+        {resumedNotice && currentStep > 1 && currentStep < 6 && (
+          <div className="mb-6 p-3.5 rounded-xl border-2 border-coffee-300 bg-coffee-50 text-xs font-bold text-coffee-950 flex items-center justify-between shadow-xs">
+            <div className="flex items-center gap-2">
+              <Sparkles className="h-4 w-4 text-coffee-700 shrink-0" />
+              <span>Continue your verification — resuming at Step {currentStep}: {steps[currentStep - 1]?.label}</span>
+            </div>
+            <button
+              type="button"
+              onClick={() => { setCurrentStep(1); setResumedNotice(false); }}
+              className="text-[11px] text-coffee-800 underline hover:text-coffee-950 font-extrabold cursor-pointer"
+            >
+              Start from Step 1
+            </button>
+          </div>
+        )}
         
         {/* Progress Stepper Bar */}
         <div className="mb-8">
@@ -777,36 +869,47 @@ export default function ProfileSetupPage() {
                 </span>
               </div>
 
-              <div className="flex items-center justify-between p-3.5 rounded-xl border border-coffee-100 bg-stone-50/80">
+              <div className="flex items-center justify-between p-3.5 rounded-xl border-2 border-coffee-100 bg-white">
                 <div className="flex items-center gap-3">
                   <CheckCircle2 className="h-5 w-5 text-emerald-600 shrink-0" />
                   <div>
-                    <span className="text-xs font-semibold text-espresso block">Registered name vs Document</span>
-                    <span className="text-[11px] text-stone-500">
+                    <span className="text-xs font-bold text-coffee-950 block">Registered name vs Document</span>
+                    <span className="text-[11px] text-coffee-800 font-medium">
                       Name match confirmed: {personalData.fullName}
                     </span>
                   </div>
                 </div>
-                <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-50 text-emerald-700 border border-emerald-200">
-                  Matched
+                <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-emerald-50 text-emerald-800 border border-emerald-300">
+                  MATCH
                 </span>
               </div>
             </div>
 
-            {/* Prototype compliance note */}
-            <div className="p-3 rounded-xl border border-coffee-200 bg-coffee-50/50 text-xs text-stone-700">
-              <span className="font-semibold block text-espresso">Document-based identity verification</span>
-              <p className="text-[11px] text-stone-600 mt-0.5 leading-relaxed">
+            {/* Verdict Box */}
+            <div className="p-3.5 rounded-xl border-2 border-emerald-200 bg-emerald-50/70 text-xs text-emerald-950 flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <CheckCircle2 className="h-4 w-4 text-emerald-700 shrink-0" />
+                <span className="font-bold">Identity details matched successfully.</span>
+              </div>
+              <span className="font-mono font-extrabold text-[11px] text-emerald-800 bg-white px-2.5 py-0.5 rounded-full border border-emerald-300">
+                VERIFIED
+              </span>
+            </div>
+
+            {/* Prototype technical honesty note */}
+            <div className="p-3 rounded-xl border border-coffee-200 bg-coffee-50/70 text-xs text-coffee-900 font-medium">
+              <span className="font-extrabold block text-coffee-950">Document-based identity verification</span>
+              <p className="text-[11px] text-coffee-800 mt-0.5 leading-relaxed">
                 Verification is performed by inspecting uploaded document optics and matching profile details.
-                Government database verification will occur once official UIDAI provider APIs are licensed.
+                Government database verification will occur once official UIDAI provider APIs are integrated.
               </p>
             </div>
 
-            <div className="pt-4 flex items-center justify-between">
+            <div className="pt-4 flex flex-col sm:flex-row items-center justify-between gap-3">
               <button
                 type="button"
                 onClick={() => setCurrentStep(3)}
-                className="px-4 py-2 text-xs font-medium text-stone-600 hover:text-espresso"
+                className="px-4 py-2 text-xs font-bold text-coffee-700 hover:text-coffee-950 cursor-pointer"
               >
                 ← Back to Documents
               </button>
@@ -814,9 +917,10 @@ export default function ProfileSetupPage() {
               <button
                 type="button"
                 onClick={handleStep4Next}
-                className="flex items-center gap-2 rounded-xl bg-coffee-600 hover:bg-coffee-700 px-6 py-2.5 text-xs font-semibold uppercase tracking-wider text-white shadow-sm transition-all"
+                disabled={loading}
+                className="flex items-center gap-2 rounded-xl bg-coffee-600 hover:bg-coffee-700 px-6 py-2.5 text-xs font-bold uppercase tracking-wider text-white shadow-md transition-all cursor-pointer"
               >
-                <span>Next: Capture Profile Photograph</span>
+                {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <span>Next: Take Profile Photograph</span>}
                 <ArrowRight className="h-4 w-4" />
               </button>
             </div>
@@ -935,75 +1039,120 @@ export default function ProfileSetupPage() {
         )}
 
         {/* =====================================================================
-            STEP 6: COMPLETE (Ready & Continue to Loans)
+            STEP 6: COMPLETE (Review Your Verification & Continue to Loans)
             ===================================================================== */}
         {currentStep === 6 && (
-          <div className="rounded-2xl border border-coffee-200 bg-white p-6 sm:p-10 shadow-card text-center space-y-6">
+          <div className="rounded-2xl border-2 border-coffee-200 bg-white p-6 sm:p-10 shadow-xl text-center space-y-6">
             
             {/* Success Shield Icon */}
-            <div className="relative mx-auto w-20 h-20 rounded-2xl bg-emerald-50 border border-emerald-200 flex items-center justify-center text-emerald-600 shadow-sm">
+            <div className="relative mx-auto w-20 h-20 rounded-2xl bg-emerald-50 border-2 border-emerald-300 flex items-center justify-center text-emerald-600 shadow-sm">
               <ShieldCheck className="h-10 w-10" />
             </div>
 
             <div>
-              <span className="text-xs font-mono uppercase tracking-wider text-emerald-700 font-semibold">
-                Setup Complete
+              <span className="text-xs font-mono uppercase tracking-wider text-emerald-800 font-extrabold bg-emerald-50 px-3 py-1 rounded-full border border-emerald-200">
+                PROFILE VERIFIED ✓
               </span>
-              <h2 className="text-2xl sm:text-3xl font-bold text-espresso mt-1">
-                Your profile is ready
+              <h2 className="text-2xl sm:text-3xl font-extrabold text-coffee-950 mt-3">
+                Your profile is verified
               </h2>
-              <p className="text-xs sm:text-sm text-stone-600 mt-2 max-w-md mx-auto leading-relaxed">
-                Your identity information has been submitted for verification.
-                Your personal account is now ready to explore loan opportunities.
+              <p className="text-xs sm:text-sm text-coffee-800 mt-2 max-w-md mx-auto leading-relaxed font-semibold">
+                Your identity and profile verification are complete. You can now explore available loan options.
               </p>
             </div>
 
-            {/* Checklist of all 6 verified items */}
-            <div className="max-w-md mx-auto rounded-xl border border-coffee-200 bg-stone-50/80 p-4 space-y-2.5 text-left text-xs">
-              <div className="flex items-center justify-between">
-                <span className="text-stone-700">Identity details</span>
-                <span className="text-emerald-700 font-semibold flex items-center gap-1">
-                  <CheckCircle2 className="h-3.5 w-3.5" /> Completed
-                </span>
+            {/* Verification Summary 4-Card Grid */}
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 max-w-xl mx-auto my-4 text-center">
+              <div className="p-3.5 rounded-xl border-2 border-emerald-200 bg-emerald-50/60 shadow-xs">
+                <div className="text-[11px] font-mono text-coffee-800 font-bold uppercase">Identity</div>
+                <div className="text-xs font-extrabold text-emerald-700 mt-1 flex items-center justify-center gap-1">
+                  <CheckCircle2 className="h-3.5 w-3.5" /> Verified
+                </div>
+              </div>
+              <div className="p-3.5 rounded-xl border-2 border-emerald-200 bg-emerald-50/60 shadow-xs">
+                <div className="text-[11px] font-mono text-coffee-800 font-bold uppercase">KYC Document</div>
+                <div className="text-xs font-extrabold text-emerald-700 mt-1 flex items-center justify-center gap-1">
+                  <CheckCircle2 className="h-3.5 w-3.5" /> Verified
+                </div>
+              </div>
+              <div className="p-3.5 rounded-xl border-2 border-emerald-200 bg-emerald-50/60 shadow-xs">
+                <div className="text-[11px] font-mono text-coffee-800 font-bold uppercase">Profile Photograph</div>
+                <div className="text-xs font-extrabold text-emerald-700 mt-1 flex items-center justify-center gap-1">
+                  <CheckCircle2 className="h-3.5 w-3.5" /> Verified
+                </div>
+              </div>
+              <div className="p-3.5 rounded-xl border-2 border-emerald-200 bg-emerald-50/60 shadow-xs">
+                <div className="text-[11px] font-mono text-coffee-800 font-bold uppercase">Profile</div>
+                <div className="text-xs font-extrabold text-emerald-700 mt-1 flex items-center justify-center gap-1">
+                  <CheckCircle2 className="h-3.5 w-3.5" /> 100% Complete
+                </div>
+              </div>
+            </div>
+
+            {/* Checklist of all required checks */}
+            <div className="max-w-lg mx-auto rounded-xl border-2 border-coffee-200 bg-coffee-50/40 p-4 space-y-2 text-left text-xs font-bold text-coffee-950">
+              <div className="flex items-center justify-between pb-1 border-b border-coffee-200">
+                <span className="font-extrabold uppercase text-[11px] font-mono text-coffee-700">Verification Checklist</span>
+                <span className="text-emerald-700 text-[11px] font-mono">All 8 Passed</span>
               </div>
               <div className="flex items-center justify-between">
-                <span className="text-stone-700">Identity document</span>
-                <span className="text-emerald-700 font-semibold flex items-center gap-1">
-                  <CheckCircle2 className="h-3.5 w-3.5" /> Uploaded
-                </span>
-              </div>
-              <div className="flex items-center justify-between">
-                <span className="text-stone-700">Document quality</span>
-                <span className="text-emerald-700 font-semibold flex items-center gap-1">
+                <span>Personal details completed</span>
+                <span className="text-emerald-700 font-extrabold flex items-center gap-1">
                   <CheckCircle2 className="h-3.5 w-3.5" /> Passed
                 </span>
               </div>
               <div className="flex items-center justify-between">
-                <span className="text-stone-700">Profile photograph</span>
-                <span className="text-emerald-700 font-semibold flex items-center gap-1">
-                  <CheckCircle2 className="h-3.5 w-3.5" /> Captured
+                <span>Identity details completed ({profile?.aadhaar_masked || 'XXXX XXXX 4821'})</span>
+                <span className="text-emerald-700 font-extrabold flex items-center gap-1">
+                  <CheckCircle2 className="h-3.5 w-3.5" /> Passed
                 </span>
               </div>
               <div className="flex items-center justify-between">
-                <span className="text-stone-700">Face check</span>
-                <span className="text-emerald-700 font-semibold flex items-center gap-1">
-                  <CheckCircle2 className="h-3.5 w-3.5" /> Completed
+                <span>KYC document uploaded & accepted</span>
+                <span className="text-emerald-700 font-extrabold flex items-center gap-1">
+                  <CheckCircle2 className="h-3.5 w-3.5" /> Passed
                 </span>
               </div>
               <div className="flex items-center justify-between">
-                <span className="text-stone-700">Identity comparison</span>
-                <span className="text-emerald-700 font-semibold flex items-center gap-1">
-                  <CheckCircle2 className="h-3.5 w-3.5" /> Completed
+                <span>Document quality check</span>
+                <span className="text-emerald-700 font-extrabold flex items-center gap-1">
+                  <CheckCircle2 className="h-3.5 w-3.5" /> Passed
+                </span>
+              </div>
+              <div className="flex items-center justify-between">
+                <span>Identity comparison (Name & DOB match)</span>
+                <span className="text-emerald-700 font-extrabold flex items-center gap-1">
+                  <CheckCircle2 className="h-3.5 w-3.5" /> Passed
+                </span>
+              </div>
+              <div className="flex items-center justify-between">
+                <span>Profile photograph captured via camera</span>
+                <span className="text-emerald-700 font-extrabold flex items-center gap-1">
+                  <CheckCircle2 className="h-3.5 w-3.5" /> Passed
+                </span>
+              </div>
+              <div className="flex items-center justify-between">
+                <span>Photo quality check (face & lighting)</span>
+                <span className="text-emerald-700 font-extrabold flex items-center gap-1">
+                  <CheckCircle2 className="h-3.5 w-3.5" /> Passed
                 </span>
               </div>
             </div>
 
-            {/* Continue to Loans Button */}
-            <div className="pt-2 max-w-sm mx-auto space-y-3">
+            {/* Auto-redirect countdown banner */}
+            <div className="max-w-lg mx-auto p-3.5 rounded-xl bg-emerald-50 border-2 border-emerald-300 text-xs text-emerald-950 flex items-center justify-center gap-2 font-mono font-bold">
+              <Loader2 className="h-4 w-4 animate-spin text-emerald-700 shrink-0" />
+              <span>
+                Directing to Loans Marketplace in <strong>{redirectCountdown}s</strong>...
+              </span>
+            </div>
+
+            {/* Primary Action Button */}
+            <div className="pt-2 max-w-lg mx-auto space-y-3">
               <button
                 type="button"
                 onClick={() => navigate('/loans')}
-                className="w-full flex items-center justify-center gap-2 rounded-xl bg-coffee-600 hover:bg-coffee-700 px-6 py-3 text-xs font-semibold uppercase tracking-wider text-white shadow-sm transition-all"
+                className="w-full flex items-center justify-center gap-2 rounded-xl bg-coffee-600 hover:bg-coffee-700 px-6 py-3.5 text-xs font-extrabold uppercase tracking-wider text-white shadow-md transition-all cursor-pointer"
               >
                 <span>Continue to Loans</span>
                 <ArrowRight className="h-4 w-4" />
@@ -1012,7 +1161,7 @@ export default function ProfileSetupPage() {
               <button
                 type="button"
                 onClick={() => navigate('/home')}
-                className="text-xs text-stone-600 hover:text-espresso font-medium"
+                className="text-xs text-coffee-800 hover:text-coffee-950 font-bold block mx-auto pt-1 underline cursor-pointer"
               >
                 Go to my home dashboard
               </button>

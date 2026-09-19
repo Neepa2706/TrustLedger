@@ -22,6 +22,7 @@ import {
 import TrustLedgerLogo from '../../components/branding/TrustLedgerLogo';
 import SingleAccountNotice from '../../components/user/SingleAccountNotice';
 import { useUserAuth } from '../../context/UserAuthContext';
+import userProfileService from '../../services/userProfileService';
 
 export default function UserLoginPage() {
   const navigate = useNavigate();
@@ -35,7 +36,6 @@ export default function UserLoginPage() {
   const [localError, setLocalError] = useState('');
   const searchParams = new URLSearchParams(location.search);
   const queryRedirect = searchParams.get('redirect');
-  const targetRedirect = queryRedirect || location.state?.from?.pathname || '/loans';
 
   const handleSignIn = async (e) => {
     e.preventDefault();
@@ -52,8 +52,14 @@ export default function UserLoginPage() {
     }
 
     try {
-      await login(email, password);
-      navigate(targetRedirect, { replace: true });
+      const authUser = await login(email, password);
+      const p = await userProfileService.getProfile(authUser.id);
+      const isVerified = p?.verification_status === 'VERIFIED' || p?.completion_percentage === 100;
+      if (isVerified) {
+        navigate(queryRedirect || '/loans', { replace: true });
+      } else {
+        navigate('/profile-setup', { replace: true });
+      }
     } catch (err) {
       setLocalError(err.message || 'Email or password is incorrect.');
     }
@@ -63,8 +69,14 @@ export default function UserLoginPage() {
     setLocalError('');
     clearError();
     try {
-      await login('arjun.kumar@example.com', 'DemoPass123!');
-      navigate(targetRedirect, { replace: true });
+      const authUser = await login('arjun.kumar@example.com', 'DemoPass123!');
+      const p = await userProfileService.getProfile(authUser.id);
+      const isVerified = p?.verification_status === 'VERIFIED' || p?.completion_percentage === 100;
+      if (isVerified) {
+        navigate(queryRedirect || '/loans', { replace: true });
+      } else {
+        navigate('/profile-setup', { replace: true });
+      }
     } catch (err) {
       setLocalError(err.message || 'Demo login failed.');
     }

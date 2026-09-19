@@ -57,12 +57,29 @@ export default function FinalVerificationPage() {
     const prod = getLoanProductById(loanId);
     if (prod) setProduct(prod);
 
-    if (user?.id && appIdParam) {
+    if (user?.id) {
       setLoading(true);
-      Promise.all([
-        loanService.getApplicationById(appIdParam, user.id),
-        loanService.getVerificationStatus(appIdParam, user.id)
-      ])
+      const resolveAppId = async () => {
+        if (appIdParam) return appIdParam;
+        const apps = await loanService.getUserApplications(user.id);
+        const match = apps?.find(a => a.loan_product_id === loanId) || apps?.[0];
+        if (match) return match.application_id;
+        const newApp = await loanService.createApplication({
+          loan_product_id: loanId || 'TL-PERSONAL-01',
+          requested_amount: prod?.defaultAmount || 150000,
+          requested_duration_months: prod?.defaultDurationMonths || 24,
+          loan_purpose: 'Personal Loan'
+        }, user.id);
+        return newApp.application_id;
+      };
+
+      resolveAppId()
+        .then(effectiveAppId => {
+          return Promise.all([
+            loanService.getApplicationById(effectiveAppId, user.id),
+            loanService.getVerificationStatus(effectiveAppId, user.id)
+          ]);
+        })
         .then(([app, verif]) => {
           if (isMounted) {
             setApplication(app);

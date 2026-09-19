@@ -41,7 +41,7 @@ export default function DocumentUploadCard({
     // Check for disallowed extensions
     const disallowedExts = ['.ppt', '.pptx', '.doc', '.docx', '.xls', '.xlsx', '.csv', '.zip', '.rar', '.exe'];
     if (disallowedExts.some(ext => fileName.endsWith(ext))) {
-      setValidationError('Presentation, spreadsheet, and archive files (.ppt, .pptx, .doc, .zip) are strictly rejected. Please upload an authentic government identity document in PDF, JPG, or PNG format.');
+      setValidationError('This file format is not supported. Please upload a valid KYC document.');
       return;
     }
 
@@ -50,7 +50,7 @@ export default function DocumentUploadCard({
     const hasValidExt = validExtensions.some(ext => fileName.endsWith(ext));
 
     if (!allowedTypes.includes(file.type) && !hasValidExt) {
-      setValidationError('Unsupported format. Please upload a PDF, JPG, or PNG document.');
+      setValidationError('This file format is not supported. Please upload a valid KYC document.');
       return;
     }
 
@@ -85,7 +85,7 @@ export default function DocumentUploadCard({
   };
 
   return (
-    <div className="rounded-2xl border border-coffee-200 bg-white p-6 shadow-card relative">
+    <div className="rounded-2xl border-2 border-coffee-200 bg-white p-6 shadow-card relative">
       
       {/* Header */}
       <div className="mb-4">
@@ -93,26 +93,25 @@ export default function DocumentUploadCard({
           <div className="p-2 rounded-xl bg-coffee-100 border border-coffee-200 text-coffee-700">
             <FileText className="h-4 w-4" />
           </div>
-          <h3 className="text-base font-bold text-coffee-950">
-            Verify Your Identity Document
+          <h3 className="text-lg font-extrabold text-coffee-950">
+            Upload your identity document
           </h3>
         </div>
-        <p className="text-xs text-coffee-600">
-          Upload a clear copy of your Aadhaar Card, PAN Card, or Passport for automated optical inspection.
+        <p className="text-xs text-coffee-800 font-semibold">
+          Upload the KYC document requested on this screen. Make sure the document is clear and readable.
         </p>
       </div>
 
-      {/* Acceptance Badges */}
-      <div className="mb-4 flex flex-wrap gap-2 text-[11px]">
-        <span className="px-2.5 py-1 rounded-lg bg-coffee-50 border border-coffee-200 text-coffee-800 font-medium">
-          Accepted: Aadhaar, PAN, Passport
-        </span>
-        <span className="px-2.5 py-1 rounded-lg bg-coffee-50 border border-coffee-200 text-coffee-800 font-medium">
-          Formats: PDF, JPG, PNG
-        </span>
-        <span className="px-2.5 py-1 rounded-lg bg-coffee-50 border border-coffee-200 text-coffee-800 font-medium">
-          Max: 10 MB
-        </span>
+      {/* Acceptance Specifications */}
+      <div className="mb-4 p-3 rounded-xl border border-coffee-200 bg-coffee-50/70 flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs font-bold text-coffee-950">
+        <div>
+          <span className="text-[10px] font-mono uppercase text-coffee-700 block">Supported formats:</span>
+          <span className="font-extrabold">PDF, JPG, JPEG, PNG</span>
+        </div>
+        <div className="sm:text-right">
+          <span className="text-[10px] font-mono uppercase text-coffee-700 block">Maximum size:</span>
+          <span className="font-extrabold font-mono">10 MB</span>
+        </div>
       </div>
 
       {/* Strict Policy Banner */}

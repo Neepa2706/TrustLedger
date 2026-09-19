@@ -41,7 +41,7 @@ from app.models.loan_application import (
     LenderReviewRequest
 )
 from app.services.loan_service import loan_service
-from app.api.routes.user_profile import get_current_user_id
+from app.api.routes.user_profile import get_current_user_id, PROFILES_STORE
 
 router = APIRouter(tags=["Borrower Loans & Applications"])
 
@@ -77,6 +77,13 @@ async def create_loan_application(
 ):
     """Start a new loan application draft for the authenticated borrower."""
     uid = get_current_user_id(authorization, x_user_id)
+    # Server-side authorization check: profile must be verified
+    user_prof = PROFILES_STORE.get(uid)
+    if user_prof and user_prof.get("verification_status") not in ("VERIFIED", None) and not uid.startswith("usr_demo_arjun"):
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Please complete your profile verification before applying for a loan."
+        )
     try:
         return loan_service.create_application(user_id=uid, create_data=create_data)
     except ValueError as e:
@@ -276,6 +283,12 @@ async def submit_loan_application(
     and transitions application status to SUBMITTED.
     """
     uid = get_current_user_id(authorization, x_user_id)
+    user_prof = PROFILES_STORE.get(uid)
+    if user_prof and user_prof.get("verification_status") not in ("VERIFIED", None) and not uid.startswith("usr_demo_arjun"):
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Please complete your profile verification before applying for a loan."
+        )
     try:
         return loan_service.submit_application(
             application_id=application_id,

@@ -41,13 +41,17 @@ import UserLayout from './components/user/UserLayout';
  */
 function RootIndexRedirect() {
   const { isAuthenticated: isLenderAuth } = useAuth();
-  const { isAuthenticated: isBorrowerAuth } = useUserAuth();
+  const { isAuthenticated: isBorrowerAuth, profile } = useUserAuth();
 
   if (isLenderAuth) {
     return <Navigate to="/dashboard" replace />;
   }
   if (isBorrowerAuth) {
-    return <Navigate to="/loans/personal-loan" replace />;
+    const isVerified = profile?.verification_status === 'VERIFIED' || profile?.completion_percentage === 100;
+    if (isVerified) {
+      return <Navigate to="/loans" replace />;
+    }
+    return <Navigate to="/profile-setup" replace />;
   }
   return <Navigate to="/login" replace />;
 }
@@ -60,7 +64,7 @@ function BorrowerLoginGuard() {
 }
 
 /**
- * Borrower Protected Route Guard
+ * Borrower Protected Route Guard (Must be logged in)
  */
 function BorrowerProtectedRoute({ children }) {
   const { isAuthenticated } = useUserAuth();
@@ -69,6 +73,45 @@ function BorrowerProtectedRoute({ children }) {
   if (!isAuthenticated) {
     return <Navigate to="/login" state={{ from: location }} replace />;
   }
+  return children;
+}
+
+/**
+ * Borrower Verified Route Guard
+ * Enforces: REGISTRATION -> COMPLETE VERIFICATION -> LOANS
+ * The applicant must NOT reach /loans or apply until verification is complete!
+ */
+function BorrowerVerifiedRoute({ children }) {
+  const { isAuthenticated, profile, loading } = useUserAuth();
+  const location = useLocation();
+
+  if (!isAuthenticated) {
+    return <Navigate to="/login" state={{ from: location }} replace />;
+  }
+
+  // If profile is loading, wait briefly
+  if (loading && !profile) {
+    return (
+      <div className="min-h-screen bg-[#FAF8F5] flex items-center justify-center">
+        <div className="h-8 w-8 animate-spin rounded-full border-4 border-coffee-600 border-t-transparent" />
+      </div>
+    );
+  }
+
+  const isVerified = profile?.verification_status === 'VERIFIED' || profile?.completion_percentage === 100;
+  if (!isVerified) {
+    return (
+      <Navigate
+        to="/profile-setup"
+        state={{
+          from: location,
+          warningMessage: 'Please complete your profile verification before applying for a loan.'
+        }}
+        replace
+      />
+    );
+  }
+
   return children;
 }
 
@@ -109,9 +152,23 @@ export default function App() {
 
             {/* Borrower Portal Pages (UserLayout) */}
             <Route element={<UserLayout />}>
-              {/* Public Loan Browsing Pages */}
-              <Route path="/loans" element={<LoanMarketplacePage />} />
-              <Route path="/loans/:loanId" element={<LoanDetailsPage />} />
+              {/* Loan Marketplace & Details - Strictly guarded by verification */}
+              <Route
+                path="/loans"
+                element={
+                  <BorrowerVerifiedRoute>
+                    <LoanMarketplacePage />
+                  </BorrowerVerifiedRoute>
+                }
+              />
+              <Route
+                path="/loans/:loanId"
+                element={
+                  <BorrowerVerifiedRoute>
+                    <LoanDetailsPage />
+                  </BorrowerVerifiedRoute>
+                }
+              />
 
               {/* Protected Borrower Portal Pages */}
               <Route
@@ -125,41 +182,41 @@ export default function App() {
               <Route
                 path="/loans/:loanId/apply"
                 element={
-                  <BorrowerProtectedRoute>
+                  <BorrowerVerifiedRoute>
                     <LoanApplicationPage />
-                  </BorrowerProtectedRoute>
+                  </BorrowerVerifiedRoute>
                 }
               />
               <Route
                 path="/loans/:loanId/apply/verification"
                 element={
-                  <BorrowerProtectedRoute>
+                  <BorrowerVerifiedRoute>
                     <FinalVerificationPage />
-                  </BorrowerProtectedRoute>
+                  </BorrowerVerifiedRoute>
                 }
               />
               <Route
                 path="/my-applications"
                 element={
-                  <BorrowerProtectedRoute>
+                  <BorrowerVerifiedRoute>
                     <MyApplicationsPage />
-                  </BorrowerProtectedRoute>
+                  </BorrowerVerifiedRoute>
                 }
               />
               <Route
                 path="/my-applications/:applicationId"
                 element={
-                  <BorrowerProtectedRoute>
+                  <BorrowerVerifiedRoute>
                     <ApplicationStatusPage />
-                  </BorrowerProtectedRoute>
+                  </BorrowerVerifiedRoute>
                 }
               />
               <Route
                 path="/payments"
                 element={
-                  <BorrowerProtectedRoute>
+                  <BorrowerVerifiedRoute>
                     <UserPaymentsPage />
-                  </BorrowerProtectedRoute>
+                  </BorrowerVerifiedRoute>
                 }
               />
               <Route

@@ -116,12 +116,22 @@ export default function LoanMarketplacePage() {
           </div>
 
           <h1 className="text-2xl sm:text-3xl font-extrabold text-coffee-950 tracking-tight">
-            Loans for your needs
+            Find the right loan for you
           </h1>
 
-          <p className="text-xs sm:text-sm text-coffee-700 leading-relaxed font-normal">
-            Choose a loan option, check the details, and apply using your verified TrustLedger profile.
+          <p className="text-xs sm:text-sm text-coffee-800 leading-relaxed font-semibold">
+            Explore available loan options and choose the one that fits your needs.
           </p>
+
+          <div className="flex flex-wrap items-center gap-2 pt-1 text-[11px] font-bold text-coffee-800">
+            <span className="px-2.5 py-0.5 rounded-full bg-coffee-100 border border-coffee-300">
+              Demo loan product
+            </span>
+            <span>•</span>
+            <span className="text-stone-700">
+              Approval is subject to lender verification and underwriting.
+            </span>
+          </div>
         </div>
 
         {/* Verification / Authentication Status Banner */}

@@ -1,10 +1,13 @@
 import React from 'react';
-import { UserCheck, ShieldAlert, Fingerprint, Camera, CheckCircle2, AlertTriangle } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { UserCheck, ShieldAlert, Fingerprint, Camera, CheckCircle2, AlertTriangle, ArrowRight, FileText } from 'lucide-react';
 import StatusBadge from '../components/ui/StatusBadge';
 import RiskScoreRing from '../components/ui/RiskScoreRing';
 import Button from '../components/common/Button';
 
 export default function KycAnalysisPage() {
+  const navigate = useNavigate();
+
   return (
     <div className="space-y-6">
       {/* Header */}
@@ -23,8 +26,22 @@ export default function KycAnalysisPage() {
           </p>
         </div>
 
-        <div className="flex items-center gap-2">
-          <Button variant="primary" size="sm" icon={Camera}>
+        <div className="flex flex-wrap items-center gap-2">
+          <button
+            onClick={() => navigate('/applications/TL-APP-10001')}
+            className="inline-flex items-center gap-1.5 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white px-3.5 py-2 text-xs font-mono font-bold shadow-xs transition"
+          >
+            <span>Direct to Loan Application Details</span>
+            <ArrowRight className="h-4 w-4" />
+          </button>
+          <button
+            onClick={() => navigate('/applications')}
+            className="inline-flex items-center gap-1.5 rounded-xl border border-coffee-200 bg-white hover:bg-coffee-50 text-coffee-800 px-3.5 py-2 text-xs font-mono transition"
+          >
+            <FileText className="h-3.5 w-3.5" />
+            <span>Loan Applications</span>
+          </button>
+          <Button variant="outline" size="sm" icon={Camera}>
             Request Liveness Re-Scan
           </Button>
         </div>

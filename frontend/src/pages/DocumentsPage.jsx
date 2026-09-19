@@ -169,8 +169,10 @@ export default function DocumentsPage() {
       [selectedAppId]: { verified: true, hash: data.hash, confidence: data.confidence }
     }));
     setIsVerificationModalOpen(false);
-    setToastMessage(`Applicant Biometric Verification Confirmed for ${selectedApp?.applicant || 'Applicant'}. Document Forensics suite unlocked.`);
-    setTimeout(() => setToastMessage(''), 4000);
+    setToastMessage(`Applicant Biometric Verification Confirmed for ${selectedApp?.applicant || 'Applicant'}. Directing to Loan Application Details...`);
+    setTimeout(() => {
+      navigate(`/applications/${selectedAppId || 'APP-1003'}`);
+    }, 1200);
   };
 
   const handleVerificationFailed = (data) => {
@@ -320,15 +322,25 @@ export default function DocumentsPage() {
             </div>
           </div>
 
-          <div className="flex items-center gap-2">
-            <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 border border-emerald-200 font-semibold">
-              APPLICANT VERIFIED • EVIDENCE UNLOCKED
-            </span>
+          <div className="flex flex-wrap items-center gap-2">
+            <button
+              onClick={() => navigate(`/applications/${selectedAppId || 'APP-1003'}`)}
+              className="inline-flex items-center gap-1.5 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white px-3 py-1.5 text-xs font-mono font-bold shadow-xs transition"
+            >
+              <span>Direct to Loan Application Details</span>
+              <ArrowRight className="h-3.5 w-3.5" />
+            </button>
+            <button
+              onClick={() => navigate('/applications')}
+              className="inline-flex items-center gap-1.5 rounded-xl border border-coffee-200 bg-white hover:bg-coffee-50 text-coffee-800 px-3 py-1.5 text-xs font-mono transition"
+            >
+              <span>Applications Queue</span>
+            </button>
             <button
               onClick={() => setIsVerificationModalOpen(true)}
-              className="text-[11px] text-coffee-700 hover:text-coffee-900 font-semibold underline"
+              className="text-[11px] text-stone-500 hover:text-espresso font-semibold underline px-2"
             >
-              Re-scan Applicant Camera
+              Re-scan
             </button>
           </div>
         </div>

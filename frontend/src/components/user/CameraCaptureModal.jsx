@@ -156,9 +156,9 @@ export default function CameraCaptureModal({ isOpen, onClose, onPhotoConfirmed }
         isDark,
         score: Math.min(95, Math.max(70, Math.round(meanLuminance * 0.4 + avgEdge * 1.5))),
         message: isDark
-          ? 'Low lighting detected. Please face a light source.'
+          ? 'The photo is too dark. Please move to a brighter area.'
           : isBlurry
-          ? 'Slight blur detected. Hold steady.'
+          ? 'The photo is blurry. Please keep the camera steady and try again.'
           : 'Face clearly positioned and lit.'
       };
     } catch {
@@ -233,8 +233,8 @@ export default function CameraCaptureModal({ isOpen, onClose, onPhotoConfirmed }
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-espresso/60 backdrop-blur-sm animate-fadeIn">
-      <div className="relative w-full max-w-lg rounded-2xl border border-coffee-200 bg-white p-5 sm:p-6 shadow-2xl space-y-4">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fadeIn">
+      <div className="relative w-full max-w-lg rounded-2xl border-2 border-coffee-200 bg-white p-5 sm:p-6 shadow-2xl space-y-4">
         
         {/* Modal Header */}
         <div className="flex items-center justify-between pb-3 border-b border-coffee-100">
@@ -243,17 +243,17 @@ export default function CameraCaptureModal({ isOpen, onClose, onPhotoConfirmed }
               <Camera className="h-4 w-4" />
             </div>
             <div>
-              <h3 className="text-sm font-bold text-espresso">
+              <h3 className="text-sm font-extrabold text-coffee-950">
                 Profile Photograph Verification
               </h3>
-              <span className="text-[10px] font-mono text-coffee-600">
+              <span className="text-[10px] font-mono font-bold text-coffee-700">
                 Camera capture only • No file upload
               </span>
             </div>
           </div>
           <button
             onClick={onClose}
-            className="p-1 text-stone-400 hover:text-espresso rounded-lg hover:bg-stone-100 transition"
+            className="p-1 text-coffee-700 hover:text-coffee-950 rounded-lg hover:bg-coffee-100 transition"
           >
             <X className="h-4 w-4" />
           </button>
@@ -265,52 +265,67 @@ export default function CameraCaptureModal({ isOpen, onClose, onPhotoConfirmed }
         {step === 'instructions' && (
           <div className="space-y-4">
             <div>
-              <h4 className="text-sm font-semibold text-espresso">
-                Before you take the photograph
+              <h4 className="text-base font-extrabold text-coffee-950">
+                Before taking your photo
               </h4>
-              <p className="text-xs text-stone-600 mt-1">
+              <p className="text-xs text-coffee-800 mt-1 font-medium">
                 For identity verification, take a new photograph using your device camera.
-                Make sure you meet the following requirements:
               </p>
             </div>
 
             {cameraError && (
-              <div className="p-3 rounded-xl border border-red-200 bg-red-50 text-xs text-red-800 flex items-start gap-2">
+              <div className="p-3 rounded-xl border border-red-200 bg-red-50 text-xs text-red-900 flex items-start gap-2">
                 <AlertCircle className="h-4 w-4 text-red-600 shrink-0 mt-0.5" />
                 <div>
-                  <span className="font-semibold block text-red-900">Camera access needed</span>
-                  <p className="text-[11px] text-red-700 mt-0.5">{cameraError}</p>
+                  <span className="font-extrabold block text-red-950">Camera access needed</span>
+                  <p className="text-[11px] text-red-800 mt-0.5">{cameraError}</p>
                 </div>
               </div>
             )}
 
-            {/* Clear Rules Checklist */}
-            <div className="rounded-xl border border-coffee-100 bg-stone-50/80 p-3.5 space-y-2 text-xs text-stone-700">
+            {/* Clear Rules Checklist - Exactly 9 requirements from prompt */}
+            <div className="rounded-xl border border-coffee-200 bg-coffee-50/50 p-4 space-y-2 text-xs text-coffee-950 font-semibold">
               <div className="flex items-center gap-2">
                 <CheckCircle2 className="h-3.5 w-3.5 text-emerald-600 shrink-0" />
-                <span>Face the camera directly and hold the device at eye level</span>
+                <span>Face the camera directly</span>
               </div>
               <div className="flex items-center gap-2">
                 <CheckCircle2 className="h-3.5 w-3.5 text-emerald-600 shrink-0" />
-                <span>Keep your full face clearly visible in good lighting</span>
+                <span>Keep your full face visible</span>
               </div>
               <div className="flex items-center gap-2">
                 <CheckCircle2 className="h-3.5 w-3.5 text-emerald-600 shrink-0" />
-                <span>Remove sunglasses, hats, masks, or anything covering your face</span>
+                <span>Use good lighting</span>
               </div>
               <div className="flex items-center gap-2">
                 <CheckCircle2 className="h-3.5 w-3.5 text-emerald-600 shrink-0" />
-                <span>Use a plain background if possible and keep camera steady</span>
+                <span>Remove sunglasses/face coverings</span>
               </div>
               <div className="flex items-center gap-2">
-                <AlertTriangle className="h-3.5 w-3.5 text-amber-600 shrink-0" />
-                <span>Do not use another person's photograph or a photo of a screen</span>
+                <CheckCircle2 className="h-3.5 w-3.5 text-emerald-600 shrink-0" />
+                <span>Keep the background simple</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <CheckCircle2 className="h-3.5 w-3.5 text-emerald-600 shrink-0" />
+                <span>Keep the camera at eye level</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <CheckCircle2 className="h-3.5 w-3.5 text-emerald-600 shrink-0" />
+                <span>Make sure only you are visible</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <CheckCircle2 className="h-3.5 w-3.5 text-emerald-600 shrink-0" />
+                <span>Keep the phone steady</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <CheckCircle2 className="h-3.5 w-3.5 text-emerald-600 shrink-0" />
+                <span>Look directly at the camera</span>
               </div>
             </div>
 
             {/* Mandatory Single Person Reminder */}
-            <div className="text-[11px] text-stone-600 flex items-center gap-2 px-1">
-              <UserCheck className="h-3.5 w-3.5 text-coffee-700 shrink-0" />
+            <div className="text-[11px] text-coffee-900 flex items-center gap-2 px-1 font-bold">
+              <UserCheck className="h-4 w-4 text-coffee-700 shrink-0" />
               <span>Only one person should be present in the verification photograph.</span>
             </div>
 
